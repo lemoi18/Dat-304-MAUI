@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="self"
+             x:Class="MauiApp8.Views.FoodItemView"
+             xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
+             x:DataType="viewmodel:FoodViewModel"
+             
+
+             >
+
+
+
+    <VerticalStackLayout>
+        <Label Text="{Binding Name}"  FontSize="16"/>
+        <Label Text="{Binding Category}" FontSize="12" Margin="0,4,0,0"/>
+        <Label Text="{Binding Description}" FontSize="12" Margin="0,4,0,0"/>
+        <Label Text="{Binding Carbohydrates}" FontSize="12" Margin="0,4,0,0"/>
+    </VerticalStackLayout>
+
+</ContentView>

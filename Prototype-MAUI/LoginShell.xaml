@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MauiApp8.LoginShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:MauiApp8"
+    xmlns:views="clr-namespace:MauiApp8.Views"
+
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarTitleColor="AliceBlue"
+    >
+
+
+    <ShellContent Title="Login"
+                  ContentTemplate="{DataTemplate views:LoginPage}"
+                  Route="login">
+    </ShellContent>
+
+</Shell>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="MauiApp8.Views.FoodDetailsPage"
+             xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
+             x:DataType="viewmodel:FoodDetailsModel"
+             xmlns:model="clr-namespace:MauiApp8.Model"
+             xmlns:local="clr-namespace:MauiApp8.Controls"
+             Title="{Binding Food.Name}"
+             >
+
+
+
+
+
+
+
+
+
+    <VerticalStackLayout Spacing="15" Padding="15">
+
+        <Frame BackgroundColor="White"
+               CornerRadius="10"
+               HasShadow="True"
+               Padding="20"
+               HorizontalOptions="FillAndExpand">
+
+            <StackLayout Spacing="15">
+
+                <Label Text="{Binding Food.Carbohydrates, StringFormat='Carbohydrates : {0} '}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#2D2D2D"/>
+
+                <Label Text="{Binding Food.Category}"
+                       FontSize="16"
+                       TextColor="DarkGray"/>
+
+                <Label Text="{Binding Food.Description}"
+                       FontSize="14"
+                       TextColor="Gray"/>
+
+            </StackLayout>
+
+        </Frame>
+
+        <Entry Text="{Binding Grams}"
+               Placeholder="Enter grams of food"
+               FontSize="14"
+               TextColor="Black"
+               PlaceholderColor="Gray"
+               BackgroundColor="White"
+               Keyboard="Numeric"
+               VerticalOptions="CenterAndExpand"
+               HorizontalOptions="FillAndExpand"
+               WidthRequest="250"
+               Completed="OnEntryCompleted"
+
+               />
+
+        <Button Text="Add Food"
+            Command="{Binding NavigateToBackLogCommand}"
+            FontSize="16"
+            TextColor="White"
+            BackgroundColor="#2196F3"
+            VerticalOptions="CenterAndExpand"
+            HorizontalOptions="FillAndExpand"
+            WidthRequest="250"
+            HeightRequest="50"
+            
+/>
+
+
+        <Button Text="Cancel"
+            Command="{Binding NavigateBackCommand}"
+            FontSize="16"
+            TextColor="White"
+            BackgroundColor="#FF3B30"
+            VerticalOptions="CenterAndExpand"
+            HorizontalOptions="FillAndExpand"
+            WidthRequest="250"
+            HeightRequest="50"/>
+
+    </VerticalStackLayout>
+
+
+
+</ContentPage>
