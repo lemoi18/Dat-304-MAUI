@@ -50,7 +50,7 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<Services.Authentication.IAuthenticationService>((e)=> new Services.Authentication.Authenticated_stub());
         builder.Services.AddTransient<Services.DataServices.IDataService>((e) => new Services.DataServices.FoodService_stub());
-        builder.Services.AddSingleton<CreateDBLib.CreateDB>();
+        builder.Services.AddSingleton<Realms.Realm>(e => CreateDB.RealmCreate());
 
 
         var app = builder.Build();
