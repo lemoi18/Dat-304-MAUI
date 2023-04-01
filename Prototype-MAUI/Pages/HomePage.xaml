@@ -15,9 +15,23 @@
         <Entry Placeholder="SGV" Text="{Binding Sgv}" />
         <Entry Placeholder="Date" Text="{Binding Date}" />
         <Button Text="Add Entry" Command="{Binding AddGlucoseEntryCommand}" />-->
-        <Label Text="{Binding Bgl}" />
-        
-        
+        <!--<Label Text="Insulin Entries" FontAttributes="Bold" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+
+        <ListView ItemsSource="{Binding InsulinEntries}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout>
+                            <Label Text="{Binding insulin}" />
+                            <Label Text="{Binding created_at}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button Text="Update Insulin Entries" Command="{Binding UpdateInsulinCommand}" />-->
+
 
 
         <Label 

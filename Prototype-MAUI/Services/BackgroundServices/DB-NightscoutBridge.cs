@@ -10,19 +10,8 @@ using System.Data.Common;
 
 namespace MauiApp8.Services.BackgroundServices
 {
-    public class DataBase: IBackgroundService
+    public class DataBase : IBackgroundService
     {
-
-
-        public string bgl { get; set; }
-        public string insulin { get; set; }
-
-        private Realm _db;
-
-        public DataBase(Realm relm)
-        {
-            _db = relm;
-        }
         //public static string Pathgetter()
         //{
         //    string path = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
@@ -70,51 +59,65 @@ namespace MauiApp8.Services.BackgroundServices
 
         public async void AddGlucoseEntry(float sgv, DateTimeOffset date)
         {
+            Realm localRealm = RealmCreate();
+
             try
             {
-                string dbFullPath = _db.Config.DatabasePath;
+                string dbFullPath = localRealm.Config.DatabasePath;
                 var GlucoseEntry = new GlucoseInfo { Glucose = sgv, Timestamp = date };
-                await _db.WriteAsync((tmpRealm) =>
+                await localRealm.WriteAsync((tmpRealm) =>
                 {
                     tmpRealm.Add(GlucoseEntry);
                 });
 
-                _db.Refresh();
+                localRealm.Refresh();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+            finally
+            {
+                localRealm.Dispose();
             }
         }
 
         public async void AddInsulinEntry(double? insulin, DateTimeOffset date)
         {
+            Realm localRealm = RealmCreate();
+
             try
             {
-                string dbFullPath = _db.Config.DatabasePath;
+                string dbFullPath = localRealm.Config.DatabasePath;
                 var InsulinEntry = new InsulinInfo { Insulin = (double)insulin, Timestamp = date };
-                await _db.WriteAsync((tmpRealm) =>
+                await localRealm.WriteAsync((tmpRealm) =>
                 {
                     tmpRealm.Add(InsulinEntry);
                 });
 
-                _db.Refresh();
+                localRealm.Refresh();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
+            finally
+            {
+                localRealm.Dispose();
+            }
         }
 
         public DateTimeOffset? ReadLatestGlucose()
         {
-            var objects = _db.All<GlucoseInfo>();
+            Realm localRealm = RealmCreate();
+            var objects = localRealm.All<GlucoseInfo>();
             // Find the maximum DateTimeOffset value of the property
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime == null)
             {
                 Console.WriteLine("The Glucose List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
+                localRealm.Dispose();
                 return utcOffset.AddMonths(-1);
             }
             else
@@ -126,23 +129,23 @@ namespace MauiApp8.Services.BackgroundServices
                 // Convert the UTC time to Norwegian time
 
                 DateTimeOffset norwayTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeOffset.UtcDateTime, norwayTimeZone);
+                localRealm.Dispose();
                 return norwayTime;
             }
 
         }
 
-
         public DateTimeOffset? ReadLatestInsulin()
         {
-            var objects = _db.All<InsulinInfo>();
+            Realm localRealm = RealmCreate();
+            var objects = localRealm.All<InsulinInfo>();
 
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime == null)
             {
-
                 Console.WriteLine("The insulin List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
-                _db.Dispose();
+                localRealm.Dispose();
                 return utcOffset.AddMonths(-1);
             }
             else
@@ -154,19 +157,22 @@ namespace MauiApp8.Services.BackgroundServices
                 // Convert the UTC time to Norwegian time
 
                 DateTimeOffset norwayTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeOffset.UtcDateTime, norwayTimeZone);
-                _db.Dispose();
+                localRealm.Dispose();
                 return norwayTime;
             }
+
+
         }
 
-        public async Task<int> UpdateGlucose(string DomainName)
+        public async  Task<int> UpdateGlucose(string DomainName)
         {
+            DataBase DB = new DataBase();
 
-            DateTimeOffset? utcStart =  ReadLatestGlucose();
+            DateTimeOffset? utcStart = DB.ReadLatestGlucose();
             if (utcStart.HasValue == false)
             {
                 return -1;
-            }
+            } 
 
             DateTimeOffset utcStartPlus = ((DateTimeOffset)utcStart).AddMinutes(5);
             DateTime utcTime = DateTime.UtcNow;
@@ -178,17 +184,16 @@ namespace MauiApp8.Services.BackgroundServices
             Console.WriteLine("Adding " + Items.Count + " entries... ");
             foreach (GlucoseAPI obj in Items)
             {
-                Console.WriteLine($"Loaded {obj.sgv} in updateglukose in BGService");
-
-                AddGlucoseEntry(obj.sgv, obj.dateString);
+                DB.AddGlucoseEntry(obj.sgv, obj.dateString);
             }
             return 200;
         }
 
-        public async Task<int> UpdateInsulin(string DomainName)
+        public async  Task<int> UpdateInsulin(string DomainName)
         {
+            DataBase DB = new DataBase();
 
-            DateTimeOffset? utcStart = ReadLatestInsulin();
+            DateTimeOffset? utcStart = DB.ReadLatestInsulin();
 
             if (utcStart.HasValue == false)
             {
@@ -207,13 +212,11 @@ namespace MauiApp8.Services.BackgroundServices
             foreach (TreatmentAPI obj in Items)
             {
                 if (obj.insulin != null)
-                    Console.WriteLine($"Loaded {obj.insulin} in UpdateInsulin in BGService");
-                AddInsulinEntry((double)obj.insulin, obj.created_at);
+                    DB.AddInsulinEntry((double)obj.insulin, obj.created_at);
             }
             return 200;
         }
 
-        
     }
 }
 

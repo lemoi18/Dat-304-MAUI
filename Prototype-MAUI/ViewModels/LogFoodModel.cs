@@ -71,7 +71,7 @@ namespace MauiApp8.ViewModel
             this.Foods = new MvvmHelpers.ObservableRangeCollection<Food>();
             this.FoodVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
             this.selectedFoodsVM= new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
-            InitializeAsync();
+            Task.Run(() => InitializeAsync());
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
 
         }
@@ -83,7 +83,7 @@ namespace MauiApp8.ViewModel
         //}
         private async Task InitializeAsync()
         {
-            await Task.Run(()=> LoadFoodsAsync());
+            await LoadFoodsAsync();
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
         }
 
