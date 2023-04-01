@@ -3,7 +3,6 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Logging;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.DataServices;
-using CreateDBLib;
 
 
 namespace MauiApp8;
@@ -50,7 +49,10 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<Services.Authentication.IAuthenticationService>((e)=> new Services.Authentication.Authenticated_stub());
         builder.Services.AddTransient<Services.DataServices.IDataService>((e) => new Services.DataServices.FoodService_stub());
-        builder.Services.AddSingleton<Realms.Realm>(e => CreateDB.RealmCreate());
+        builder.Services.AddTransient<Realms.Realm>(e => Services.DBService.CreateDB.RealmCreate());
+        builder.Services.AddTransient<Services.BackgroundServices.IBackgroundService>((e) => new Services.BackgroundServices.DataBase(e.GetService<Realms.Realm>()));
+
+
 
 
         var app = builder.Build();

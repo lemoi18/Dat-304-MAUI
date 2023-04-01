@@ -55,12 +55,9 @@
 		<PackageReference Include="Google.Apis.Oauth2.v2" Version="1.60.0.1869" />
 		<PackageReference Include="Google.Apis.PeopleService.v1" Version="1.60.0.2924" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="Realm" Version="10.21.0" />
 		<PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\CreateDBLib\CreateDBLib.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

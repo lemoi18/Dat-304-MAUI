@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiApp8", "MauiApp8.csproj", "{95654080-C3C4-4646-B5F3-96B7240B3BD3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{472934FC-3AAD-450A-B10B-3B55D802920E} = {472934FC-3AAD-450A-B10B-3B55D802920E}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateDBLib", "..\CreateDBLib\CreateDBLib.csproj", "{472934FC-3AAD-450A-B10B-3B55D802920E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +17,6 @@ Global
 		{95654080-C3C4-4646-B5F3-96B7240B3BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95654080-C3C4-4646-B5F3-96B7240B3BD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95654080-C3C4-4646-B5F3-96B7240B3BD3}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{472934FC-3AAD-450A-B10B-3B55D802920E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{472934FC-3AAD-450A-B10B-3B55D802920E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{472934FC-3AAD-450A-B10B-3B55D802920E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{472934FC-3AAD-450A-B10B-3B55D802920E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

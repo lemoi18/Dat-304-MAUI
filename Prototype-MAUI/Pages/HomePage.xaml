@@ -9,10 +9,16 @@
 
     
     <VerticalStackLayout>
-        <Label 
-            Text="Jævla Ape"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        
+        
+        <!--<Label Text="Add Glucose Entry" FontAttributes="Bold" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+        <Entry Placeholder="SGV" Text="{Binding Sgv}" />
+        <Entry Placeholder="Date" Text="{Binding Date}" />
+        <Button Text="Add Entry" Command="{Binding AddGlucoseEntryCommand}" />-->
+        <Label Text="{Binding Bgl}" />
+        
+        
+
 
         <Label 
     Text="{Binding User.Name}"
@@ -21,11 +27,7 @@
            
             />
 
-        <Button 
-                Text="Navigate Back"
-                FontAttributes="Bold"
-                Command="{Binding NavigateBackCommand}"
-                HorizontalOptions="Center" />
+     
 
     </VerticalStackLayout>
   
