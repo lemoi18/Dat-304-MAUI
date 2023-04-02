@@ -34,15 +34,7 @@ public partial class FoodItemView : ContentView
     //    }
     //}
 
-    private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
-    {
-        if (e.SelectedItem == null)
-            return;
-
-        // Handle the selected item here
-
-        ((ListView)sender).SelectedItem = null; // Clear the selection
-    }
+   
 
 
 }

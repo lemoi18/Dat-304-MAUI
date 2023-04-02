@@ -31,7 +31,8 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         bool isEdit;
 
-     
+        [ObservableProperty]
+        bool isSelected;
 
 
         public FoodViewModel(Food food)

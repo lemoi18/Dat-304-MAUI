@@ -39,6 +39,9 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\trashcan.svg">
+		  <BaseSize>168,208</BaseSize>
+		</MauiImage>
 		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
 
 		<!-- Custom Fonts -->
@@ -46,6 +49,10 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Images\trashcan.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -58,6 +65,7 @@
 		<PackageReference Include="Realm" Version="10.21.0" />
 		<PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
+
 	</ItemGroup>
 
 	<ItemGroup>

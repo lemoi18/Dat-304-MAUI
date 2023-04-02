@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -26,5 +27,8 @@ namespace MauiApp8.Model
         public string PictureUrl { get; set; }
 
         public bool LoginSuccessful { get; set; }
+
+       
+        public JwtSecurityToken Token { get; set; }
     }
 }

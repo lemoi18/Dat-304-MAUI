@@ -21,12 +21,15 @@ namespace MauiApp8.Services.Authentication
         public string auth_url { get; set; }
         public string callback_url { get; set; }
 
+        public JwtSecurityToken Token { get; set; }
+
+
 
         public Account User { get; set; }
 
         public RefactoredGoogleAuth()
         {
-            var scheme = "Google";
+             scheme = "Google";
 
 
             client_id = "438312542461-555tgjs158r5jrj1vmvgfvrlccblg89a.apps.googleusercontent.com";
@@ -40,7 +43,7 @@ namespace MauiApp8.Services.Authentication
                 $"&state=state_parameter_passthrough_value";
 
             callback_url = "com.companyname.mauiapp8://";
-
+            Token = null;
 
             User = new Account();
         }
@@ -94,7 +97,8 @@ namespace MauiApp8.Services.Authentication
         public async Task SignOutAsync()
         {
             User = null;
-
+            Token = null;
+            await Task.CompletedTask
         }
 
         private Account ValidateAccessToken(string accessToken)
@@ -114,7 +118,8 @@ namespace MauiApp8.Services.Authentication
                 GivenName = givenName,
                 PictureUrl = picture,
                 FamilyName = familyName,
-                LoginSuccessful = true
+                LoginSuccessful = true,
+                Token = token
             };
         }
 

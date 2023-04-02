@@ -9,7 +9,6 @@ using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Views;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
-
 namespace MauiApp8.ViewModel
 {
 
@@ -28,7 +27,7 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         double grams;
 
-
+       
 
         [ObservableProperty]
         Food food;
@@ -83,11 +82,11 @@ namespace MauiApp8.ViewModel
         //}
         private async Task InitializeAsync()
         {
-            await LoadFoodsAsync();
+            await LoadFoodsAsync("");
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
         }
 
-        private async Task LoadFoodsAsync()
+        private async Task LoadFoodsAsync(string query = null)
         {
             var foodService = await dataService.GetFoods();
             if (foodService == null)
@@ -102,18 +101,13 @@ namespace MauiApp8.ViewModel
             Console.WriteLine($"Loaded {foodService.Count} food items from the dataService");
 
             this.Foods = new ObservableRangeCollection<Food>(foodService);
-
-            var list = new List<FoodViewModel>();
-            foreach (var food in foodService)
+            if (!string.IsNullOrEmpty(query))
             {
-                var foodVM = new FoodViewModel(food);
-
-                list.Add(foodVM);
-           }
-            Console.WriteLine($"Created {list.Count} FoodViewModel instances");
-
-            this.FoodVM.ReplaceRange(list);
-            Console.WriteLine($"FoodCollectionVM contains {this.FoodVM.Count} items");
+                var filteredResults = await Task.Run(() => this.Foods
+                    .Where(p => !string.IsNullOrEmpty(p.Name) &&
+                            p.Name.ToLower().Contains(query.ToLower())).ToList());
+                this.FoodVM.ReplaceRange(filteredResults.Select(food => new FoodViewModel(food)));
+            }
 
         }
 
@@ -170,6 +164,7 @@ namespace MauiApp8.ViewModel
 
             if (string.IsNullOrEmpty(query))
             {
+                Console.WriteLine(string.IsNullOrEmpty(query));
                 this.FoodVM.Clear();
                 return;
             }
@@ -230,6 +225,26 @@ namespace MauiApp8.ViewModel
                 await Shell.Current.GoToAsync($"{nameof(FoodDetailsPage)}?IsEdit={foodView.IsEdit}", parameters);
             
 
+        }
+        [RelayCommand]
+         async Task RemoveSelectedFoods(FoodViewModel foodView) {
+            var selectedFoods = this.SelectedFoodsVM.Where(vm => vm.IsSelected).ToList();
+
+            if (!selectedFoods.Any())
+            {
+                return;
+            }
+
+            var confirmResult = await Shell.Current.DisplayAlert("Confirm", "Are you sure you want to remove the selected foods?", "Yes", "No");
+            if (!confirmResult)
+            {
+                return;
+            }
+
+            foreach (var selectedFood in selectedFoods)
+            {
+                this.SelectedFoodsVM.Remove(selectedFood);
+            }
         }
 
     }

@@ -52,21 +52,23 @@
                                   CommandParameter="{Binding .}"
                                   NumberOfTapsRequired="1"/>
                             </Grid.GestureRecognizers>
+                            
 
-                            <StackLayout Orientation="Vertical" Spacing="5">
-                                <Label Text="{Binding Name}" 
+                                <StackLayout Orientation="Vertical" Spacing="5">
+                                    <Label Text="{Binding Name}" 
                                FontSize="Large" 
                                FontAttributes="Bold" 
                                TextColor="#212121" />
-                                <Label Text="{Binding Carbohydrates}" 
+                                    <Label Text="{Binding Carbohydrates}" 
                                FontSize="Medium" 
                                FontAttributes="Bold" 
                                TextColor="#424242" />
-                                <Label Text="{Binding Category}" 
+                                    <Label Text="{Binding Category}" 
                                FontSize="Medium" 
                                Opacity="0.7" 
                                TextColor="#616161" />
-                            </StackLayout>
+                                </StackLayout>
+                           
 
                         </Grid>
                     </Frame>
@@ -75,75 +77,82 @@
         </CollectionView>
 
 
-        
-
-        <!--<ListView ItemsSource="{Binding SelectedFoodsVM}"
-          SelectionMode="None"
-          HorizontalOptions="FillAndExpand" >
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-
-                        <view:FoodItemView FoodItem="{Binding .}">
-
-                        </view:FoodItemView>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>-->
-
         <CollectionView ItemsSource="{Binding SelectedFoodsVM}"
-                SelectionMode="None"
+                SelectionMode="Single"
                 HorizontalOptions="FillAndExpand"
-                        EmptyView="No Foods to log">
+                EmptyView="No Foods to log">
+            <CollectionView.Header>
+                <StackLayout Orientation="Horizontal" Spacing="10" VerticalOptions="Center">
+                    <Label Text="Selected Foods List"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Start" />
+                    <Image Source="Resource/Images/rashcan.svg" WidthRequest="24" HeightRequest="24" Aspect="AspectFit">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding RemoveSelectedFoodsCommand}" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </StackLayout>
+
+            </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewmodel:FoodViewModel">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                    <Frame 
+                        BorderColor="#E0E0E0" 
+                        CornerRadius="8" 
+                        Padding="10" 
+                        HasShadow="True"
+                        Margin="8"
+                        
+                        >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-
-
-                        <SwipeView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1">
-                            <SwipeView.RightItems>
-                                <SwipeItems>
-                                    <SwipeItem Text="Delete" 
-                                               BackgroundColor="Red" 
-                                               Command="{Binding Path=RemoveFoodFromListCommand, Source={RelativeSource AncestorType={x:Type viewmodel:LogFoodModel}}}"
-                                               CommandParameter="{Binding .}"/>
-                                    <SwipeItem Text="Edit"
-                                               BackgroundColor="Orange"
-                                               Command="{Binding Path=EditFoodFromListCommand, Source={RelativeSource AncestorType={x:Type viewmodel:LogFoodModel}}}"
-                                               CommandParameter="{Binding .}"/>
-                                </SwipeItems>
-                            </SwipeView.RightItems>
-
-                            <Grid>
+                            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <StackLayout Grid.Column="0">
-                                    <Label Text="{Binding Name}" />
-                                    <Label Text="{Binding Carbohydrates, StringFormat='Carbohydrates : {0} '}" />
-                                    <Label Text="{Binding Grams, StringFormat='Amount : {0}g '}" />
+                                
+                                <StackLayout Grid.Column="0" Orientation="Vertical" Spacing="5">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=EditFoodFromListCommand, Source={RelativeSource AncestorType={x:Type viewmodel:LogFoodModel}}}"
+                                                  CommandParameter="{Binding .}" />
+                                    </StackLayout.GestureRecognizers>
+                                    <Label Text="{Binding Name}" 
+                               FontSize="Large" 
+                               FontAttributes="Bold" 
+                               TextColor="#212121" />
+                                    <Label Text="{Binding Carbohydrates}" 
+                               FontSize="Medium" 
+                               FontAttributes="Bold" 
+                               TextColor="#424242" />
+                                    <Label Text="{Binding Grams, StringFormat='Amount : {0}g '}" 
+                               FontSize="Medium" 
+                               Opacity="0.7" 
+                               TextColor="#616161" />
                                 </StackLayout>
+                                
+                                <CheckBox IsChecked="{Binding IsSelected}" Grid.Column="1" />
+                                
                             </Grid>
-                        </SwipeView>
-                    </Grid>
-
+                        </Grid>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+       
+    
     </StackLayout>
 
 
