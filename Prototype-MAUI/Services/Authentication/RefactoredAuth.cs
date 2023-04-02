@@ -98,7 +98,7 @@ namespace MauiApp8.Services.Authentication
         {
             User = null;
             Token = null;
-            await Task.CompletedTask
+            await Task.CompletedTask;
         }
 
         private Account ValidateAccessToken(string accessToken)
