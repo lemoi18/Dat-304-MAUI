@@ -29,7 +29,6 @@ namespace MauiApp8.ViewModel
         {
             await authService.SignOutAsync();
             return Application.Current.MainPage = new LoginShell();
-            await Task.CompletedTask;
         }
     }
 }
