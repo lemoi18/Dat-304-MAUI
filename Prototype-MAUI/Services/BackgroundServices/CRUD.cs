@@ -1,77 +1,24 @@
-﻿using Realms.Exceptions;
 using Realms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MauiApp8.Model2;
-using System.Data.Common;
-using MauiApp8.Services.DBService;
+using static DAT304_MAUI.Backend.Realm.Utils;
+using static DAT304_MAUI.Backend.Nightscout;
+using DAT304_MAUI.Backend.Realm.Schemas;
 
-namespace MauiApp8.Services.BackgroundServices
+
+namespace DAT304_MAUI.Backend.Realm
 {
-    public class DataBase : IBackgroundService
+    internal class CRUD
     {
-        //public static string Pathgetter()
-        //{
-        //    string path = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
-        //    string actualPath = path.Substring(0, path.LastIndexOf("bin"));
-        //    actualPath = actualPath.Substring(0, actualPath.LastIndexOf("/"));
-        //    //actualPath = actualPath.Substring(0, actualPath.LastIndexOf("/"));
-        //    string projectPath = new Uri(actualPath).LocalPath;
-        //    path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, projectPath);
-        //    return path;
-        //}
-        public static string Pathgetter()
-        {
-            string executablePath = Environment.ProcessPath;
-            string directoryPath = Path.GetDirectoryName(executablePath);
-            string projectDirectoryPath = Path.GetFullPath(Path.Combine(directoryPath, "..", "..", ".."));
-            return projectDirectoryPath;
-        }
-
-        public static Realm RealmCreate()
-        {
-            string pathToDb = $"{AppDomain.CurrentDomain.BaseDirectory}";
-            //Console.WriteLine(pathToDb + "/my.realm");
-            var config = new RealmConfiguration(pathToDb + "/my.realm")
-            {
-                IsReadOnly = false,
-            };
-            Realm localRealm;
-            try
-            {
-                localRealm = Realm.GetInstance(config);
-                return localRealm;
-            }
-            catch (RealmFileAccessErrorException ex)
-            {
-                Console.WriteLine($@"Error creating or opening the realm file. A! {ex.Message}");
-                return null;
-            }
-        }
-
-        public DateTimeOffset ReadCurrentTime()
-        {
-            DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
-            return utcOffset;
-        }
-
         public async void AddGlucoseEntry(float sgv, DateTimeOffset date)
         {
-
-            
-            Realm localRealm = CreateDB.RealmCreate();
-            
+            Realms.Realm localRealm = RealmCreate();
 
             try
             {
                 string dbFullPath = localRealm.Config.DatabasePath;
                 var GlucoseEntry = new GlucoseInfo { Glucose = sgv, Timestamp = date };
-                await localRealm.WriteAsync((tmpRealm) =>
+                await localRealm.WriteAsync(() =>
                 {
-                    tmpRealm.Add(GlucoseEntry);
+                    localRealm.Add(GlucoseEntry);
                 });
 
                 localRealm.Refresh();
@@ -88,15 +35,14 @@ namespace MauiApp8.Services.BackgroundServices
 
         public async void AddInsulinEntry(double? insulin, DateTimeOffset date)
         {
-            Realm localRealm = RealmCreate();
+            Realms.Realm localRealm = RealmCreate();
 
             try
             {
                 string dbFullPath = localRealm.Config.DatabasePath;
                 var InsulinEntry = new InsulinInfo { Insulin = (double)insulin, Timestamp = date };
-                await localRealm.WriteAsync((tmpRealm) =>
-                {
-                    tmpRealm.Add(InsulinEntry);
+                await localRealm.WriteAsync(() => {
+                    localRealm.Add(InsulinEntry);
                 });
 
                 localRealm.Refresh();
@@ -112,8 +58,9 @@ namespace MauiApp8.Services.BackgroundServices
         }
 
         public DateTimeOffset? ReadLatestGlucose()
-                    Realm localRealm = CreateDB.RealmCreate();
-        var objects = localRealm.All<GlucoseInfo>();
+        {
+            Realms.Realm localRealm = RealmCreate();
+            var objects = localRealm.All<GlucoseInfo>();
             // Find the maximum DateTimeOffset value of the property
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime == null)
@@ -140,7 +87,7 @@ namespace MauiApp8.Services.BackgroundServices
 
         public DateTimeOffset? ReadLatestInsulin()
         {
-            Realm localRealm = RealmCreate();
+            Realms.Realm localRealm = RealmCreate();
             var objects = localRealm.All<InsulinInfo>();
 
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
@@ -167,15 +114,15 @@ namespace MauiApp8.Services.BackgroundServices
 
         }
 
-        public async  Task<int> UpdateGlucose(string DomainName)
+        public async static Task<int> UpdateGlucose(string DomainName)
         {
-            DataBase DB = new DataBase();
+            CRUD DB = new CRUD();
 
             DateTimeOffset? utcStart = DB.ReadLatestGlucose();
             if (utcStart.HasValue == false)
             {
                 return -1;
-            } 
+            }
 
             DateTimeOffset utcStartPlus = ((DateTimeOffset)utcStart).AddMinutes(5);
             DateTime utcTime = DateTime.UtcNow;
@@ -183,7 +130,7 @@ namespace MauiApp8.Services.BackgroundServices
             DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
 
             List<GlucoseAPI> Items;
-            Items = await Nightscout.GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
+            Items = await GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine("Adding " + Items.Count + " entries... ");
             foreach (GlucoseAPI obj in Items)
             {
@@ -192,9 +139,9 @@ namespace MauiApp8.Services.BackgroundServices
             return 200;
         }
 
-        public async  Task<int> UpdateInsulin(string DomainName)
+        public async static Task<int> UpdateInsulin(string DomainName)
         {
-            DataBase DB = new DataBase();
+            CRUD DB = new CRUD();
 
             DateTimeOffset? utcStart = DB.ReadLatestInsulin();
 
@@ -210,7 +157,7 @@ namespace MauiApp8.Services.BackgroundServices
             Console.WriteLine(utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine(utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             List<TreatmentAPI> Items;
-            Items = await Nightscout.GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
+            Items = await GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine("Adding " + Items.Count + " entries... ");
             foreach (TreatmentAPI obj in Items)
             {
@@ -222,5 +169,3 @@ namespace MauiApp8.Services.BackgroundServices
 
     }
 }
-
-
