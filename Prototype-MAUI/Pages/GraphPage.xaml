@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:local="clr-namespace:MauiApp8.ViewModel.GraphPageModel;assembly=MauiApp8.ViewModel.GraphPageModel"
+             xmlns:local="clr-namespace:MauiApp8.ViewModel;assembly=MauiApp8"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              x:Class="MauiApp8.Views.GraphPage"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
