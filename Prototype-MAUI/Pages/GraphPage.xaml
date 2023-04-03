@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:MauiApp8.ViewModel.GraphPageModel;assembly=MauiApp8.ViewModel.GraphPageModel"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              x:Class="MauiApp8.Views.GraphPage"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:GraphPageModel"
@@ -9,14 +11,13 @@
              
     <VerticalStackLayout>
         <Label 
-            Text="{Binding User.Name}"
+            Text="Testing text field"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-
-        <Button 
-                Text="Logout"
-                FontAttributes="Bold"
-                Command="{Binding SignOutCommand}"
-                HorizontalOptions="Center" />
+        <Grid>
+            <lvc:CartesianChart
+                Series="{Binding Series}">
+            </lvc:CartesianChart>
+        </Grid>
     </VerticalStackLayout>
 </ContentPage>

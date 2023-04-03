@@ -3,6 +3,7 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Logging;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.DataServices;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 
 namespace MauiApp8;
@@ -13,6 +14,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
+            .UseSkiaSharp(true)
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
