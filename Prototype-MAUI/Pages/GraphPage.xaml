@@ -12,10 +12,5 @@
             Text="Testing text field"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-        <Grid>
-            <lvc:CartesianChart>
-                <lvc:LineSeries Values="{Binding Data}" />
-            </lvc:CartesianChart>
-        </Grid>
     </VerticalStackLayout>
 </ContentPage>
