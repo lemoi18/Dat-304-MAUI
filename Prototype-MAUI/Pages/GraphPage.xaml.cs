@@ -20,28 +20,28 @@ namespace MauiApp8.Views
         }
 
         private void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
-{
-    using (SKCanvas canvas = args.Surface.Canvas)
-    {
-        canvas.Clear(SKColors.White);
-        Debug.WriteLine("Canvas cleared.");
-
-        if (viewModel != null && viewModel.LineChart != null)
         {
-            Debug.WriteLine("Drawing chart...");
-            Chart chart = viewModel.LineChart;
-            // Set the label to horiz
-            // Set the size of the canvas
-            chart.Draw(canvas, args.Info.Width, args.Info.Height);
+                using (SKCanvas canvas = args.Surface.Canvas)
+                {
+                    canvas.Clear(SKColors.White);
+                    Debug.WriteLine("Canvas cleared.");
 
-            Debug.WriteLine("Chart drawn.");
-        }
-        else
-        {
-            Debug.WriteLine("Chart or ViewModel is null.");
-        }
-    }
-}
+                    if (viewModel != null && viewModel.LineChart != null)
+                    {
+                        Debug.WriteLine("Drawing chart...");
+                        Chart chart = viewModel.LineChart;
+                        // Set the label to horiz
+ 
+                        // Set the size of the canvas
+                        chart.Draw(canvas, args.Info.Width, args.Info.Height);
 
+                        Debug.WriteLine("Chart drawn.");
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Chart or ViewModel is null.");
+                    }
+                }
+        }
     }
 }

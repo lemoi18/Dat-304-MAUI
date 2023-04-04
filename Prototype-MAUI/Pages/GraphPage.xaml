@@ -16,7 +16,7 @@
     </ContentPage.BindingContext>
     <VerticalStackLayout>
         <Label 
-            Text="Greetings!"
+            Text="Test"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
@@ -27,6 +27,11 @@
                        HeightRequest="300"
                        WidthRequest="300"
                        BackgroundColor="Red"/>
+
+        <Label 
+            Text="Test"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
     </VerticalStackLayout>
     
 </ContentPage>

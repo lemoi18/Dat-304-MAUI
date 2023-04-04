@@ -44,8 +44,13 @@ namespace MauiApp8.ViewModel
                     }
                 },
 
-                LabelOrientation = Orientation.Horizontal, ValueLabelOrientation = Orientation.Horizontal
+                LabelOrientation = Orientation.Horizontal,
+                ValueLabelOrientation = Orientation.Horizontal,
+                IsAnimated = true,
+                LabelTextSize = 20,
+                LabelColor = SKColors.Black,
             };
+
         }
     }
 }
