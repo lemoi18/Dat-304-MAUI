@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="realm-wrappers.framework">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Prototype-MAUI/bin/Debug/net7.0-maccatalyst/maccatalyst-x64/realm-wrappers.framework.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

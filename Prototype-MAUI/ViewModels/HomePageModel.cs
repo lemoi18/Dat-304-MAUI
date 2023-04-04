@@ -4,8 +4,11 @@ using MauiApp8.Model;
 using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices;
+using MauiApp8.Services.GoogleFitService;
+using MauiApp8.Services.PublishSubscribeService;
 using Realms;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
@@ -21,6 +24,9 @@ namespace MauiApp8.ViewModel
 
         Realm realm;
 
+        GoogleFit _googlefit;
+
+        Publish _publish;
 
         [ObservableProperty]
         string sgv;
@@ -34,30 +40,53 @@ namespace MauiApp8.ViewModel
 
 
 
-        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
+        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, GoogleFit googlefit, Publish publish)
         {
 
 
             realm = _realm;
+            _publish = publish;
             _backgroundService = backgroundService;
+            _googlefit = googlefit;
             Task.Run(() => InitializeAsync());
             
             var objects = realm.All<GlucoseInfo>(); // retrieve all objects of type MyObject from the database
 
-            foreach (GlucoseInfo obj in objects)
-            {
-                Console.WriteLine($"Loaded {obj.Glucose} from db");
-            }
+            //foreach (GlucoseInfo obj in objects)
+            //{
+            //    Console.WriteLine($"Loaded {obj.Glucose} from db");
+            //}
         }
 
         private async Task InitializeAsync()
         {
-            await UpdateStuff();
+            //await UpdateStuff();
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
             //await UpdateStuff();
         }
 
+        [RelayCommand]
+        async Task TestFunction()
+        {
+            //_googlefit.CheckAccount();
+            string iso8601DateTime = "2023-04-01T15:53:17";
+            long unixTimeMilliseconds = _googlefit.ConvertToUnixTimeMilliseconds(iso8601DateTime);
+            int currentUnixTimestamp = _googlefit.GetCurrentUnixTimestamp();
+            string currentTime = currentUnixTimestamp.ToString() + "000";
+            string startTime = unixTimeMilliseconds.ToString();
+            Console.WriteLine(currentTime);
+            Console.WriteLine(startTime);
+            await _publish.CheckSubscribe();
+            Console.WriteLine("...");
 
+
+        }
+        [RelayCommand]
+        async Task CallFunction() { await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/"); }
+
+        
+
+        
         private async Task UpdateStuff()
         {
 

@@ -28,11 +28,13 @@
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>
+        </ListView> />-->
 
-        <Button Text="Update Insulin Entries" Command="{Binding UpdateInsulinCommand}" />-->
+        <Button Text="Start Listening" Command="{Binding TestFunctionCommand}" ></Button>
+        <Button Text="Send Message" Command="{Binding CallFunctionCommand}" ></Button>
+        <Button Text="Send Message" Command="{Binding CallCalorieCommand}" ></Button>
 
-
+        
 
         <Label 
     Text="{Binding User.Name}"

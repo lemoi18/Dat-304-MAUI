@@ -33,7 +33,6 @@ namespace MauiApp8.Services.BackgroundServices
         public static Realm RealmCreate()
         {
             string pathToDb = $"{AppDomain.CurrentDomain.BaseDirectory}";
-            //Console.WriteLine(pathToDb + "/my.realm");
             var config = new RealmConfiguration(pathToDb + "/my.realm")
             {
                 IsReadOnly = false,
@@ -204,8 +203,6 @@ namespace MauiApp8.Services.BackgroundServices
             DateTime utcTime = DateTime.UtcNow;
             TimeZoneInfo norwegianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
-            Console.WriteLine(utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine(utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             List<TreatmentAPI> Items;
             Items = await Nightscout.GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine("Adding " + Items.Count + " entries... ");

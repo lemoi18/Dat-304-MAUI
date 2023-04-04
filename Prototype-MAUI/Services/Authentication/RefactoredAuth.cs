@@ -23,7 +23,7 @@ namespace MauiApp8.Services.Authentication
 
         public JwtSecurityToken Token { get; set; }
 
-
+        public string AccessToken { get; set; }
 
         public Account User { get; set; }
 
@@ -38,7 +38,7 @@ namespace MauiApp8.Services.Authentication
             auth_url = $"{auth_uri}?response_type=code" +
                 $"&redirect_uri=com.companyname.mauiapp8://" +
                 $"&client_id={client_id}" +
-                $"&scope=https://www.googleapis.com/auth/userinfo.profile" +
+                $"&scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/fitness.activity.read" +
                 $"&include_granted_scopes=true" +
                 $"&state=state_parameter_passthrough_value";
 
@@ -83,6 +83,7 @@ namespace MauiApp8.Services.Authentication
             var data = await accessTokenResponse.Content.ReadAsStringAsync();
             var loginResponse = JsonSerializer.Deserialize<LoginRespons>(data);
             var accessToken = loginResponse.id_token;
+           
 
             try
             {
@@ -111,6 +112,7 @@ namespace MauiApp8.Services.Authentication
             var picture = GetTokenClaim(token, "picture");
             var familyName = GetTokenClaim(token, "family_name");
 
+
             return new Account
             {
                 Email = email,
@@ -119,7 +121,8 @@ namespace MauiApp8.Services.Authentication
                 PictureUrl = picture,
                 FamilyName = familyName,
                 LoginSuccessful = true,
-                Token = token
+                Token = token,
+                AccessToken = accessToken
             };
         }
 
