@@ -2,37 +2,50 @@
 using MauiApp8.Views;
 using MauiApp8.Model;
 using CommunityToolkit.Mvvm.ComponentModel;
-using MauiApp8.Services.Authentication;
-using MauiApp8.Services.BackgroundServices;
+using Microcharts;
+using SkiaSharp;
+using System.Collections.ObjectModel;
+using MongoDB.Bson;
 
 namespace MauiApp8.ViewModel
 {
     public partial class GraphPageModel : ObservableObject
     {
-        IAuthenticationService authService;
-        private Account _user;
-        public Account User
+        private Chart lineChart;
+        public Chart LineChart
         {
-            get => _user;
-            set => SetProperty(ref _user, value);
+            get { return lineChart; }
+            set { SetProperty(ref lineChart, value); }
         }
 
-        IBackgroundService backgroundService;
-
-        public GraphPageModel(IAuthenticationService _authService, IBackgroundService _backgroundService) 
+        public GraphPageModel()
         {
-            this.authService = _authService;
-            backgroundService = _backgroundService;
+            LineChart = new LineChart()
+            {
+                Entries = new ObservableCollection<ChartEntry>()
+                {
+                    new ChartEntry(200)
+                    {
+                        Label = "January",
+                        ValueLabel = "200",
+                        Color = SKColor.Parse("#266489")
+                    },
+                    new ChartEntry(400)
+                    {
+                        Label = "February",
+                        ValueLabel = "400",
+                        Color = SKColor.Parse("#68B9C0")
+                    },
+                    new ChartEntry(-100)
+                    {
+                        Label = "March",
+                        ValueLabel = "-100",
+                        Color = SKColor.Parse("#90D585")
+                    }
+                },
 
-        }
-
-        [RelayCommand]
-        Task NavigateBack() => Shell.Current.GoToAsync("..");
-        [RelayCommand]
-        async Task<Page> SignOut()
-        {
-            await authService.SignOutAsync();
-            return Application.Current.MainPage = new LoginShell();
+                LabelOrientation = Orientation.Horizontal, ValueLabelOrientation = Orientation.Horizontal
+            };
         }
     }
 }
