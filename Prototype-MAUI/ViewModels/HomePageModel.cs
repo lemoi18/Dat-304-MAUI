@@ -4,6 +4,7 @@ using MauiApp8.Model;
 using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices;
+using Microcharts;
 using Realms;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -32,7 +33,7 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<GlucoseInfo> glucoseInfo;
 
-
+        // Chart stuff
 
         public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
         {
@@ -48,6 +49,9 @@ namespace MauiApp8.ViewModel
             {
                 Console.WriteLine($"Loaded {obj.Glucose} from db");
             }
+
+            // Chart stuff 
+
         }
 
         private async Task InitializeAsync()
@@ -56,6 +60,9 @@ namespace MauiApp8.ViewModel
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
             //await UpdateStuff();
         }
+
+
+
 
 
         private async Task UpdateStuff()

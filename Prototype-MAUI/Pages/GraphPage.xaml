@@ -26,7 +26,7 @@
                        x:FieldModifier="public"
                        HeightRequest="300"
                        WidthRequest="300"
-                       BackgroundColor="Red"/>
+                       />
 
         <Label 
             Text="Test"

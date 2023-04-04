@@ -1,17 +1,13 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using MauiApp8.Views;
-using MauiApp8.Model;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microcharts;
 using SkiaSharp;
 using System.Collections.ObjectModel;
-using MongoDB.Bson;
 
 namespace MauiApp8.ViewModel
 {
     public partial class GraphPageModel : ObservableObject
     {
-        private Chart lineChart;
+        public Chart lineChart;
         public Chart LineChart
         {
             get { return lineChart; }

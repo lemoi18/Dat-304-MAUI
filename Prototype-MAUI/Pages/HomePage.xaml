@@ -5,6 +5,8 @@
              x:Class="MauiApp8.Views.HomePage"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:HomePageModel"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+
              Title="Home">
 
     
@@ -40,8 +42,14 @@
     HorizontalOptions="Center"
            
             />
-
-     
+        <Label Text="Home Page" />
+        <skia:SKCanvasView x:Name="chartCanvas"
+                       VerticalOptions="FillAndExpand"
+                       HorizontalOptions="FillAndExpand"
+                       x:FieldModifier="public"
+                       HeightRequest="300"
+                       WidthRequest="300"
+                       />
 
     </VerticalStackLayout>
   
