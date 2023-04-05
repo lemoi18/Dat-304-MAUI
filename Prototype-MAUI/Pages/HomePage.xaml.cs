@@ -1,6 +1,7 @@
 using MauiApp8.ViewModel;
 using SkiaSharp;
 using Microcharts;
+
 namespace MauiApp8.Views;
 
 
@@ -22,11 +23,9 @@ public partial class HomePage : ContentPage
         {
             SKCanvas canvas = args.Surface.Canvas;
             canvas.Clear(SKColors.White);
-
-            if (chart != null)
-            {
-                chart.Draw(canvas, args.Info.Width, args.Info.Height);
-            }
+            // if chart isnt null
+            chart?.Draw(canvas, args.Info.Width, args.Info.Height);
         };
+
     }
 }

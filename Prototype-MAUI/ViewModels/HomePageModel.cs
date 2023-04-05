@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Model;
+using MauiApp8.Views;
 using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices;
@@ -10,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
+using System.Windows.Input;
 using static Google.Apis.Requests.BatchRequest;
 
 namespace MauiApp8.ViewModel
@@ -34,6 +36,8 @@ namespace MauiApp8.ViewModel
         MvvmHelpers.ObservableRangeCollection<GlucoseInfo> glucoseInfo;
 
         // Chart stuff
+        public ICommand ChartTappedCommand { get; }
+
 
         public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
         {
@@ -51,9 +55,13 @@ namespace MauiApp8.ViewModel
             }
 
             // Chart stuff 
-
+            ChartTappedCommand = new Command(OnChartTapped);
         }
-
+        private async void OnChartTapped()
+        {
+            Console.WriteLine("Clicked!");
+            await Shell.Current.GoToAsync(nameof(GraphPage));
+        }
         private async Task InitializeAsync()
         {
             await UpdateStuff();

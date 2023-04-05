@@ -20,7 +20,7 @@ namespace MauiApp8.Views
         }
 
         private void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
-        {
+            {
                 using (SKCanvas canvas = args.Surface.Canvas)
                 {
                     canvas.Clear(SKColors.White);
@@ -42,6 +42,6 @@ namespace MauiApp8.Views
                         Debug.WriteLine("Chart or ViewModel is null.");
                     }
                 }
-        }
+            }
     }
 }

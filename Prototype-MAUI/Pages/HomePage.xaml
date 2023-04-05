@@ -36,20 +36,23 @@
 
 
 
-        <Label 
-    Text="{Binding User.Name}"
-    VerticalOptions="Center" 
-    HorizontalOptions="Center"
-           
+        <Label
+            Text="{Binding User.Name}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+
             />
         <Label Text="Home Page" />
         <skia:SKCanvasView x:Name="chartCanvas"
-                       VerticalOptions="FillAndExpand"
-                       HorizontalOptions="FillAndExpand"
-                       x:FieldModifier="public"
-                       HeightRequest="300"
-                       WidthRequest="300"
-                       />
+                   VerticalOptions="FillAndExpand"
+                   HorizontalOptions="FillAndExpand"
+                   x:FieldModifier="public"
+                   HeightRequest="300"
+                   WidthRequest="300">
+            <skia:SKCanvasView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ChartTappedCommand}" />
+            </skia:SKCanvasView.GestureRecognizers>
+        </skia:SKCanvasView>
 
     </VerticalStackLayout>
   
