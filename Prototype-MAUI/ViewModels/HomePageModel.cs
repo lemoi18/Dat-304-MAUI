@@ -35,8 +35,6 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<GlucoseInfo> glucoseInfo;
 
-        // Chart stuff
-        public ICommand ChartTappedCommand { get; }
 
 
         public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
@@ -54,13 +52,6 @@ namespace MauiApp8.ViewModel
                 Console.WriteLine($"Loaded {obj.Glucose} from db");
             }
 
-            // Chart stuff 
-            ChartTappedCommand = new Command(OnChartTapped);
-        }
-        private async void OnChartTapped()
-        {
-            Console.WriteLine("Clicked!");
-            await Shell.Current.GoToAsync(nameof(GraphPage));
         }
         private async Task InitializeAsync()
         {

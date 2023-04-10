@@ -5,8 +5,6 @@
              x:Class="MauiApp8.Views.GraphPage"
              x:DataType="viewmodel:GraphPageModel"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
-             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
-
 
 
     Title="Graph">
@@ -19,14 +17,6 @@
             Text="Test"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-
-        <skia:SKCanvasView x:Name="chartCanvas"
-                       VerticalOptions="FillAndExpand"
-                       HorizontalOptions="FillAndExpand"
-                       x:FieldModifier="public"
-                       HeightRequest="300"
-                       WidthRequest="300"
-                       />
 
         <Label 
             Text="Test"
