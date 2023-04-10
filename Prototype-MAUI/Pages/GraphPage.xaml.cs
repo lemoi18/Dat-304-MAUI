@@ -5,12 +5,12 @@ namespace MauiApp8.Views
 {
     public partial class GraphPage : ContentPage
     {
-        private GraphPageModel viewModel;
-
-        public GraphPage()
+        public GraphPage(GraphPageModel vm)
         {
             InitializeComponent();
-            viewModel = (GraphPageModel)BindingContext;
+
+            BindingContext = vm;
+
         }
 
 
