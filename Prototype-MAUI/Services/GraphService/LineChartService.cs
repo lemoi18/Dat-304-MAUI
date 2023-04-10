@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using SkiaSharp;
 
 namespace MauiApp8.Services.GraphService
 {
@@ -17,10 +20,11 @@ namespace MauiApp8.Services.GraphService
             return new ISeries[]
             {
 
-            new LineSeries<double>
+            new LineSeries<int>
             {
-                Values = new double[] { 2, 1, 3, 5, 3, 4, 6 },
-                Fill = null
+                Values = new int[] { 2, 4, 5, 6, 5, 4, 5 },
+                Fill = null,
+                Name = "Insulin Levels"
             }
             };
         }

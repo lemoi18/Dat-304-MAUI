@@ -3,21 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
-
              x:Class="MauiApp8.Views.GraphPage"
              x:DataType="viewmodel:GraphPageModel"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
-
-
-    Title="Graph">
+             Title="Graph">
 
     
     <VerticalStackLayout>
 
-        <lvc:CartesianChart Series="{Binding Series}" HeightRequest="300">
+        <lvc:CartesianChart 
+            Series="{Binding Series}" 
+            HeightRequest="300"
+            WidthRequest="600"
+            Title="{Binding Title}">
         </lvc:CartesianChart>
-
-
     </VerticalStackLayout>
     
 </ContentPage>

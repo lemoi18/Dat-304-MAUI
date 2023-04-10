@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows.Input;
 using static Google.Apis.Requests.BatchRequest;
+using LiveChartsCore;
+using MauiApp8.Services.GraphService;
 
 namespace MauiApp8.ViewModel
 {
@@ -34,6 +36,9 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<GlucoseInfo> glucoseInfo;
 
+        // Chart stuff
+        public List<ISeries> Series { get; set; }
+        public string Title { get; set; }
 
 
         public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
@@ -43,14 +48,16 @@ namespace MauiApp8.ViewModel
             realm = _realm;
             _backgroundService = backgroundService;
             Task.Run(() => InitializeAsync());
-            
+
             var objects = realm.All<GlucoseInfo>(); // retrieve all objects of type MyObject from the database
 
             foreach (GlucoseInfo obj in objects)
             {
                 Console.WriteLine($"Loaded {obj.Glucose} from db");
             }
-
+            // chart stuff
+            var chartService = new LineChartService();
+            Series = chartService.GetSeries().ToList();
         }
         private async Task InitializeAsync()
         {
@@ -58,7 +65,6 @@ namespace MauiApp8.ViewModel
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
             //await UpdateStuff();
         }
-
 
 
 

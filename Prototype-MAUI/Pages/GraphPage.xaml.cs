@@ -8,10 +8,11 @@ namespace MauiApp8.Views
         public GraphPage(GraphPageModel vm)
         {
             InitializeComponent();
-
             BindingContext = vm;
 
         }
+
+
 
 
     }

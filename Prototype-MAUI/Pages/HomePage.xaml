@@ -5,43 +5,34 @@
              x:Class="MauiApp8.Views.HomePage"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:HomePageModel"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              Title="Home">
 
-    
     <VerticalStackLayout>
-
-        <!--              xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
->-->
-        <!--<Label Text="Add Glucose Entry" FontAttributes="Bold" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-        <Entry Placeholder="SGV" Text="{Binding Sgv}" />
-        <Entry Placeholder="Date" Text="{Binding Date}" />
-        <Button Text="Add Entry" Command="{Binding AddGlucoseEntryCommand}" />-->
-        <!--<Label Text="Insulin Entries" FontAttributes="Bold" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-
-        <ListView ItemsSource="{Binding InsulinEntries}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout>
-                            <Label Text="{Binding insulin}" />
-                            <Label Text="{Binding created_at}" />
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <Button Text="Update Insulin Entries" Command="{Binding UpdateInsulinCommand}" />-->
-
-
-
         <Label
             Text="{Binding User.Name}"
             VerticalOptions="Center" 
             HorizontalOptions="Center"
-
             />
+        <lvc:CartesianChart 
+            Series="{Binding Series}" 
+            HeightRequest="300"
+            WidthRequest="600"
+            Title="{Binding Title}">
+        </lvc:CartesianChart>
+
+
         <Label Text="Home Page" />
+        <Label>
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Your text label here: " FontSize="18" />
+                    <Span Text="Binding Value goes here" FontSize="18" TextColor="Red" />
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+
+
 
     </VerticalStackLayout>
   
