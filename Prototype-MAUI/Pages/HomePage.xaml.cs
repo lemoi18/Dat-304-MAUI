@@ -9,6 +9,9 @@ public partial class HomePage : ContentPage
     {
         InitializeComponent();
         BindingContext = new GraphPageModel(new LineChartService());
-
+    }
+    private async void OnFrameTapped(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//graph");
     }
 }

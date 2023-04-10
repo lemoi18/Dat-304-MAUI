@@ -14,12 +14,18 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             />
-        <lvc:CartesianChart 
-            Series="{Binding Series}" 
-            HeightRequest="300"
-            WidthRequest="600"
-            Title="{Binding Title}">
-        </lvc:CartesianChart>
+        <Frame>
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnFrameTapped" />
+            </Frame.GestureRecognizers>
+            <lvc:CartesianChart 
+        Series="{Binding Series}" 
+        HeightRequest="200"
+        WidthRequest="300"
+        Title="{Binding Title}">
+            </lvc:CartesianChart>
+        </Frame>
+
 
 
         <Label Text="Home Page" />

@@ -25,6 +25,6 @@
                       Route="settings" />
         <ShellContent Title="Graph"
                       ContentTemplate="{DataTemplate views:GraphPage}"
-                      Route="home" />
+                      Route="graph" />
     </TabBar>
     </Shell>
