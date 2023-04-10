@@ -37,9 +37,10 @@ namespace MauiApp8.ViewModel
         MvvmHelpers.ObservableRangeCollection<GlucoseInfo> glucoseInfo;
 
         // Chart stuff
-        public List<ISeries> Series { get; set; }
         public string Title { get; set; }
-
+        public List<ISeries> Series { get; set; }
+        private readonly LineChartService _chartService;
+        public int LastValue { get; private set; }
 
         public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
         {
@@ -58,7 +59,11 @@ namespace MauiApp8.ViewModel
             // chart stuff
             var chartService = new LineChartService();
             Series = chartService.GetSeries().ToList();
+            LastValue = _chartService.GetLastValue();
         }
+
+
+
         private async Task InitializeAsync()
         {
             await UpdateStuff();

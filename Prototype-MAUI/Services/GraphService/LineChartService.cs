@@ -12,14 +12,12 @@ using SkiaSharp;
 
 namespace MauiApp8.Services.GraphService
 {
-    internal class LineChartService: IChartService
+    internal class LineChartService : IChartService
     {
         public ISeries[] GetSeries()
         {
-
             return new ISeries[]
             {
-
             new LineSeries<int>
             {
                 Values = new int[] { 2, 4, 5, 6, 5, 4, 5 },
@@ -28,5 +26,12 @@ namespace MauiApp8.Services.GraphService
             }
             };
         }
+
+        public int GetLastValue()
+        {
+            var series = GetSeries()[0] as LineSeries<int>;
+            return series.Values.Last();
+        }
     }
+
 }

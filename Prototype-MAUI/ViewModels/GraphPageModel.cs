@@ -28,5 +28,6 @@ namespace MauiApp8.ViewModel
             };
         }
         public LabelVisual Title { get; set; }
+
     }
 }
