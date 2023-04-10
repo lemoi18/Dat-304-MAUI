@@ -5,7 +5,6 @@ using MauiApp8.Views;
 using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices;
-using Microcharts;
 using Realms;
 using System.Collections.ObjectModel;
 using System.Diagnostics;

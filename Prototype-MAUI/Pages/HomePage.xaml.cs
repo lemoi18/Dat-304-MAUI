@@ -1,7 +1,4 @@
 using MauiApp8.ViewModel;
-using SkiaSharp;
-using Microcharts;
-
 namespace MauiApp8.Views;
 
 
