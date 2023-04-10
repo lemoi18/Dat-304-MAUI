@@ -32,7 +32,7 @@
 
         <Button Text="Start Listening" Command="{Binding TestFunctionCommand}" ></Button>
         <Button Text="Send Message" Command="{Binding CallFunctionCommand}" ></Button>
-        <Button Text="Send Message" Command="{Binding CallCalorieCommand}" ></Button>
+        
 
         
 

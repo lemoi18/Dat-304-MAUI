@@ -22,6 +22,8 @@ namespace MauiApp8.ViewModel
         
         IBackgroundService _backgroundService;
 
+        Services.BackgroundFetchService.IBackgroundFetchService _backgroundFetchService;
+
         Realm realm;
 
         GoogleFit _googlefit;
@@ -40,7 +42,7 @@ namespace MauiApp8.ViewModel
 
 
 
-        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, GoogleFit googlefit, Publish publish)
+        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, GoogleFit googlefit, Publish publish, Services.BackgroundFetchService.IBackgroundFetchService backgroundFetchService)
         {
 
 
@@ -48,6 +50,7 @@ namespace MauiApp8.ViewModel
             _publish = publish;
             _backgroundService = backgroundService;
             _googlefit = googlefit;
+            _backgroundFetchService = backgroundFetchService;
             Task.Run(() => InitializeAsync());
             
             var objects = realm.All<GlucoseInfo>(); // retrieve all objects of type MyObject from the database
@@ -56,6 +59,12 @@ namespace MauiApp8.ViewModel
             //{
             //    Console.WriteLine($"Loaded {obj.Glucose} from db");
             //}
+            //_backgroundFetchService = backgroundFetchService; // Get the service using dependency injection
+            //_backgroundFetchService.ScheduleFetchTask(TimeSpan.FromMinutes(2), () =>
+            //{
+            //    Console.WriteLine("BAckground.2");
+            //});
+
         }
 
         private async Task InitializeAsync()
@@ -82,11 +91,38 @@ namespace MauiApp8.ViewModel
 
         }
         [RelayCommand]
-        async Task CallFunction() { await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/"); }
+        async Task CallFunction() {
 
-        
+            Console.WriteLine("INN CALL");
+            StartBackgroundFetch();
+            //_backgroundFetchService.ScheduleFetchTask(TimeSpan.FromMinutes(1), () =>
+            //{
+            //    Console.WriteLine("BAckground.2");
+            //});
+            await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
+            Console.WriteLine("OUT CALL");
+            
+        }
 
-        
+        public void StartBackgroundFetch()
+        {
+            // Create an instance of BackgroundFetchServiceAndroid
+#if __ANDROID__
+            //IBackgroundService backgroundFetchService = new MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid();
+
+            // Define your fetch action
+            Action fetchAction = () =>
+            {
+                // Your background fetch logic here
+                // Logic in Background reciver in android directory
+            };
+
+            // Call the ScheduleFetchTask method to schedule the background fetch every 1 minute
+            _backgroundFetchService.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction);
+#endif
+        }
+
+
         private async Task UpdateStuff()
         {
 
