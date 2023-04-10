@@ -1,8 +1,8 @@
 ﻿using Realms;
 
-namespace DAT304_MAUI.Backend.Realm.Schemas
+namespace MauiApp8.Services.BackgroundServices.Realm
 {
-    public class User : RealmObject
+    public class RealmUser : RealmObject
     {
         public int Id { get; set; }
         public string Name { get; set; }

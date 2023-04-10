@@ -10,9 +10,9 @@ namespace MauiApp8.Services.BackgroundServices
 {
     public class BackgroundServiceStub : IBackgroundService
     {
-        private Realm _db;
+        private Realms.Realm _db;
 
-        public BackgroundServiceStub(Realm relm)
+        public BackgroundServiceStub(Realms.Realm relm)
         {
             _db = relm;
             Console.WriteLine("Test from BGService");

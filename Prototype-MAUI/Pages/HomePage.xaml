@@ -9,8 +9,9 @@
 
     
     <VerticalStackLayout>
-        
-        
+        <Button Text="Run Test" Command="{Binding RunTestCommand}" />
+
+
         <!--<Label Text="Add Glucose Entry" FontAttributes="Bold" FontSize="Large" HorizontalOptions="CenterAndExpand" />
         <Entry Placeholder="SGV" Text="{Binding Sgv}" />
         <Entry Placeholder="Date" Text="{Binding Date}" />

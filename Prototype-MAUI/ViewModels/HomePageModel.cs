@@ -1,22 +1,29 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Model;
 using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices;
+using MauiApp8.Services.BackgroundServices.Realm;
 using Realms;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.Json;
-using static Google.Apis.Requests.BatchRequest;
+using System.Windows.Input;
 
 namespace MauiApp8.ViewModel
 {
     public partial class HomePageModel : ObservableObject
     {
+        private readonly ICRUD _crudStub;
+
+        public ICommand RunTestCommand => new Command(RunCRUDTest);
+
+        private void RunCRUDTest()
+        {
+            _crudStub.Test();
+        }
+
         IAuthenticationService authService;
-        
+
         IBackgroundService _backgroundService;
 
         Realm realm;
@@ -30,21 +37,21 @@ namespace MauiApp8.ViewModel
         string bgl;
 
         [ObservableProperty]
-        MvvmHelpers.ObservableRangeCollection<GlucoseInfo> glucoseInfo;
+        MvvmHelpers.ObservableRangeCollection<MauiApp8.Model2.GlucoseInfo> glucoseInfo;
 
 
 
-        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
+        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, ICRUD crudStub)
         {
-
+            _crudStub = crudStub;
 
             realm = _realm;
             _backgroundService = backgroundService;
             Task.Run(() => InitializeAsync());
-            
-            var objects = realm.All<GlucoseInfo>(); // retrieve all objects of type MyObject from the database
 
-            foreach (GlucoseInfo obj in objects)
+            var objects = realm.All<MauiApp8.Services.BackgroundServices.Realm.GlucoseInfo>(); // retrieve all objects of type MyObject from the database
+
+            foreach (MauiApp8.Services.BackgroundServices.Realm.GlucoseInfo obj in objects)
             {
                 Console.WriteLine($"Loaded {obj.Glucose} from db");
             }
@@ -61,10 +68,10 @@ namespace MauiApp8.ViewModel
         private async Task UpdateStuff()
         {
 
-            
-                await _backgroundService.UpdateGlucose("https://oskarnightscoutweb1.azurewebsites.net/");
-                await _backgroundService.UpdateInsulin("https://oskarnightscoutweb1.azurewebsites.net/");
-            
+
+            await _backgroundService.UpdateGlucose("https://oskarnightscoutweb1.azurewebsites.net/");
+            await _backgroundService.UpdateInsulin("https://oskarnightscoutweb1.azurewebsites.net/");
+
 
 
         }
@@ -80,7 +87,7 @@ namespace MauiApp8.ViewModel
             };
             Console.WriteLine($"Starting GetGlucose method with RestUrl={RestUrl}, StartDate={StartDate}, EndDate={EndDate}...");
             // your existing code here
-          
+
 
             List<GlucoseAPI> Items;
             Items = new List<GlucoseAPI>();
@@ -138,7 +145,7 @@ namespace MauiApp8.ViewModel
         }
         private Account _user;
 
-       
+
 
 
         public DateTimeOffset? ReadLatestGlucose()
@@ -147,25 +154,25 @@ namespace MauiApp8.ViewModel
         }
 
 
-       
+
 
         public void DBTest()
         {
             Console.WriteLine($"Loaded {realm} db from DBLib");
-            var amount = realm.All<InsulinInfo>().Count();
+            var amount = realm.All<Services.BackgroundServices.Realm.InsulinInfo>().Count();
             Console.WriteLine($"{amount}");
             realm.Write(() =>
             {
-                var dog = new InsulinInfo { Insulin = 13, Timestamp = new DateTimeOffset() };
+                var dog = new Services.BackgroundServices.Realm.InsulinInfo { Insulin = 13, Timestamp = new DateTimeOffset() };
                 // Add the instance to the realm.
                 realm.Add(dog);
             });
-            var amount1 = realm.All<InsulinInfo>().Count();
+            var amount1 = realm.All<Services.BackgroundServices.Realm.InsulinInfo>().Count();
 
             Console.WriteLine($"Loaded {amount1} from db");
         }
 
-        
+
     }
 }
 

@@ -1,13 +1,28 @@
 using Realms;
-using static DAT304_MAUI.Backend.Realm.Utils;
-using static DAT304_MAUI.Backend.Nightscout;
-using DAT304_MAUI.Backend.Realm.Schemas;
+using static MauiApp8.Services.BackgroundServices.Realm.Utils;
+using static MauiApp8.Services.BackgroundServices.Nightscout;
+using MauiApp8.Services.BackgroundServices;
+using MauiApp8.Model2;
 
 
-namespace DAT304_MAUI.Backend.Realm
+namespace MauiApp8.Services.BackgroundServices.Realm
 {
-    internal class CRUD
+    internal class CRUD : ICRUD
     {
+        public async void Test()
+        {
+            string DomainName = "https://oskarnightscoutweb1.azurewebsites.net";
+
+            Console.WriteLine("Running CRUD tests...");
+
+            // Update the glucose list
+            await UpdateGlucose(DomainName);
+            // Update the insulin list
+            await UpdateInsulin(DomainName);
+
+            AddFood("Example Food", 100, 10, 5, 3);
+        }
+
         public async void AddGlucoseEntry(float sgv, DateTimeOffset date)
         {
             Realms.Realm localRealm = RealmCreate();
@@ -41,7 +56,8 @@ namespace DAT304_MAUI.Backend.Realm
             {
                 string dbFullPath = localRealm.Config.DatabasePath;
                 var InsulinEntry = new InsulinInfo { Insulin = (double)insulin, Timestamp = date };
-                await localRealm.WriteAsync(() => {
+                await localRealm.WriteAsync(() =>
+                {
                     localRealm.Add(InsulinEntry);
                 });
 
@@ -114,7 +130,7 @@ namespace DAT304_MAUI.Backend.Realm
 
         }
 
-        public async static Task<int> UpdateGlucose(string DomainName)
+        public async Task<int> UpdateGlucose(string DomainName)
         {
             CRUD DB = new CRUD();
 
@@ -130,7 +146,7 @@ namespace DAT304_MAUI.Backend.Realm
             DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
 
             List<GlucoseAPI> Items;
-            Items = await GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
+            Items = await Nightscout.GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine("Adding " + Items.Count + " entries... ");
             foreach (GlucoseAPI obj in Items)
             {
@@ -139,7 +155,7 @@ namespace DAT304_MAUI.Backend.Realm
             return 200;
         }
 
-        public async static Task<int> UpdateInsulin(string DomainName)
+        public async Task<int> UpdateInsulin(string DomainName)
         {
             CRUD DB = new CRUD();
 
@@ -165,6 +181,39 @@ namespace DAT304_MAUI.Backend.Realm
                     DB.AddInsulinEntry((double)obj.insulin, obj.created_at);
             }
             return 200;
+        }
+
+        public async void AddFood(string name, float calories, float carbohydrates, float protein, float fat)
+        {
+            Realms.Realm localRealm = RealmCreate();
+
+            try
+            {
+                var foodItem = new Food
+                {
+                    Name = name,
+                    Calories = calories,
+                    Carbohydrates = carbohydrates,
+                    Protein = protein,
+                    Fat = fat
+                };
+
+                await localRealm.WriteAsync(() =>
+                {
+                    localRealm.Add(foodItem);
+                });
+
+                localRealm.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("Food named", name, " added to database");
+                localRealm.Dispose();
+            }
         }
 
     }

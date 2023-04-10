@@ -1,7 +1,7 @@
 ﻿using Realms;
 using Realms.Exceptions;
 
-namespace DAT304_MAUI.Backend.Realm
+namespace MauiApp8.Services.BackgroundServices.Realm
 {
     internal class Utils
     {

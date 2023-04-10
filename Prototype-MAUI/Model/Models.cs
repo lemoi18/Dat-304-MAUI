@@ -10,7 +10,7 @@ using Realms.Sync;
 
 namespace MauiApp8.Model2
 {
-    public class User : RealmObject
+    public class User
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -18,19 +18,19 @@ namespace MauiApp8.Model2
         public int Age { get; set; }
     }
 
-    public class FoodEntries : RealmObject
+    public class FoodEntries
     {
 
         public DateTimeOffset Timestamp { get; set; }
         public IList<FoodEntry> FoodEntry { get; }
     }
-    public class FoodEntry : RealmObject
+    public class FoodEntry
     {
         public Food Food { get; set; }
         public float Amout { get; set; }
 
     }
-    public class Food : RealmObject 
+    public class Food
     {
 
         public string Name { get; set; }
@@ -39,7 +39,7 @@ namespace MauiApp8.Model2
         public float Protein { get; set; }
         public float Fat { get; set; }
     }
-    public class Configuration : RealmObject
+    public class Configuration
     {
         public string NightscoutAPI { get; set; }
         public string NightscoutSecret { get; set; }
@@ -49,17 +49,17 @@ namespace MauiApp8.Model2
 
         public bool GPU { get; set; }
     }
-    public class ExercicesInfo : RealmObject
+    public class ExercicesInfo
     {
         public float CaloriesBurned { get; set; }
         public DateTimeOffset Timestamp { get; set; }
     }
-    public class GlucoseInfo : RealmObject
+    public class GlucoseInfo
     {
         public float Glucose { get; set; }
         public DateTimeOffset Timestamp { get; set; }
     }
-    public class InsulinInfo : RealmObject
+    public class InsulinInfo
     {
         public double Insulin { get; set; }
         public DateTimeOffset Timestamp { get; set; }

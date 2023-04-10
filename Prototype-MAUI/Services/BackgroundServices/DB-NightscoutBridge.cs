@@ -1,13 +1,7 @@
-﻿using Realms.Exceptions;
-using Realms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MauiApp8.Model2;
-using System.Data.Common;
+﻿using MauiApp8.Model2;
 using MauiApp8.Services.DBService;
+using Realms;
+using Realms.Exceptions;
 
 namespace MauiApp8.Services.BackgroundServices
 {
@@ -31,7 +25,7 @@ namespace MauiApp8.Services.BackgroundServices
             return projectDirectoryPath;
         }
 
-        public static Realm RealmCreate()
+        public static Realms.Realm RealmCreate()
         {
             string pathToDb = $"{AppDomain.CurrentDomain.BaseDirectory}";
             //Console.WriteLine(pathToDb + "/my.realm");
@@ -39,10 +33,10 @@ namespace MauiApp8.Services.BackgroundServices
             {
                 IsReadOnly = false,
             };
-            Realm localRealm;
+            Realms.Realm localRealm;
             try
             {
-                localRealm = Realm.GetInstance(config);
+                localRealm = Realms.Realm.GetInstance(config);
                 return localRealm;
             }
             catch (RealmFileAccessErrorException ex)
@@ -60,18 +54,15 @@ namespace MauiApp8.Services.BackgroundServices
 
         public async void AddGlucoseEntry(float sgv, DateTimeOffset date)
         {
-
-            
-            Realm localRealm = CreateDB.RealmCreate();
-            
+            Realms.Realm localRealm = CreateDB.RealmCreate();
 
             try
             {
                 string dbFullPath = localRealm.Config.DatabasePath;
-                var GlucoseEntry = new GlucoseInfo { Glucose = sgv, Timestamp = date };
-                await localRealm.WriteAsync((tmpRealm) =>
+                var GlucoseEntry = new Realm.GlucoseInfo { Glucose = sgv, Timestamp = date };
+                await localRealm.WriteAsync(() =>
                 {
-                    tmpRealm.Add(GlucoseEntry);
+                    localRealm.Add(GlucoseEntry);
                 });
 
                 localRealm.Refresh();
@@ -88,15 +79,15 @@ namespace MauiApp8.Services.BackgroundServices
 
         public async void AddInsulinEntry(double? insulin, DateTimeOffset date)
         {
-            Realm localRealm = RealmCreate();
+            Realms.Realm localRealm = RealmCreate();
 
             try
             {
                 string dbFullPath = localRealm.Config.DatabasePath;
-                var InsulinEntry = new InsulinInfo { Insulin = (double)insulin, Timestamp = date };
-                await localRealm.WriteAsync((tmpRealm) =>
+                var InsulinEntry = new Realm.InsulinInfo { Insulin = (double)insulin, Timestamp = date };
+                await localRealm.WriteAsync(() =>
                 {
-                    tmpRealm.Add(InsulinEntry);
+                    localRealm.Add(InsulinEntry);
                 });
 
                 localRealm.Refresh();
@@ -112,8 +103,9 @@ namespace MauiApp8.Services.BackgroundServices
         }
 
         public DateTimeOffset? ReadLatestGlucose()
-                    Realm localRealm = CreateDB.RealmCreate();
-        var objects = localRealm.All<GlucoseInfo>();
+        {
+            Realms.Realm localRealm = CreateDB.RealmCreate();
+            var objects = localRealm.All<Realm.GlucoseInfo>();
             // Find the maximum DateTimeOffset value of the property
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime == null)
@@ -140,8 +132,8 @@ namespace MauiApp8.Services.BackgroundServices
 
         public DateTimeOffset? ReadLatestInsulin()
         {
-            Realm localRealm = RealmCreate();
-            var objects = localRealm.All<InsulinInfo>();
+            Realms.Realm localRealm = RealmCreate();
+            var objects = localRealm.All<Realm.InsulinInfo>();
 
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime == null)
@@ -167,7 +159,7 @@ namespace MauiApp8.Services.BackgroundServices
 
         }
 
-        public async  Task<int> UpdateGlucose(string DomainName)
+        public async Task<int> UpdateGlucose(string DomainName)
         {
             DataBase DB = new DataBase();
 
@@ -175,7 +167,7 @@ namespace MauiApp8.Services.BackgroundServices
             if (utcStart.HasValue == false)
             {
                 return -1;
-            } 
+            }
 
             DateTimeOffset utcStartPlus = ((DateTimeOffset)utcStart).AddMinutes(5);
             DateTime utcTime = DateTime.UtcNow;
@@ -192,7 +184,7 @@ namespace MauiApp8.Services.BackgroundServices
             return 200;
         }
 
-        public async  Task<int> UpdateInsulin(string DomainName)
+        public async Task<int> UpdateInsulin(string DomainName)
         {
             DataBase DB = new DataBase();
 

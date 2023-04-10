@@ -1,28 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using System;
-using System.Collections.Generic;
+﻿using MauiApp8.Model2;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Text.Json;
-using MauiApp8.Model2;
 
 namespace MauiApp8.Services.BackgroundServices
 {
-    // All the code in this file is included in all platforms.
-
-
-
     public class Nightscout
     {
-        
-
-        
-
-
         public static JsonSerializerOptions JsonSerOpt()
         {
             JsonSerializerOptions _serializerOptions;
