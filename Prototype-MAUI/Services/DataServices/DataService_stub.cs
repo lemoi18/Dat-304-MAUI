@@ -1,4 +1,5 @@
 ﻿using MauiApp8.Model;
+using MauiApp8.Services.BackgroundServices;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,10 +13,12 @@ namespace MauiApp8.Services.DataServices
     {
 
         private readonly List<Food> _mockFoods;
+        private readonly IBackgroundService _backgroundService;
 
 
-        public FoodService_stub()
+        public FoodService_stub(IBackgroundService backgroundService)
         {
+            _backgroundService = backgroundService;
             _mockFoods = new List<Food>
         {
             new Food
