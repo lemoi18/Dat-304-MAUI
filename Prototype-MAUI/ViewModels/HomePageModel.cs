@@ -88,6 +88,7 @@ namespace MauiApp8.ViewModel
         public static async Task<List<GlucoseAPI>> GetGlucose(string RestUrl, string StartDate, string EndDate)
         {
             JsonSerializerOptions _serializerOptions;
+
             _serializerOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
