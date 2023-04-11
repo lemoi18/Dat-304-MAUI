@@ -18,6 +18,7 @@ using MauiApp8.Services.GraphService;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
+using LiveChartsCore.SkiaSharpView;
 
 namespace MauiApp8.ViewModel
 {
@@ -61,6 +62,10 @@ namespace MauiApp8.ViewModel
             // chart stuff
             _chartService = chartService;
             _series = _chartService.GetSeries();
+
+            // extract last value from the LineSeries and assign to public property
+            LastInsulinLevel = ((LineSeries<int>)_series[0]).Values.LastOrDefault();
+
             Title = new LabelVisual
             {
                 Text = "Insulin Health Data",
@@ -68,8 +73,10 @@ namespace MauiApp8.ViewModel
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
             };
+
         }
         public LabelVisual Title { get; set; }
+        public int LastInsulinLevel { get; set; }
 
 
 

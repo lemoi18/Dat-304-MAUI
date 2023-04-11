@@ -18,7 +18,7 @@
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnFrameTapped" />
             </Frame.GestureRecognizers>
-            
+
             <lvc:CartesianChart 
                 Series="{Binding Series}" 
                 HeightRequest="200"
@@ -27,19 +27,12 @@
             </lvc:CartesianChart>
         </Frame>
 
-
-
-        <Label Text="Home Page" 
-               HorizontalOptions="Center"
-               />
-
-
         <Frame BackgroundColor="LightGray" Padding="10" CornerRadius="5" HorizontalOptions="Center">
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="Insulin Level: " FontSize="18" />
-                        <Span Text="0" FontSize="18" TextColor="Red" />
+                        <Span Text="{Binding LastInsulinLevel}" FontSize="18" TextColor="Red" />
                     </FormattedString>
 
                 </Label.FormattedText>
