@@ -12,6 +12,7 @@ namespace MauiApp8.ViewModel
 {
     public partial class GraphPageModel : ObservableObject
     {
+        private int XMax { get; set; }
         private readonly IChartService _chartService;
         [ObservableProperty]
         private ISeries[] _series;
@@ -20,6 +21,7 @@ namespace MauiApp8.ViewModel
         {
             _chartService = chartService;
             _series = _chartService.GetSeries();
+            XMax = ((LineSeries<int>)_series[0]).Values.Count();
             Title = new LabelVisual
             {
                 Text = "Insulin Health Data",
@@ -27,17 +29,15 @@ namespace MauiApp8.ViewModel
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
             };
-        }
-        public LabelVisual Title { get; set; }
-        public Axis[] XAxes { get; set; }
-            = new Axis[]
-            {
+
+            XAxes = new Axis[]
+{
                 new Axis
                 {
                     Name = "Time",
                     NameTextSize = 50,
-                    MinLimit = 0,
-                    MaxLimit = 10,
+                    MinLimit = (XMax-10),
+                    MaxLimit = XMax,
                     NamePaint = new SolidColorPaint(SKColors.Black),
                     MinStep = 1,
 
@@ -46,11 +46,9 @@ namespace MauiApp8.ViewModel
 
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
                 }
-             };
-
-        public Axis[] YAxes { get; set; }
-            = new Axis[]
-            {
+ };
+            YAxes = new Axis[]
+           {
                 new Axis
                 {
                     Name = "Insulin Levels",
@@ -60,6 +58,11 @@ namespace MauiApp8.ViewModel
                     LabelsPaint = new SolidColorPaint(SKColors.Green),
                     TextSize = 72,
                 }
-            };
+           };
+        }
+        public LabelVisual Title { get; set; }
+        public Axis[] XAxes { get; set; }
+
+        public Axis[] YAxes { get; set; }
     }
 }
