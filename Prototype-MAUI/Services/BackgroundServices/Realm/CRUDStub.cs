@@ -24,9 +24,9 @@
 //            //await UpdateInsulin(DomainName);
 
 //            //// Read the latest glucose entry
-//            //Console.WriteLine("ReadLatestGlucose: ", ReadLatestGlucose());
+//            //Console.WriteLine("ReadLatestGlucoseTimestamp: ", ReadLatestGlucoseTimestamp());
 //            //// Read the latest insulin entry
-//            //Console.WriteLine("ReadLatestInsulin: ", ReadLatestInsulin());
+//            //Console.WriteLine("ReadLatestInsulinTimestamp: ", ReadLatestInsulinTimestamp());
 //        }
 
 //        public async void AddGlucoseEntry(float sgv, DateTimeOffset date)
@@ -79,7 +79,7 @@
 //            }
 //        }
 
-//        public DateTimeOffset? ReadLatestGlucose()
+//        public DateTimeOffset? ReadLatestGlucoseTimestamp()
 //        {
 //            Realms.Realm localRealm = RealmCreate();
 //            var objects = localRealm.All<MauiApp8.Model2.GlucoseInfo>();
@@ -107,7 +107,7 @@
 
 //        }
 
-//        public DateTimeOffset? ReadLatestInsulin()
+//        public DateTimeOffset? ReadLatestInsulinTimestamp()
 //        {
 //            Realms.Realm localRealm = RealmCreate();
 //            var objects = localRealm.All<MauiApp8.Model2.InsulinInfo>();
@@ -140,7 +140,7 @@
 //        {
 //            CRUD DB = new CRUD();
 
-//            DateTimeOffset? utcStart = DB.ReadLatestGlucose();
+//            DateTimeOffset? utcStart = DB.ReadLatestGlucoseTimestamp();
 //            if (utcStart.HasValue == false)
 //            {
 //                return -1;
@@ -165,7 +165,7 @@
 //        {
 //            CRUD DB = new CRUD();
 
-//            DateTimeOffset? utcStart = DB.ReadLatestInsulin();
+//            DateTimeOffset? utcStart = DB.ReadLatestInsulinTimestamp();
 
 //            if (utcStart.HasValue == false)
 //            {

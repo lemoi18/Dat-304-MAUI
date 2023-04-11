@@ -16,7 +16,7 @@ namespace MauiApp8.Services.DBService
                 ObjectClasses = new Type[] // Add this line to specify the ObjectClasses explicitly
                 {
                     typeof(RealmUser),
-                    typeof(FoodEntries),
+                    typeof(Meal),
                     typeof(FoodEntry),
                     typeof(Food),
                     typeof(Configuration),

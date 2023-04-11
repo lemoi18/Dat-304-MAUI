@@ -10,21 +10,24 @@ namespace MauiApp8.Services.BackgroundServices.Realm
         public int Age { get; set; }
     }
 
-    public class FoodEntries : RealmObject
+    public class Meal : RealmObject
     {
-
+        [PrimaryKey]
+        public int ID { get; set; }
         public DateTimeOffset Timestamp { get; set; }
         public IList<FoodEntry> FoodEntry { get; }
     }
     public class FoodEntry : RealmObject
     {
+        [PrimaryKey]
+        public int ID { get; set; }
         public Food Food { get; set; }
-        public float Amout { get; set; }
+        public float Amount { get; set; }
 
     }
     public class Food : RealmObject
     {
-
+        [PrimaryKey]
         public string Name { get; set; }
         public float Calories { get; set; }
         public float Carbohydrates { get; set; }
@@ -43,6 +46,8 @@ namespace MauiApp8.Services.BackgroundServices.Realm
     }
     public class ExercicesInfo : RealmObject
     {
+        [PrimaryKey]
+        public int ID { get; set; }
         public float CaloriesBurned { get; set; }
         public DateTimeOffset Timestamp { get; set; }
     }

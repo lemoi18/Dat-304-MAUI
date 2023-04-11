@@ -49,12 +49,12 @@ namespace MauiApp8.ViewModel
             _backgroundService = backgroundService;
             Task.Run(() => InitializeAsync());
 
-            var objects = realm.All<MauiApp8.Services.BackgroundServices.Realm.GlucoseInfo>(); // retrieve all objects of type MyObject from the database
+            //var objects = realm.All<Services.BackgroundServices.Realm.GlucoseInfo>(); // retrieve all objects of type MyObject from the database
 
-            foreach (MauiApp8.Services.BackgroundServices.Realm.GlucoseInfo obj in objects)
-            {
-                Console.WriteLine($"Loaded {obj.Glucose} from db");
-            }
+            //foreach (Services.BackgroundServices.Realm.GlucoseInfo obj in objects)
+            //{
+            //    Console.WriteLine($"Loaded {obj.Glucose} from db");
+            //}
         }
 
         private async Task InitializeAsync()

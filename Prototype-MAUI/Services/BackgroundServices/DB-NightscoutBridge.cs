@@ -176,7 +176,7 @@ namespace MauiApp8.Services.BackgroundServices
 
             List<GlucoseAPI> Items;
             Items = await Nightscout.GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine("Adding " + Items.Count + " entries... ");
+            Console.WriteLine("Adding " + Items.Count + " glucose entries... ");
             foreach (GlucoseAPI obj in Items)
             {
                 DB.AddGlucoseEntry(obj.sgv, obj.dateString);
@@ -203,7 +203,7 @@ namespace MauiApp8.Services.BackgroundServices
             Console.WriteLine(utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             List<TreatmentAPI> Items;
             Items = await Nightscout.GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine("Adding " + Items.Count + " entries... ");
+            Console.WriteLine("Adding " + Items.Count + " insulin entries... ");
             foreach (TreatmentAPI obj in Items)
             {
                 if (obj.insulin != null)

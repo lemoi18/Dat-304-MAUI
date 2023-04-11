@@ -36,7 +36,7 @@ namespace MauiApp8.Services.BackgroundServices
 
             List<GlucoseAPI> Items;
             Items = new List<GlucoseAPI>();
-            string Order = $"api/v1/entries/sgv.json?find[dateString][$gte]={StartDate}&find[dateString][$lte]={EndDate}&count=all";
+            string Order = $"/api/v1/entries/sgv.json?find[dateString][$gte]={StartDate}&find[dateString][$lte]={EndDate}&count=all";
             Uri uri = new Uri($"{RestUrl}{Order}");
 
             try
@@ -81,7 +81,7 @@ namespace MauiApp8.Services.BackgroundServices
 
             List<TreatmentAPI> Items;
             Items = new List<TreatmentAPI>();
-            string Order = $"api/v1/treatments.json?find[created_at][$gte]={StartDate}&find[created_at][$lte]={EndDate}&count=all";
+            string Order = $"/api/v1/treatments.json?find[created_at][$gte]={StartDate}&find[created_at][$lte]={EndDate}&count=all";
             Console.WriteLine($"{RestUrl}{Order}");
             Uri uri = new Uri($"{RestUrl}{Order}");
 

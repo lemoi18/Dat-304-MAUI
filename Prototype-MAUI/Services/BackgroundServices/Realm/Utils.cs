@@ -33,5 +33,17 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                 return null;
             }
         }
+
+        public static void RealmDelete()
+        {
+            string realmPath = RealmConfiguration.DefaultConfiguration.DatabasePath;
+
+            if (File.Exists(realmPath))
+            {
+                Console.WriteLine("Deleting realm file");
+                File.Delete(realmPath);
+                
+            }
+        }
     }
 }
