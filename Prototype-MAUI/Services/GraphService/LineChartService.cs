@@ -15,6 +15,7 @@ namespace MauiApp8.Services.GraphService
 {
     internal class LineChartService : IChartService
     {
+        [Obsolete]
         public ISeries[] GetSeries()
         {
             return new ISeries[]
@@ -29,6 +30,7 @@ namespace MauiApp8.Services.GraphService
                 Name = "Insulin",
                 Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 10 },
                 ScalesYAt = 0,
+                LegendShapeSize = 35,
 
             },
             new LineSeries<int>
@@ -41,6 +43,8 @@ namespace MauiApp8.Services.GraphService
                 Name = "Glucose",
                 Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 5 },
                 ScalesYAt = 0,
+                LegendShapeSize = 35,
+
             }
         };
         }

@@ -39,9 +39,9 @@ namespace MauiApp8.ViewModel
                     NameTextSize = 50,
                     MinLimit = (XMax-10),
                     MaxLimit = XMax,
-                    NamePaint = new SolidColorPaint(SKColors.Red),
+                    NamePaint = new SolidColorPaint(SKColors.Black),
                     MinStep = 1,
-                    LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                    LabelsPaint = new SolidColorPaint(SKColors.Black),
                     TextSize = 72,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
                 }
@@ -52,9 +52,9 @@ namespace MauiApp8.ViewModel
                 {
                     Name = "Levels",
                     NameTextSize = 50,
-                    NamePaint = new SolidColorPaint(SKColors.Red),
+                    NamePaint = new SolidColorPaint(SKColors.Black),
                     MinStep = 1,
-                    LabelsPaint = new SolidColorPaint(SKColors.Green),
+                    LabelsPaint = new SolidColorPaint(SKColors.Black),
                     TextSize = 72,
                 },
            };
