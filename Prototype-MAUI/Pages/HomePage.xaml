@@ -18,6 +18,7 @@
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnFrameTapped" />
             </Frame.GestureRecognizers>
+            
             <lvc:CartesianChart 
                 Series="{Binding Series}" 
                 HeightRequest="200"
@@ -38,7 +39,7 @@
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="Insulin Level: " FontSize="18" />
-                        <Span Text="{Binding LastValue}" FontSize="18" TextColor="Red" />
+                        <Span Text="0" FontSize="18" TextColor="Red" />
                     </FormattedString>
 
                 </Label.FormattedText>

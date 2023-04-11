@@ -11,9 +11,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Windows.Input;
+using System;
 using static Google.Apis.Requests.BatchRequest;
 using LiveChartsCore;
 using MauiApp8.Services.GraphService;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using SkiaSharp;
 
 namespace MauiApp8.ViewModel
 {
@@ -37,12 +41,10 @@ namespace MauiApp8.ViewModel
         MvvmHelpers.ObservableRangeCollection<GlucoseInfo> glucoseInfo;
 
         // Chart stuff
-        public string Title { get; set; }
-        public List<ISeries> Series { get; set; }
-        private readonly LineChartService _chartService;
-        public int LastValue { get; private set; }
-
-        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm)
+        private readonly IChartService _chartService;
+        [ObservableProperty]
+        private ISeries[] _series;
+        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, IChartService chartService)
         {
 
 
@@ -57,10 +59,18 @@ namespace MauiApp8.ViewModel
                 Console.WriteLine($"Loaded {obj.Glucose} from db");
             }
             // chart stuff
-            var chartService = new LineChartService();
-            Series = chartService.GetSeries().ToList();
-            LastValue = _chartService.GetLastValue();
+            _chartService = chartService;
+            _series = _chartService.GetSeries();
+            Title = new LabelVisual
+            {
+                Text = "Insulin Health Data",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
         }
+        public LabelVisual Title { get; set; }
+
 
 
 

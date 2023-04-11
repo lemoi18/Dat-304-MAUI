@@ -6,10 +6,10 @@ namespace MauiApp8.Views;
 
 public partial class HomePage : ContentPage
 {
-    public HomePage()
+    public HomePage(HomePageModel vm)
     {
         InitializeComponent();
-        BindingContext = new GraphPageModel(new LineChartService());
+        BindingContext = vm;
 
     }
     private async void OnFrameTapped(object sender, EventArgs e)
