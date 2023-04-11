@@ -34,7 +34,10 @@ namespace MauiApp8.ViewModel
             {
                 new Axis
                 {
-                    Name = "X Axis",
+                    Name = "Time",
+                    NameTextSize = 50,
+                    MinLimit = 0,
+                    MaxLimit = 10,
                     NamePaint = new SolidColorPaint(SKColors.Black),
                     MinStep = 1,
 
@@ -50,7 +53,8 @@ namespace MauiApp8.ViewModel
             {
                 new Axis
                 {
-                    Name = "Y Axis",
+                    Name = "Insulin Levels",
+                    NameTextSize = 50,
                     NamePaint = new SolidColorPaint(SKColors.Red),
                     MinStep = 1,
                     LabelsPaint = new SolidColorPaint(SKColors.Green),

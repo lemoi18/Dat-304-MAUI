@@ -10,21 +10,20 @@
 
              Title="Graph">
 
-    
-    <VerticalStackLayout>
 
-        <Frame>
-            <lvc:CartesianChart 
+    <VerticalStackLayout>
+        
+        <lvc:CartesianChart 
             Series="{Binding Series}" 
             Title="{Binding Title}"
             HeightRequest="600"
-            WidthRequest="400"
             YAxes="{Binding YAxes}"
             XAxes="{Binding XAxes}"
+            TooltipTextSize="50"
+            ZoomMode="X"
             EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">
-            </lvc:CartesianChart>
+        </lvc:CartesianChart>
 
-        </Frame>
 
 
 
