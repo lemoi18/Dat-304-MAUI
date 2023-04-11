@@ -6,6 +6,7 @@ using MauiApp8.Services.GraphService;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 
 namespace MauiApp8.ViewModel
 {
@@ -22,12 +23,39 @@ namespace MauiApp8.ViewModel
             Title = new LabelVisual
             {
                 Text = "Insulin Health Data",
-                TextSize = 25,
+                TextSize = 72,
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
             };
         }
         public LabelVisual Title { get; set; }
+        public Axis[] XAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "X Axis",
+                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    MinStep = 1,
 
+                    LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                    TextSize = 72,
+
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
+                }
+             };
+
+        public Axis[] YAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Y Axis",
+                    NamePaint = new SolidColorPaint(SKColors.Red),
+                    MinStep = 1,
+                    LabelsPaint = new SolidColorPaint(SKColors.Green),
+                    TextSize = 72,
+                }
+            };
     }
 }

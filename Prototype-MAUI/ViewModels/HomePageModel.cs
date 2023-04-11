@@ -19,6 +19,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 
 namespace MauiApp8.ViewModel
 {
@@ -80,7 +81,40 @@ namespace MauiApp8.ViewModel
 
 
 
+        public Axis[] XAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "X Axis",
+                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    MinStep = 1,
 
+                    LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                    TextSize = 10,
+
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
+                }
+            };
+
+        public Axis[] YAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Y Axis",
+                    NamePaint = new SolidColorPaint(SKColors.Red),
+                    MinStep = 1,
+                    LabelsPaint = new SolidColorPaint(SKColors.Green),
+                    TextSize = 20,
+
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
+                    {
+                        StrokeThickness = 2,
+                        PathEffect = new DashEffect(new float[] { 3, 3 })
+                    }
+                }
+            };
         private async Task InitializeAsync()
         {
             await UpdateStuff();

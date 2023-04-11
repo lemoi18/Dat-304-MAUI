@@ -12,8 +12,5 @@ namespace MauiApp8.Views
 
         }
 
-
-
-
     }
 }

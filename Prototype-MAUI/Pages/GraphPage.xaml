@@ -6,17 +6,28 @@
              x:Class="MauiApp8.Views.GraphPage"
              x:DataType="viewmodel:GraphPageModel"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
+             xmlns:lvcore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore"
+
              Title="Graph">
 
     
     <VerticalStackLayout>
 
-        <lvc:CartesianChart 
+        <Frame>
+            <lvc:CartesianChart 
             Series="{Binding Series}" 
-            HeightRequest="300"
-            WidthRequest="600"
-            Title="{Binding Title}">
-        </lvc:CartesianChart>
+            Title="{Binding Title}"
+            HeightRequest="600"
+            WidthRequest="400"
+            YAxes="{Binding YAxes}"
+            XAxes="{Binding XAxes}"
+            EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">
+            </lvc:CartesianChart>
+
+        </Frame>
+
+
+
     </VerticalStackLayout>
     
 </ContentPage>

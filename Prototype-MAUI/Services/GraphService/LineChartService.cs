@@ -21,16 +21,14 @@ namespace MauiApp8.Services.GraphService
             new LineSeries<int>
             {
                 Values = new int[] { 2, 4, 5, 6, 5, 4, 5 },
-                Fill = null,
-                Name = "Insulin Levels"
+                GeometrySize = 30,
+                GeometryFill = new SolidColorPaint(SKColors.AliceBlue),
+                GeometryStroke = new SolidColorPaint(SKColors.Gray) { StrokeThickness = 4 },
+                Fill = new SolidColorPaint(SKColors.Blue.WithAlpha(45)),
+                Name = "Insulin Levels",
+                Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 10 },
             }
             };
-        }
-
-        public int GetLastValue()
-        {
-            var series = GetSeries()[0] as LineSeries<int>;
-            return series.Values.Last();
         }
     }
 

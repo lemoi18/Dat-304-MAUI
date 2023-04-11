@@ -1,6 +1,11 @@
 using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView;
 using MauiApp8.Services.GraphService;
 using MauiApp8.ViewModel;
+using SkiaSharp;
+
 namespace MauiApp8.Views;
 
 
