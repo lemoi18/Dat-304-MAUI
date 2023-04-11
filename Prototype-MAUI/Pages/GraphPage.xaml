@@ -21,7 +21,10 @@
             XAxes="{Binding XAxes}"
             TooltipTextSize="50"
             ZoomMode="X"
-            EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">
+            EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}"
+            LegendPosition="Left"
+            LegendTextPaint="{Binding LegendTextPaint}"
+            LegendBackgroundPaint="{Binding LegendBackgroundPaint}">
         </lvc:CartesianChart>
 
 

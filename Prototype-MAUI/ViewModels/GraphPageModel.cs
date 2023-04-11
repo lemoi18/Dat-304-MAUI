@@ -22,9 +22,10 @@ namespace MauiApp8.ViewModel
             _chartService = chartService;
             _series = _chartService.GetSeries();
             XMax = ((LineSeries<int>)_series[0]).Values.Count();
+
             Title = new LabelVisual
             {
-                Text = "Insulin Health Data",
+                Text = "Health Data",
                 TextSize = 72,
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
@@ -38,12 +39,10 @@ namespace MauiApp8.ViewModel
                     NameTextSize = 50,
                     MinLimit = (XMax-10),
                     MaxLimit = XMax,
-                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    NamePaint = new SolidColorPaint(SKColors.Red),
                     MinStep = 1,
-
                     LabelsPaint = new SolidColorPaint(SKColors.Blue),
                     TextSize = 72,
-
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
                 }
  };
@@ -51,15 +50,24 @@ namespace MauiApp8.ViewModel
            {
                 new Axis
                 {
-                    Name = "Insulin Levels",
+                    Name = "Levels",
                     NameTextSize = 50,
                     NamePaint = new SolidColorPaint(SKColors.Red),
                     MinStep = 1,
                     LabelsPaint = new SolidColorPaint(SKColors.Green),
                     TextSize = 72,
-                }
+                },
            };
+            LegendTextPaint = new SolidColorPaint
+            {
+                Color = new SKColor(50, 50, 50),
+                SKTypeface = SKTypeface.FromFamilyName("Courier New")
+            };
+            LegendBackgroundPaint = new SolidColorPaint(new SKColor(240, 240, 240));
+
         }
+        public SolidColorPaint LegendTextPaint { get; set; }
+        public SolidColorPaint LegendBackgroundPaint { get; set; }
         public LabelVisual Title { get; set; }
         public Axis[] XAxes { get; set; }
 

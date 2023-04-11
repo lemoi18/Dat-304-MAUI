@@ -92,7 +92,6 @@ namespace MauiApp8.ViewModel
 
                     LabelsPaint = new SolidColorPaint(SKColors.Blue),
                     TextSize = 10,
-
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
                 }
             };
