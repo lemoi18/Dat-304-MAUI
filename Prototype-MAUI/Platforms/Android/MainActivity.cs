@@ -2,6 +2,11 @@
 using Android.Content.PM;
 using Android.Content;
 using Android.OS;
+using Android.App;
+using AW =Android.Widget;
+using Android.Views;
+using MauiApp8.Platforms.Android.AndroidServices;
+
 namespace MauiApp8;
 
 [AndroidApp.Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
@@ -13,10 +18,11 @@ public class MainActivity : MauiAppCompatActivity
     {
         base.OnCreate(savedInstanceState);
 
+        RequestDndAccess();
         // Start the foreground service
-        var intentForGround = new Intent(this, typeof(MauiApp8.Platforms.Android.AndroidServices.MyForegroundService));
-        StartService(intentForGround);
-
+        //var intentForGround = new Intent(this, typeof(MauiApp8.Platforms.Android.AndroidServices.MyForegroundService));
+        //StartService(intentForGround);
+        StartMyForegroundService();
         if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
         {
             var packageName = AndroidApp.Application.Context.PackageName;
@@ -27,6 +33,27 @@ public class MainActivity : MauiAppCompatActivity
                 StartActivity(intent);
             }
         }
+       
+
+
+    }
+    private void RequestDndAccess()
+    {
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+        {
+            NotificationManager notificationManager = (NotificationManager)GetSystemService(NotificationService);
+
+            if (!notificationManager.IsNotificationPolicyAccessGranted)
+            {
+                Intent intent = new Intent(Android.Provider.Settings.ActionNotificationPolicyAccessSettings);
+                StartActivity(intent);
+            }
+        }
+    }
+    private void StartMyForegroundService()
+    {
+        var myForegroundServiceIntent = new Intent(this, typeof(MauiApp8.Platforms.Android.AndroidServices.MyForegroundService));
+        StartService(myForegroundServiceIntent);
     }
 
 }
@@ -41,4 +68,7 @@ public class WebAuthenticationCallbackActivity : WebAuthenticatorCallbackActivit
 {
     const string CALLBACK_SCHEME = "mauiapp8";
 }
+
+
+
 

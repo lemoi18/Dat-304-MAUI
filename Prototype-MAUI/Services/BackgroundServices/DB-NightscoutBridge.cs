@@ -183,7 +183,7 @@ namespace MauiApp8.Services.BackgroundServices
             Console.WriteLine("Adding " + Items.Count + " entries... ");
             foreach (GlucoseAPI obj in Items)
             {
-                if (obj.sgv != null)
+                if (obj.sgv != 0)
                     DB.AddGlucoseEntry(obj.sgv, obj.dateString);
             }
             return 200;

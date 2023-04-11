@@ -26,7 +26,12 @@ namespace MauiApp8.Services.PublishSubscribeService
         {
             public int Response { get; set; }
         }
-            
+
+        public class Alarm
+        {
+            public int Response { get; set; }
+            public bool On { get; set; } = false;
+        }
 
         public async Task UpdateBackgroundData(string DomainName) 
         {
@@ -55,13 +60,21 @@ namespace MauiApp8.Services.PublishSubscribeService
             WeakReferenceMessenger.Default.Send(new UpdateResponse { Response = response });
         }
 
+        public async Task Turn_On() 
+        {
+            WeakReferenceMessenger.Default.Send(new Alarm { Response = 0, On = true}); }
+
+        public async Task Turn_Off()
+        {
+            WeakReferenceMessenger.Default.Send(new Alarm { Response = 0, On = false });
+        }
         public async Task CheckSubscribe() 
         {
             WeakReferenceMessenger.Default.Register<UpdateResponse>(this, (sender, message) =>
             {
                 Console.WriteLine(message.Response);
                 Console.WriteLine(sender);
-                Console.WriteLine("Gone Inn...");
+                Console.WriteLine("Updated Data...");
             });
 
         }

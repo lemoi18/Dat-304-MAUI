@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks> 		
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
@@ -64,6 +64,7 @@
 		<PackageReference Include="Google.Apis.PeopleService.v1" Version="1.60.0.2924" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+		<PackageReference Include="Plugin.LocalNotification" Version="10.1.4" />
 		<PackageReference Include="Realm" Version="10.21.0" />
 		<PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
@@ -126,6 +127,12 @@
 	  <PackageReference Include="Xamarin.GooglePlayServices.Tasks">
 	    <Version>118.0.2.1</Version>
 	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ICONS\" />
+	  <Folder Include="Platforms\Android\Resources\Images\" />
+	  <Folder Include="Platforms\Android\Resources\drawable\" />
 	</ItemGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionMauiApp8HideInfoBar="True" /></VisualStudio></ProjectExtensions>

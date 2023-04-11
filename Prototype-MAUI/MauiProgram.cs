@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.DataServices;
 using Microsoft.Extensions.DependencyInjection;
+using Plugin.LocalNotification;
 #if __ANDROID__
 using MauiApp8.Platforms.Android.AndroidServices;
 #endif
@@ -18,6 +19,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseLocalNotification()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

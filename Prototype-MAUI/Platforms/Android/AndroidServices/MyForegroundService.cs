@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Android.Content;
-
+using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Threading.Tasks;
 using AndroidX.Core.App; // Add this for NotificationCompat
 
@@ -15,6 +15,7 @@ using Android.Support.V4.App; // Add this for NotificationCompat
 using System;
 using System.Threading.Tasks;
 using BGF =  MauiApp8.Platforms.Android.AndroidServices;
+using Android.Media;
 
 
 namespace MauiApp8.Platforms.Android.AndroidServices
@@ -25,10 +26,14 @@ namespace MauiApp8.Platforms.Android.AndroidServices
         private const int ServiceId = 1001;
         private const string CHANNEL_ID = "my_foreground_service_channel";
 
+        private NotificationHelper _notificationHelper;
 
-       
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
+
+            _notificationHelper = new NotificationHelper(this);
+            
+
             // Create the notification channel
             CreateNotificationChannel();
 
@@ -41,14 +46,15 @@ namespace MauiApp8.Platforms.Android.AndroidServices
 
             // Start the foreground service with the notification
             StartForeground(ServiceId, notification);
-
+            
             // Execute the background fetch logic every 15 minutes (900000 milliseconds)
             Task.Run(async () =>
             {
                 int check = 0;
-                while (check < 2)
+                //SendNotificationForVariable();
+                while (true)
                 {
-                    if (check == 1)
+                    if (check < 1)
                     {
                         // Define your fetch action
                         Action fetchAction = () =>
@@ -61,15 +67,39 @@ namespace MauiApp8.Platforms.Android.AndroidServices
                         BGF.BackgroundFetchServiceAndroid bgf = new BGF.BackgroundFetchServiceAndroid();
                         bgf.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction);
                         
+                        check += 1;
                     }
-                    check += 1;
+                    // Check if the app is in the background or not running
+                    //var isAppOff = IsAppOff();
+                    await CheckAlarm();
+
+                    
+                    //if (isAppOff)
+                    //{
+                    //    // If the app is off, send a notification
+                    //    SendAppOffNotification();
+                    //}
+
                     await Task.Delay(TimeSpan.FromMinutes(1));
                 }
             });
 
             return StartCommandResult.Sticky;
         }
+        public async Task CheckAlarm()
+        {
+            WeakReferenceMessenger.Default.Register<MauiApp8.Services.PublishSubscribeService.Publish.Alarm>(this, async (sender, message) =>
+            {
+                if(message.On == true) { ;
 
+                    var notificationHelper = new NotificationHelper(this);
+
+                    notificationHelper.CreateNotification("My Notification", "This is my notification message!");
+                    notificationHelper.ShowNotification();
+                }
+                
+            });
+        }
         public override IBinder OnBind(Intent intent)
         {
             return null;
@@ -79,16 +109,67 @@ namespace MauiApp8.Platforms.Android.AndroidServices
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
+
                 var channelName = "My Foreground Service Channel";
                 var channelDescription = "Notification channel for my foreground service";
-                var channel = new NotificationChannel(CHANNEL_ID, channelName, NotificationImportance.Default)
+                var channel = new NotificationChannel(CHANNEL_ID, channelName, NotificationImportance.High)
                 {
                     Description = channelDescription
                 };
 
+
                 var notificationManager = (NotificationManager)GetSystemService(NotificationService);
                 notificationManager.CreateNotificationChannel(channel);
             }
+        }
+        public void SendNotificationForVariable()
+        {
+            //_notificationHelper.SendNotificationForVariable("Sample Notification", "Hello World! This is my first notification!");
+        }
+        //public void SendNotificationForVariable()
+        //{
+        //    // Instantiate the builder and set notification elements:
+        //    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        //        .SetContentTitle("Sample Notification")
+        //        .SetContentText("Hello World! This is my first notification!")
+        //        .SetSmallIcon(Resource.Drawable.xwar);
+
+        //    // Build the notification:
+        //    Notification notification = builder.Build();
+
+        //    // Get the NotificationManagerCompat instance
+        //    NotificationManagerCompat notificationManager = NotificationManagerCompat.From(this);
+
+        //    // Publish the notification:
+        //    const int notificationId = 0;
+        //    notificationManager.Notify(notificationId, notification);
+        //}
+
+
+
+
+
+
+
+        public void SendAppOffNotification()
+        {
+            var notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .SetContentTitle("Your App")
+                .SetContentText("The app is off.")
+                .SetSmallIcon(Resource.Drawable.notification_icon_background)
+                .Build();
+
+            var notificationManager = NotificationManagerCompat.From(this);
+            notificationManager.Notify(2, notification); // Use a different notification ID than the one used for the foreground service notification
+        }
+        private bool IsAppOff()
+        {
+            var activityManager = (ActivityManager)GetSystemService(ActivityService);
+            var runningTasks = activityManager.GetRunningTasks(1);
+            var topActivity = runningTasks[0].TopActivity;
+
+            // Check if the app's package name is equal to the top activity's package name
+            return !topActivity.PackageName.Equals(PackageName);
         }
     }
 }

@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using static Google.Apis.Requests.BatchRequest;
+using Microsoft.Maui.Controls;
 
 namespace MauiApp8.ViewModel
 {
@@ -64,9 +65,9 @@ namespace MauiApp8.ViewModel
             //{
             //    Console.WriteLine("BAckground.2");
             //});
-
+           
         }
-
+        
         private async Task InitializeAsync()
         {
             //await UpdateStuff();
@@ -98,8 +99,9 @@ namespace MauiApp8.ViewModel
             //{
             //    Console.WriteLine("BAckground.2");
             //});
-            StartBackgroundFetch();
-            await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
+
+            await _publish.Turn_On();
+            //await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
             Console.WriteLine("OUT CALL");
             
         }
@@ -135,65 +137,7 @@ namespace MauiApp8.ViewModel
         }
 
 
-        public static async Task<List<GlucoseAPI>> GetGlucose(string RestUrl, string StartDate, string EndDate)
-        {
-            JsonSerializerOptions _serializerOptions;
-            _serializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            Console.WriteLine($"Starting GetGlucose method with RestUrl={RestUrl}, StartDate={StartDate}, EndDate={EndDate}...");
-            // your existing code here
-          
-
-            List<GlucoseAPI> Items;
-            Items = new List<GlucoseAPI>();
-            string Order = $"api/v1/entries/sgv.json?find[dateString][$gte]={StartDate}&find[dateString][$lte]={EndDate}&count=all";
-            Uri uri = new Uri($"{RestUrl}{Order}");
-
-            try
-            {
-                using (HttpClient _client = new HttpClient())
-                {
-                    Console.WriteLine($"Getting Response... from {uri}");
-                    HttpResponseMessage response = await _client.GetAsync(uri);
-                    if (response.Content.Headers.ContentLength == 0)
-                    {
-                        Debug.WriteLine("The response content is empty.");
-                    }
-                    else if (response.IsSuccessStatusCode)
-                    {
-                        string content = await response.Content.ReadAsStringAsync();
-                        Items = JsonSerializer.Deserialize<List<GlucoseAPI>>(content, _serializerOptions);
-                        Console.WriteLine("Finnished request...");
-                        Console.WriteLine($"Received {Items.Count} items from API: {string.Join(", ", Items.Select(i => i.ToString()))}");
-
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error in GetGlucose method: Received status code {response.StatusCode}");
-                        throw new HttpRequestException($"Error in GetGlucose method: Received status code {response.StatusCode}");
-                    }
-
-                    response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not a success code (2xx)
-                }
-            }
-
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in GetGlucose method: {ex.Message}");
-                Debug.WriteLine($"Error in GetGlucose method: {ex}");
-                Console.WriteLine($"URI: {uri}");
-                // you could also display an error message to the user here, or retry the request if appropriate
-                return Items;
-            }
-
-            Console.WriteLine("Finished GetGlucose method.");
-            return Items;
-        }
-
-
+        
 
 
         public Account User
