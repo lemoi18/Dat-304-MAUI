@@ -31,7 +31,7 @@
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="Insulin Level: " FontSize="18" />
+                        <Span Text="Current insulin Level: " FontSize="18" />
                         <Span Text="{Binding LastInsulinLevel}" FontSize="18" TextColor="Red" />
                     </FormattedString>
 

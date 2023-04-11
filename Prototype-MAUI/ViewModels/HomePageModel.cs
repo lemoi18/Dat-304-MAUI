@@ -68,7 +68,7 @@ namespace MauiApp8.ViewModel
 
             Title = new LabelVisual
             {
-                Text = "Insulin Health Data",
+                Text = "Insulin Levels",
                 TextSize = 25,
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
