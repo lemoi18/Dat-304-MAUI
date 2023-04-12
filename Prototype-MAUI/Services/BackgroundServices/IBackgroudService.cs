@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MauiApp8.Services.BackgroundServices.Realm;
 
 namespace MauiApp8.Services.BackgroundServices
 {
@@ -14,7 +15,5 @@ namespace MauiApp8.Services.BackgroundServices
         DateTimeOffset? ReadLatestInsulin();
         Task<int> UpdateGlucose(string domainName);
         Task<int> UpdateInsulin(string domainName);
-
-        
     }
 }

@@ -83,6 +83,7 @@ namespace MauiApp8.Services.Authentication
             var data = await accessTokenResponse.Content.ReadAsStringAsync();
             var loginResponse = JsonSerializer.Deserialize<LoginRespons>(data);
             var accessToken = loginResponse.id_token;
+            
 
             try
             {

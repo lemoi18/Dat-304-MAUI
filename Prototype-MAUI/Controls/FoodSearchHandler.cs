@@ -17,14 +17,9 @@ namespace MauiApp8.Controls
     public class FoodSearchHandler : SearchHandler
     {
 
-        public FoodSearchHandler() // Add parameterless constructor
+        public FoodSearchHandler()
         {
         }
-
-
-        
-
-
 
         public ObservableCollection<object> SearchResults { get; set; } = new ObservableCollection<object>();
 
@@ -44,10 +39,8 @@ namespace MauiApp8.Controls
 
         private async Task UpdateSearchResultsAsync(string query)
         {
-            // Perform your search logic here and return the results as an IEnumerable
             var results = await GetSearchResultsAsync(query);
 
-            // Update the ObservableCollection with the new results
             ClearSearchResults();
             foreach (var result in results)
             {
@@ -65,9 +58,6 @@ namespace MauiApp8.Controls
 
         private Task<ObservableCollection<object>> GetSearchResultsAsync(string query)
         {
-            // Implement your search logic here and return the results as an IEnumerable
-
-
             throw new NotImplementedException();
         }
 

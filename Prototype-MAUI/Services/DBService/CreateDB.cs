@@ -1,18 +1,31 @@
-﻿using Realms;
+﻿using System;
+using Realms;
 using Realms.Exceptions;
+using MauiApp8.Services.BackgroundServices.Realm; // Add this namespace
+
 namespace MauiApp8.Services.DBService
 {
     public class CreateDB
     {
-
         public static Realm RealmCreate()
         {
             string pathToDb = $"{AppDomain.CurrentDomain.BaseDirectory}";
-            //Console.WriteLine(pathToDb + "/my.realm");
             var config = new RealmConfiguration(pathToDb + "/my.realm")
             {
                 IsReadOnly = false,
+                ObjectClasses = new Type[] // Add this line to specify the ObjectClasses explicitly
+                {
+                    typeof(RealmUser),
+                    typeof(Meal),
+                    typeof(FoodEntry),
+                    typeof(Food),
+                    typeof(Configuration),
+                    typeof(ExercicesInfo),
+                    typeof(GlucoseInfo),
+                    typeof(InsulinInfo)
+                }
             };
+
             Realm localRealm;
             try
             {
@@ -25,7 +38,5 @@ namespace MauiApp8.Services.DBService
                 return null;
             }
         }
-
-       
     }
 }

@@ -1,18 +1,12 @@
-﻿using MauiApp8.Model2;
-using Realms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MauiApp8.Model;
 
 namespace MauiApp8.Services.BackgroundServices
 {
     public class BackgroundServiceStub : IBackgroundService
     {
-        private Realm _db;
+        private Realms.Realm _db;
 
-        public BackgroundServiceStub(Realm relm)
+        public BackgroundServiceStub(Realms.Realm relm)
         {
             _db = relm;
             Console.WriteLine("Test from BGService");
@@ -45,13 +39,11 @@ namespace MauiApp8.Services.BackgroundServices
 
         public Task<int> UpdateGlucose(string domainName)
         {
-            // No implementation needed for the stub
             return Task.FromResult(0);
         }
 
         public Task<int> UpdateInsulin(string domainName)
         {
-            // No implementation needed for the stub
             return Task.FromResult(0);
         }
     }

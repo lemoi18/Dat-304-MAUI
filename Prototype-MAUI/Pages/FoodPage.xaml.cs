@@ -20,10 +20,9 @@ public partial class FoodPage : ContentPage
     {
         if (queryParameters.ContainsKey("Food"))
         {
-            // Get the value of the "Food" parameter
             string foodParam = queryParameters["Food"];
 
-            // TODO: Convert the foodParam string to your Food object and update your view model accordingly
+            // TODO: Convert the foodParam string to Food object and update your view model accordingly
         }
     }
 

@@ -6,16 +6,10 @@
              x:Class="MauiApp8.Views.FoodItemView"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:FoodViewModel"
-             
-
              >
-
-
 
     <VerticalStackLayout>
         <Label Text="{Binding Name}"  FontSize="16"/>
-        <Label Text="{Binding Category}" FontSize="12" Margin="0,4,0,0"/>
-        <Label Text="{Binding Description}" FontSize="12" Margin="0,4,0,0"/>
         <Label Text="{Binding Carbohydrates}" FontSize="12" Margin="0,4,0,0"/>
     </VerticalStackLayout>
 

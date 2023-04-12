@@ -1,29 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MauiApp8.Model;
 using MauiApp8.Views;
-using MauiApp8.Services.DataServices;
 
 namespace MauiApp8.ViewModel
 {
     public partial class FoodViewModel : ObservableObject
     {
-
-
         public Food Food { get; set; }
         public string Name => Food?.Name;
 
-        public int  ID => Food?.Id ?? -1;
-        public string Carbohydrates => Food?.Carbohydrates;
-
-        public string Category => Food?.Category;
-
-        public string Description => Food?.Description;
+        public float Carbohydrates => (float)Food?.Carbohydrates;
 
         [ObservableProperty]
         double grams;
@@ -40,9 +27,6 @@ namespace MauiApp8.ViewModel
             Food = food;
         }
 
-        
-
-
         [RelayCommand]
         async Task NavigateToDetails(FoodViewModel selectedFoodViewModel)
         {
@@ -53,12 +37,7 @@ namespace MauiApp8.ViewModel
                 parameters.Add("Food", selectedFoodViewModel.Food);
             }
 
-            await Shell.Current.GoToAsync($"{nameof(FoodDetailsPage)}",parameters);
+            await Shell.Current.GoToAsync($"{nameof(FoodDetailsPage)}", parameters);
         }
-
-
-
-
-
     }
 }

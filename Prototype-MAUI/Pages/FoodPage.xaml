@@ -59,15 +59,11 @@
                                FontSize="Large" 
                                FontAttributes="Bold" 
                                TextColor="#212121" />
-                                    <Label Text="{Binding Carbohydrates}" 
+                                <Label Text="{Binding Carbohydrates}" 
                                FontSize="Medium" 
                                FontAttributes="Bold" 
                                TextColor="#424242" />
-                                    <Label Text="{Binding Category}" 
-                               FontSize="Medium" 
-                               Opacity="0.7" 
-                               TextColor="#616161" />
-                                </StackLayout>
+                            </StackLayout>
                            
 
                         </Grid>

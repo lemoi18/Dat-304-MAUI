@@ -10,14 +10,6 @@
              Title="{Binding Food.Name}"
              >
 
-
-
-
-
-
-
-
-
     <VerticalStackLayout Spacing="15" Padding="15">
 
         <Frame BackgroundColor="White"
@@ -32,15 +24,6 @@
                        FontSize="18"
                        FontAttributes="Bold"
                        TextColor="#2D2D2D"/>
-
-                <Label Text="{Binding Food.Category}"
-                       FontSize="16"
-                       TextColor="DarkGray"/>
-
-                <Label Text="{Binding Food.Description}"
-                       FontSize="14"
-                       TextColor="Gray"/>
-
             </StackLayout>
 
         </Frame>
