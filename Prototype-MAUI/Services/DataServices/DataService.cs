@@ -8,12 +8,12 @@ namespace MauiApp8.Services.DataServices
         HttpClient httpClient;
         HttpClient Client => httpClient ?? (httpClient = new HttpClient());
 
-        public Task<Food> GetFoodByName(string name)
+        public Task<Model.Food> GetFoodByName(string name)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<Food>> GetFoods()
+        public async Task<List<Model.Food>> GetFoods()
         {
             //var json = await Client.GetStringAsync("https://montemagno.com/monkeys.json");
             //var json = await Client.GetStringAsync("https://xam-workshop-twitch-func.azurewebsites.net/api/GetAllMonkeys");

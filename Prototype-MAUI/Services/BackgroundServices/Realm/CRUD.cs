@@ -23,14 +23,14 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
 
             Console.WriteLine($"Reading glucose data from {fromDate} to {toDate}:");
-            List<Model.GlucoseInfo> glucoseData = ReadGlucoses(realm, fromDate, toDate);
+            List<GlucoseInfo> glucoseData = ReadGlucoses(realm, fromDate, toDate);
             foreach (var glucoseEntry in glucoseData)
             {
                 Console.WriteLine($"Timestamp: {glucoseEntry.Timestamp}, Glucose: {glucoseEntry.Glucose}");
             }
 
             Console.WriteLine($"Reading insulin data from {fromDate} to {toDate}:");
-            List<Model.InsulinInfo> insulinData = ReadInsulins(realm, fromDate, toDate);
+            List<InsulinInfo> insulinData = ReadInsulins(realm, fromDate, toDate);
             foreach (var insulinEntry in insulinData)
             {
                 Console.WriteLine($"Timestamp: {insulinEntry.Timestamp}, Insulin: {insulinEntry.Insulin}");
@@ -48,12 +48,12 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                 Console.WriteLine($"Name: {food.Name}, Calories: {food.Calories}, Carbohydrates: {food.Carbohydrates}, Protein: {food.Protein}, Fat: {food.Fat}");
             }
 
-            Model.Food exampleFood = ReadFood(realm, "Example Food");
+            Food exampleFood = ReadFood(realm, "Example Food");
             Console.WriteLine($"ReadFood: Name: {exampleFood.Name}, Calories: {exampleFood.Calories}, Carbohydrates: {exampleFood.Carbohydrates}, Protein: {exampleFood.Protein}, Fat: {exampleFood.Fat}");
 
             await UpdateFood(realm, "Example Food", 120, 12, 6, 4);
             Console.WriteLine("Updated Food:");
-            Model.Food updatedFood = ReadFood(realm, "Example Food");
+            Food updatedFood = ReadFood(realm, "Example Food");
             Console.WriteLine($"Name: {updatedFood.Name}, Calories: {updatedFood.Calories}, Carbohydrates: {updatedFood.Carbohydrates}, Protein: {updatedFood.Protein}, Fat: {updatedFood.Fat}");
 
 
@@ -68,7 +68,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                 Console.WriteLine($"ID: {entry.ID}, Food: {entry.Food.Name}, Amount: {entry.Amount}");
             }
 
-            Model.FoodEntry readFoodEntry = ReadFoodEntry(realm, foodEntryId1);
+            FoodEntry readFoodEntry = ReadFoodEntry(realm, foodEntryId1);
             Console.WriteLine($"ReadFoodEntry: ID: {readFoodEntry.ID}, Food: {readFoodEntry.Food.Name}, Amount: {readFoodEntry.Amount}");
 
 
@@ -86,7 +86,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                     Console.WriteLine($"  ID: {entry.ID}, Food: {entry.Food.Name}, Amount: {entry.Amount}");
                 }
             }
-            Model.Meal readMeal = ReadMeal(realm, mealId);
+            Meal readMeal = ReadMeal(realm, mealId);
             Console.WriteLine($"ReadMeal: ID: {readMeal.ID}, Timestamp: {readMeal.Timestamp}");
 
 
@@ -236,7 +236,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             return 200;
         }
 
-        public List<Model.GlucoseInfo> ReadGlucoses(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
+        public List<GlucoseInfo> ReadGlucoses(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
         {
             try
             {
@@ -245,7 +245,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                     .OrderBy(g => g.Timestamp)
                     .ToList();
 
-                return glucoseList.ConvertAll(ClassConvert.ToModel);
+                return glucoseList;
             }
             catch (Exception ex)
             {
@@ -254,7 +254,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             }
         }
 
-        public List<Model.InsulinInfo> ReadInsulins(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
+        public List<InsulinInfo> ReadInsulins(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
         {
             try
             {
@@ -263,7 +263,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                     .OrderBy(i => i.Timestamp)
                     .ToList();
 
-                return insulinList.ConvertAll(ClassConvert.ToModel);
+                return insulinList;
             }
             catch (Exception ex)
             {
@@ -272,12 +272,12 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             }
         }
 
-        public List<Model.Food> ReadFoods(Realms.Realm realm)
+        public List<Food> ReadFoods(Realms.Realm realm)
         {
             try
             {
                 var foodList = realm.All<Food>().ToList();
-                return foodList.ConvertAll(ClassConvert.ToModel);
+                return foodList;
             }
             catch (Exception ex)
             {
@@ -286,7 +286,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             }
         }
 
-        public Model.Food ReadFood(Realms.Realm realm, string name)
+        public Food ReadFood(Realms.Realm realm, string name)
         {
             try
             {
@@ -298,7 +298,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                     return null;
                 }
 
-                return ClassConvert.ToModel(food);
+                return food;
             }
             catch (Exception ex)
             {
@@ -387,16 +387,16 @@ namespace MauiApp8.Services.BackgroundServices.Realm
         }
 
 
-        public List<Model.FoodEntry> ReadFoodEntries(Realms.Realm realm)
+        public List<FoodEntry> ReadFoodEntries(Realms.Realm realm)
         {
             var foodEntryList = realm.All<FoodEntry>().ToList();
-            return foodEntryList.ConvertAll(ClassConvert.ToModel);
+            return foodEntryList;
         }
 
-        public Model.FoodEntry ReadFoodEntry(Realms.Realm realm, int foodEntryId)
+        public FoodEntry ReadFoodEntry(Realms.Realm realm, int foodEntryId)
         {
             var foodEntry = realm.Find<FoodEntry>(foodEntryId);
-            return foodEntry != null ? ClassConvert.ToModel(foodEntry) : null;
+            return foodEntry != null ? foodEntry : null;
         }
 
         private int GetNextFoodEntryId(Realms.Realm realm)
@@ -465,16 +465,16 @@ namespace MauiApp8.Services.BackgroundServices.Realm
         }
 
 
-        public List<Model.Meal> ReadMeals(Realms.Realm realm)
+        public List<Meal> ReadMeals(Realms.Realm realm)
         {
             var mealList = realm.All<Meal>().ToList();
-            return mealList.ConvertAll(ClassConvert.ToModel);
+            return mealList;
         }
 
-        public Model.Meal ReadMeal(Realms.Realm realm, int mealId)
+        public Meal ReadMeal(Realms.Realm realm, int mealId)
         {
             var meal = realm.Find<Meal>(mealId);
-            return meal != null ? ClassConvert.ToModel(meal) : null;
+            return meal != null ? meal : null;
         }
 
         private int GetNextMealId(Realms.Realm realm)

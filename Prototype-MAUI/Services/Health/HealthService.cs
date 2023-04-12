@@ -16,13 +16,13 @@ namespace MauiApp8.Services.Health
         public List<Model.GlucoseInfo> ReadGlucoses(DateTimeOffset fromDate, DateTimeOffset toDate)
         {
             using var realm = _utils.RealmCreate();
-            return _crud.ReadGlucoses(realm, fromDate, toDate);
+            return _crud.ReadGlucoses(realm, fromDate, toDate).ConvertAll(ClassConvert.ToModel);
         }
 
         public List<Model.InsulinInfo> ReadInsulins(DateTimeOffset fromDate, DateTimeOffset toDate)
         {
             using var realm = _utils.RealmCreate();
-            return _crud.ReadInsulins(realm, fromDate, toDate);
+            return _crud.ReadInsulins(realm, fromDate, toDate).ConvertAll(ClassConvert.ToModel);
         }
     }
 }
