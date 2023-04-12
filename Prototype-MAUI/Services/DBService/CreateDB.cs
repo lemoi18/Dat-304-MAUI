@@ -1,7 +1,6 @@
-﻿using System;
-using Realms;
+﻿using Realms;
 using Realms.Exceptions;
-using MauiApp8.Services.BackgroundServices.Realm; // Add this namespace
+using MauiApp8.Services.BackgroundServices.Realm;
 
 namespace MauiApp8.Services.DBService
 {
@@ -18,7 +17,7 @@ namespace MauiApp8.Services.DBService
                     typeof(RealmUser),
                     typeof(Meal),
                     typeof(FoodEntry),
-                    typeof(Food),
+                    typeof(BackgroundServices.Realm.Food),
                     typeof(Configuration),
                     typeof(ExercicesInfo),
                     typeof(GlucoseInfo),

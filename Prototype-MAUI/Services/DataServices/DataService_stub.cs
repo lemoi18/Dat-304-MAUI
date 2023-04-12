@@ -6,37 +6,37 @@ namespace MauiApp8.Services.DataServices
     internal class FoodService_stub : IDataService
     {
 
-        private readonly List<Food> _mockFoods;
+        private readonly List<Model.Food> _mockFoods;
         private readonly IBackgroundService _backgroundService;
 
 
         public FoodService_stub(IBackgroundService backgroundService)
         {
             _backgroundService = backgroundService;
-            _mockFoods = new List<Food>
+            _mockFoods = new List<Model.Food>
         {
-            new Food
+            new Model.Food
             {
                 Name = "Grilled Chicken",
                 Carbohydrates = 0,
                 Protein = 31,
                 Fat = (float)3.6
             },
-            new Food
+            new Model.Food
             {
                 Name = "Brown Rice",
                 Carbohydrates = 45,
                 Protein = 5,
                 Fat = (float) 1.8
             },
-            new Food
+            new Model.Food
             {
                 Name = "Greek Salad",
                 Carbohydrates = 11,
                 Protein = 4,
                 Fat = 16
             },
-            new Food
+            new Model.Food
             {
                 Name = "Protein Shake",
                 Carbohydrates = 30,
@@ -46,14 +46,14 @@ namespace MauiApp8.Services.DataServices
         };
 
         }
-        public Task<List<Food>> GetFoods()
+        public Task<List<Model.Food>> GetFoods()
         {
-            return Task.FromResult<List<Food>>(_mockFoods);
+            return Task.FromResult<List<Model.Food>>(_mockFoods);
         }
 
-        public Task<Food> GetFoodByName(string name)
+        public Task<Model.Food> GetFoodByName(string name)
         {
-            Food food = _mockFoods.FirstOrDefault(food => food.Name == name);
+            Model.Food food = _mockFoods.FirstOrDefault(food => food.Name == name);
             return Task.FromResult(food);
         }
     }

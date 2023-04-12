@@ -98,7 +98,6 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             await DeleteFood(realm, "Example Food 2");
         }
 
-
         public async Task AddGlucoseEntry(Realms.Realm realm, float sgv, DateTimeOffset date)
         {
             try

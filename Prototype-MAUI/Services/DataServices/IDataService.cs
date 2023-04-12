@@ -1,10 +1,8 @@
-﻿using MauiApp8.Model;
-
-namespace MauiApp8.Services.DataServices
+﻿namespace MauiApp8.Services.DataServices
 {
     public interface IDataService
     {
-        Task<List<Food>> GetFoods();
-        Task<Food> GetFoodByName(string name);
+        Task<List<Model.Food>> GetFoods();
+        Task<Model.Food> GetFoodByName(string name);
     }
 }
