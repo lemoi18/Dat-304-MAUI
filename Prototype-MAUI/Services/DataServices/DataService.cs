@@ -1,31 +1,20 @@
 ﻿using MauiApp8.Model;
-using MauiApp8.Services.BackgroundServices;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MauiApp8.Services.DataServices
 {
     internal class DataService : IDataService
     {
-        private readonly IBackgroundService _backgroundService;
 
-        public DataService(IBackgroundService backgroundService) 
-        { 
-        _backgroundService = backgroundService;
-        }
-        public Task<Food> GetFoodById(int id)
+        HttpClient httpClient;
+        HttpClient Client => httpClient ?? (httpClient = new HttpClient());
+
+        public Task<Food> GetFoodByName(string name)
         {
             throw new NotImplementedException();
         }
 
         public async Task<List<Food>> GetFoods()
         {
-
             //var json = await Client.GetStringAsync("https://montemagno.com/monkeys.json");
             //var json = await Client.GetStringAsync("https://xam-workshop-twitch-func.azurewebsites.net/api/GetAllMonkeys");
             //var all = Foods.FromJson(json);

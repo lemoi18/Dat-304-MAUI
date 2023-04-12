@@ -1,4 +1,4 @@
-﻿using MauiApp8.Model2;
+﻿using MauiApp8.Model;
 using MauiApp8.Services.DBService;
 using Realms;
 using Realms.Exceptions;
@@ -106,7 +106,7 @@ namespace MauiApp8.Services.BackgroundServices
         {
             Realms.Realm localRealm = CreateDB.RealmCreate();
             var objects = localRealm.All<Realm.GlucoseInfo>();
-            // Find the maximum DateTimeOffset value of the property
+
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime == null)
             {
@@ -122,7 +122,6 @@ namespace MauiApp8.Services.BackgroundServices
                 TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
 
                 // Convert the UTC time to Norwegian time
-
                 DateTimeOffset norwayTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeOffset.UtcDateTime, norwayTimeZone);
                 localRealm.Dispose();
                 return norwayTime;
@@ -150,7 +149,6 @@ namespace MauiApp8.Services.BackgroundServices
                 TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
 
                 // Convert the UTC time to Norwegian time
-
                 DateTimeOffset norwayTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeOffset.UtcDateTime, norwayTimeZone);
                 localRealm.Dispose();
                 return norwayTime;

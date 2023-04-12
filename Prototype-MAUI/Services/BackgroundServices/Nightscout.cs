@@ -1,4 +1,4 @@
-﻿using MauiApp8.Model2;
+﻿using MauiApp8.Model;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -56,7 +56,7 @@ namespace MauiApp8.Services.BackgroundServices
                         Console.WriteLine("Finnished request...");
                     }
 
-                    response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not a success code (2xx)
+                    response.EnsureSuccessStatusCode();
                 }
             }
 
@@ -68,8 +68,8 @@ namespace MauiApp8.Services.BackgroundServices
 
             return Items;
         }
-
-        // GetInsulin does not remove exersie entries from return.
+        
+        //GetInsulin does not remove exersie entries from return.
         public static async Task<List<TreatmentAPI>> GetInsulin(string RestUrl, string StartDate, string EndDate)
         {
             JsonSerializerOptions _serializerOptions;
@@ -103,7 +103,7 @@ namespace MauiApp8.Services.BackgroundServices
                         Items = JsonSerializer.Deserialize<List<TreatmentAPI>>(content, _serializerOptions);
                     }
 
-                    response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not a success code (2xx)
+                    response.EnsureSuccessStatusCode();
                 }
             }
 

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Model;
-using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices;
 using MauiApp8.Services.BackgroundServices.Realm;
@@ -37,9 +36,7 @@ namespace MauiApp8.ViewModel
         string bgl;
 
         [ObservableProperty]
-        MvvmHelpers.ObservableRangeCollection<MauiApp8.Model2.GlucoseInfo> glucoseInfo;
-
-
+        MvvmHelpers.ObservableRangeCollection<MauiApp8.Model.GlucoseInfo> glucoseInfo;
 
         public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, ICRUD crudStub)
         {
@@ -49,7 +46,8 @@ namespace MauiApp8.ViewModel
             _backgroundService = backgroundService;
             Task.Run(() => InitializeAsync());
 
-            //var objects = realm.All<Services.BackgroundServices.Realm.GlucoseInfo>(); // retrieve all objects of type MyObject from the database
+            
+            var objects = realm.All<Services.BackgroundServices.Realm.GlucoseInfo>();
 
             //foreach (Services.BackgroundServices.Realm.GlucoseInfo obj in objects)
             //{
@@ -64,18 +62,11 @@ namespace MauiApp8.ViewModel
             //await UpdateStuff();
         }
 
-
         private async Task UpdateStuff()
         {
-
-
             await _backgroundService.UpdateGlucose("https://oskarnightscoutweb1.azurewebsites.net/");
             await _backgroundService.UpdateInsulin("https://oskarnightscoutweb1.azurewebsites.net/");
-
-
-
         }
-
 
         public static async Task<List<GlucoseAPI>> GetGlucose(string RestUrl, string StartDate, string EndDate)
         {
@@ -86,8 +77,6 @@ namespace MauiApp8.ViewModel
                 WriteIndented = true
             };
             Console.WriteLine($"Starting GetGlucose method with RestUrl={RestUrl}, StartDate={StartDate}, EndDate={EndDate}...");
-            // your existing code here
-
 
             List<GlucoseAPI> Items;
             Items = new List<GlucoseAPI>();
@@ -118,7 +107,7 @@ namespace MauiApp8.ViewModel
                         throw new HttpRequestException($"Error in GetGlucose method: Received status code {response.StatusCode}");
                     }
 
-                    response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not a success code (2xx)
+                    response.EnsureSuccessStatusCode(); 
                 }
             }
 
@@ -127,16 +116,13 @@ namespace MauiApp8.ViewModel
                 Console.WriteLine($"Error in GetGlucose method: {ex.Message}");
                 Debug.WriteLine($"Error in GetGlucose method: {ex}");
                 Console.WriteLine($"URI: {uri}");
-                // you could also display an error message to the user here, or retry the request if appropriate
+               
                 return Items;
             }
 
             Console.WriteLine("Finished GetGlucose method.");
             return Items;
         }
-
-
-
 
         public Account User
         {
@@ -145,16 +131,10 @@ namespace MauiApp8.ViewModel
         }
         private Account _user;
 
-
-
-
         public DateTimeOffset? ReadLatestGlucose()
         {
             return _backgroundService.ReadLatestGlucose();
         }
-
-
-
 
         public void DBTest()
         {
@@ -164,15 +144,13 @@ namespace MauiApp8.ViewModel
             realm.Write(() =>
             {
                 var dog = new Services.BackgroundServices.Realm.InsulinInfo { Insulin = 13, Timestamp = new DateTimeOffset() };
-                // Add the instance to the realm.
+                
                 realm.Add(dog);
             });
             var amount1 = realm.All<Services.BackgroundServices.Realm.InsulinInfo>().Count();
 
             Console.WriteLine($"Loaded {amount1} from db");
         }
-
-
     }
 }
 
