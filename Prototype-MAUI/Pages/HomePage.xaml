@@ -43,6 +43,18 @@
                 </Label.FormattedText>
             </Label>
         </Frame>
+
+        <Frame BackgroundColor="LightGray" Padding="10" CornerRadius="5" HorizontalOptions="Center">
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Current Glucose Level: " FontSize="18" />
+                        <Span Text="{Binding LastGlucoseLevel}" FontSize="18" TextColor="Blue" />
+                    </FormattedString>
+
+                </Label.FormattedText>
+            </Label>
+        </Frame>
     </VerticalStackLayout>
   
 </ContentPage>

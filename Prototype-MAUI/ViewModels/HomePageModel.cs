@@ -66,6 +66,8 @@ namespace MauiApp8.ViewModel
 
             // extract last value from the LineSeries and assign to public property
             LastInsulinLevel = ((LineSeries<int>)_series[0]).Values.LastOrDefault();
+            LastGlucoseLevel = ((LineSeries<int>)_series[1]).Values.LastOrDefault();
+
 
             Title = new LabelVisual
             {
@@ -78,6 +80,9 @@ namespace MauiApp8.ViewModel
         }
         public LabelVisual Title { get; set; }
         public int LastInsulinLevel { get; set; }
+        public int LastGlucoseLevel { get; set; }
+
+
 
 
 
