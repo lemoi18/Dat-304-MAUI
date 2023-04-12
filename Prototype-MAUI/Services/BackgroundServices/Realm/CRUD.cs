@@ -11,7 +11,9 @@ namespace MauiApp8.Services.BackgroundServices.Realm
 
             Console.WriteLine("Running CRUD tests...");
 
-            using Realms.Realm realm = RealmCreate();
+            var utils = new Utils();
+
+            using Realms.Realm realm = utils.RealmCreate();
 
             Console.WriteLine("Testing glucose and insulin:");
             //await UpdateGlucose(realm, DomainName);
@@ -270,7 +272,6 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                 return null;
             }
         }
-
 
         public List<Model.Food> ReadFoods(Realms.Realm realm)
         {

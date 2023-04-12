@@ -1,4 +1,5 @@
 ﻿using MauiApp8.Model;
+using MauiApp8.Services.BackgroundServices;
 
 namespace MauiApp8.Services.DataServices
 {
@@ -6,10 +7,12 @@ namespace MauiApp8.Services.DataServices
     {
 
         private readonly List<Food> _mockFoods;
+        private readonly IBackgroundService _backgroundService;
 
 
-        public FoodService_stub()
+        public FoodService_stub(IBackgroundService backgroundService)
         {
+            _backgroundService = backgroundService;
             _mockFoods = new List<Food>
         {
             new Food

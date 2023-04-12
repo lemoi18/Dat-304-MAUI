@@ -3,9 +3,10 @@ using Realms.Exceptions;
 
 namespace MauiApp8.Services.BackgroundServices.Realm
 {
-    internal class Utils
+    internal class Utils : IUtils
     {
-        public static string Pathgetter()
+
+        public string Pathgetter()
         {
             string executablePath = Environment.ProcessPath;
             string directoryPath = Path.GetDirectoryName(executablePath);
@@ -13,7 +14,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             return projectDirectoryPath;
         }
 
-        public static Realms.Realm RealmCreate()
+        public Realms.Realm RealmCreate()
         {
             string pathToDb = $"{AppDomain.CurrentDomain.BaseDirectory}";
 
@@ -34,7 +35,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             }
         }
 
-        public static void RealmDelete()
+        public void RealmDelete()
         {
             string realmPath = RealmConfiguration.DefaultConfiguration.DatabasePath;
 
@@ -42,7 +43,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             {
                 Console.WriteLine("Deleting realm file");
                 File.Delete(realmPath);
-                
+
             }
         }
     }
