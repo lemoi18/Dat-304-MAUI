@@ -1,11 +1,4 @@
 ﻿using MauiApp8.Model;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MauiApp8.Services.DataServices
 {
@@ -15,7 +8,7 @@ namespace MauiApp8.Services.DataServices
         HttpClient httpClient;
         HttpClient Client => httpClient ?? (httpClient = new HttpClient());
 
-        public Task<Food> GetFoodById(int id)
+        public Task<Food> GetFoodByName(string name)
         {
             throw new NotImplementedException();
         }

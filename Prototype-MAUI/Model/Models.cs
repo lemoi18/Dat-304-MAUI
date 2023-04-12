@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using MongoDB.Bson;
-using Realms;
-using Realms.Sync;
-
-namespace MauiApp8.Model2
+﻿namespace MauiApp8.Model
 {
-    public class User
+    public class RealmUser
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -18,21 +8,32 @@ namespace MauiApp8.Model2
         public int Age { get; set; }
     }
 
-    public class FoodEntries
+    public class Meal
     {
-
+        public int ID { get; set; }
         public DateTimeOffset Timestamp { get; set; }
         public IList<FoodEntry> FoodEntry { get; }
+
+        public Meal()
+        {
+            FoodEntry = new List<FoodEntry>();
+        }
+
+        public Meal(IEnumerable<FoodEntry> foodEntries)
+        {
+            FoodEntry = new List<FoodEntry>(foodEntries);
+        }
     }
+
     public class FoodEntry
     {
+        public int ID { get; set; }
         public Food Food { get; set; }
-        public float Amout { get; set; }
+        public float Amount { get; set; }
 
     }
     public class Food
     {
-
         public string Name { get; set; }
         public float Calories { get; set; }
         public float Carbohydrates { get; set; }
@@ -51,6 +52,7 @@ namespace MauiApp8.Model2
     }
     public class ExercicesInfo
     {
+        public int ID { get; set; }
         public float CaloriesBurned { get; set; }
         public DateTimeOffset Timestamp { get; set; }
     }

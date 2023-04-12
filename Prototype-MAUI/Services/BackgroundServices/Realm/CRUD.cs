@@ -1,10 +1,5 @@
-using Realms;
 using static MauiApp8.Services.BackgroundServices.Realm.Utils;
 using static MauiApp8.Services.BackgroundServices.Nightscout;
-using MauiApp8.Services.BackgroundServices;
-using MauiApp8.Model2;
-
-
 
 namespace MauiApp8.Services.BackgroundServices.Realm
 {
@@ -26,79 +21,79 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
 
             Console.WriteLine($"Reading glucose data from {fromDate} to {toDate}:");
-            List<GlucoseInfo> glucoseData = ReadGlucoses(realm, fromDate, toDate);
+            List<Model.GlucoseInfo> glucoseData = ReadGlucoses(realm, fromDate, toDate);
             foreach (var glucoseEntry in glucoseData)
             {
                 Console.WriteLine($"Timestamp: {glucoseEntry.Timestamp}, Glucose: {glucoseEntry.Glucose}");
             }
 
             Console.WriteLine($"Reading insulin data from {fromDate} to {toDate}:");
-            List<InsulinInfo> insulinData = ReadInsulins(realm, fromDate, toDate);
+            List<Model.InsulinInfo> insulinData = ReadInsulins(realm, fromDate, toDate);
             foreach (var insulinEntry in insulinData)
             {
                 Console.WriteLine($"Timestamp: {insulinEntry.Timestamp}, Insulin: {insulinEntry.Insulin}");
             }
-             
-
-            //Console.WriteLine("Testing Food:");
-
-            //await AddFood(realm, "Example Food", 100, 10, 5, 3);
-            //await AddFood(realm, "Example Food 2", 200, 20, 10, 6);
-            //var allFoods = ReadFoods(realm);
-            //Console.WriteLine("All foods in the database:");
-            //foreach (var food in allFoods)
-            //{
-            //    Console.WriteLine($"Name: {food.Name}, Calories: {food.Calories}, Carbohydrates: {food.Carbohydrates}, Protein: {food.Protein}, Fat: {food.Fat}");
-            //}
-
-            //Food exampleFood = ReadFood(realm, "Example Food");
-            //Console.WriteLine($"ReadFood: Name: {exampleFood.Name}, Calories: {exampleFood.Calories}, Carbohydrates: {exampleFood.Carbohydrates}, Protein: {exampleFood.Protein}, Fat: {exampleFood.Fat}");
-
-            //await UpdateFood(realm, "Example Food", 120, 12, 6, 4);
-            //Console.WriteLine("Updated Food:");
-            //Food updatedFood = ReadFood(realm, "Example Food");
-            //Console.WriteLine($"Name: {updatedFood.Name}, Calories: {updatedFood.Calories}, Carbohydrates: {updatedFood.Carbohydrates}, Protein: {updatedFood.Protein}, Fat: {updatedFood.Fat}");
 
 
-            //Console.WriteLine("Testing FoodEntry:");
-            //int foodEntryId1 = await CreateFoodEntry(realm, "Example Food", 100);
-            //int foodEntryId2 = await CreateFoodEntry(realm, "Example Food 2", 200);
+            Console.WriteLine("Testing Food:");
 
-            //Console.WriteLine("Food Entries in the database:");
-            //var allFoodEntries = ReadFoodEntries(realm);
-            //foreach (var entry in allFoodEntries)
-            //{
-            //    Console.WriteLine($"ID: {entry.ID}, Food: {entry.Food.Name}, Amount: {entry.Amount}");
-            //}
+            await AddFood(realm, "Example Food", 100, 10, 5, 3);
+            await AddFood(realm, "Example Food 2", 200, 20, 10, 6);
+            var allFoods = ReadFoods(realm);
+            Console.WriteLine("All foods in the database:");
+            foreach (var food in allFoods)
+            {
+                Console.WriteLine($"Name: {food.Name}, Calories: {food.Calories}, Carbohydrates: {food.Carbohydrates}, Protein: {food.Protein}, Fat: {food.Fat}");
+            }
 
-            //FoodEntry readFoodEntry = ReadFoodEntry(realm, foodEntryId1);
-            //Console.WriteLine($"ReadFoodEntry: ID: {readFoodEntry.ID}, Food: {readFoodEntry.Food.Name}, Amount: {readFoodEntry.Amount}");
+            Model.Food exampleFood = ReadFood(realm, "Example Food");
+            Console.WriteLine($"ReadFood: Name: {exampleFood.Name}, Calories: {exampleFood.Calories}, Carbohydrates: {exampleFood.Carbohydrates}, Protein: {exampleFood.Protein}, Fat: {exampleFood.Fat}");
 
-
-            //Console.WriteLine("Testing Meal:");
-            //int mealId = await CreateMeal(realm, new List<int> { foodEntryId1, foodEntryId2 });
-
-            //Console.WriteLine("Meals in the database:");
-            //var allMeals = ReadMeals(realm);
-            //foreach (var meal in allMeals)
-            //{
-            //    Console.WriteLine($"ID: {meal.ID}, Timestamp: {meal.Timestamp}");
-            //    Console.WriteLine("Food Entries in Meal:");
-            //    foreach (var entry in meal.FoodEntry)
-            //    {
-            //        Console.WriteLine($"  ID: {entry.ID}, Food: {entry.Food.Name}, Amount: {entry.Amount}");
-            //    }
-            //}
-            //Meal readMeal = ReadMeal(realm, mealId);
-            //Console.WriteLine($"ReadMeal: ID: {readMeal.ID}, Timestamp: {readMeal.Timestamp}");
+            await UpdateFood(realm, "Example Food", 120, 12, 6, 4);
+            Console.WriteLine("Updated Food:");
+            Model.Food updatedFood = ReadFood(realm, "Example Food");
+            Console.WriteLine($"Name: {updatedFood.Name}, Calories: {updatedFood.Calories}, Carbohydrates: {updatedFood.Carbohydrates}, Protein: {updatedFood.Protein}, Fat: {updatedFood.Fat}");
 
 
-            //Console.WriteLine("Cleaning up test data...");
-            //await DeleteFoodEntry(realm, foodEntryId1);
-            //await DeleteFoodEntry(realm, foodEntryId2);
-            //await DeleteMeal(realm, mealId);
-            //await DeleteFood(realm, "Example Food");
-            //await DeleteFood(realm, "Example Food 2");
+            Console.WriteLine("Testing FoodEntry:");
+            int foodEntryId1 = await CreateFoodEntry(realm, "Example Food", 100);
+            int foodEntryId2 = await CreateFoodEntry(realm, "Example Food 2", 200);
+
+            Console.WriteLine("Food Entries in the database:");
+            var allFoodEntries = ReadFoodEntries(realm);
+            foreach (var entry in allFoodEntries)
+            {
+                Console.WriteLine($"ID: {entry.ID}, Food: {entry.Food.Name}, Amount: {entry.Amount}");
+            }
+
+            Model.FoodEntry readFoodEntry = ReadFoodEntry(realm, foodEntryId1);
+            Console.WriteLine($"ReadFoodEntry: ID: {readFoodEntry.ID}, Food: {readFoodEntry.Food.Name}, Amount: {readFoodEntry.Amount}");
+
+
+            Console.WriteLine("Testing Meal:");
+            int mealId = await CreateMeal(realm, new List<int> { foodEntryId1, foodEntryId2 });
+
+            Console.WriteLine("Meals in the database:");
+            var allMeals = ReadMeals(realm);
+            foreach (var meal in allMeals)
+            {
+                Console.WriteLine($"ID: {meal.ID}, Timestamp: {meal.Timestamp}");
+                Console.WriteLine("Food Entries in Meal:");
+                foreach (var entry in meal.FoodEntry)
+                {
+                    Console.WriteLine($"  ID: {entry.ID}, Food: {entry.Food.Name}, Amount: {entry.Amount}");
+                }
+            }
+            Model.Meal readMeal = ReadMeal(realm, mealId);
+            Console.WriteLine($"ReadMeal: ID: {readMeal.ID}, Timestamp: {readMeal.Timestamp}");
+
+
+            Console.WriteLine("Cleaning up test data...");
+            await DeleteFoodEntry(realm, foodEntryId1);
+            await DeleteFoodEntry(realm, foodEntryId2);
+            await DeleteMeal(realm, mealId);
+            await DeleteFood(realm, "Example Food");
+            await DeleteFood(realm, "Example Food 2");
         }
 
 
@@ -143,7 +138,6 @@ namespace MauiApp8.Services.BackgroundServices.Realm
         public DateTimeOffset? ReadLatestGlucoseTimestamp(Realms.Realm realm)
         {
             var objects = realm.All<GlucoseInfo>();
-            // Find the maximum DateTimeOffset value of the property
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime == null)
             {
@@ -184,7 +178,6 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                 TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
 
                 // Convert the UTC time to Norwegian time
-
                 DateTimeOffset norwayTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeOffset.UtcDateTime, norwayTimeZone);
                 return norwayTime;
             }
@@ -205,10 +198,10 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             TimeZoneInfo norwegianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
 
-            List<GlucoseAPI> Items;
+            List<Model.GlucoseAPI> Items;
             Items = await Nightscout.GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine("Adding " + Items.Count + " glucose entries... ");
-            foreach (GlucoseAPI obj in Items)
+            foreach (Model.GlucoseAPI obj in Items)
             {
                 await AddGlucoseEntry(realm, obj.sgv, obj.dateString);
             }
@@ -231,10 +224,10 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
             Console.WriteLine(utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine(utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-            List<TreatmentAPI> Items;
+            List<Model.TreatmentAPI> Items;
             Items = await GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine("Adding " + Items.Count + " insulin entries... ");
-            foreach (TreatmentAPI obj in Items)
+            foreach (Model.TreatmentAPI obj in Items)
             {
                 if (obj.insulin != null)
                     await AddInsulinEntry(realm, (double)obj.insulin, obj.created_at);
@@ -242,7 +235,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             return 200;
         }
 
-        public List<GlucoseInfo> ReadGlucoses(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
+        public List<Model.GlucoseInfo> ReadGlucoses(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
         {
             try
             {
@@ -251,7 +244,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                     .OrderBy(g => g.Timestamp)
                     .ToList();
 
-                return glucoseList;
+                return glucoseList.ConvertAll(ClassConvert.ToModel);
             }
             catch (Exception ex)
             {
@@ -260,7 +253,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             }
         }
 
-        public List<InsulinInfo> ReadInsulins(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
+        public List<Model.InsulinInfo> ReadInsulins(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
         {
             try
             {
@@ -269,7 +262,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                     .OrderBy(i => i.Timestamp)
                     .ToList();
 
-                return insulinList;
+                return insulinList.ConvertAll(ClassConvert.ToModel);
             }
             catch (Exception ex)
             {
@@ -279,22 +272,39 @@ namespace MauiApp8.Services.BackgroundServices.Realm
         }
 
 
-
-        public List<Food> ReadFoods(Realms.Realm realm)
+        public List<Model.Food> ReadFoods(Realms.Realm realm)
         {
-            List<Food> foodList;
-
             try
             {
-                foodList = realm.All<Food>().ToList();
+                var foodList = realm.All<Food>().ToList();
+                return foodList.ConvertAll(ClassConvert.ToModel);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 return null;
             }
+        }
 
-            return foodList;
+        public Model.Food ReadFood(Realms.Realm realm, string name)
+        {
+            try
+            {
+                var food = realm.Find<Food>(name);
+
+                if (food == null)
+                {
+                    Console.WriteLine($"Food with name {name} not found in the database.");
+                    return null;
+                }
+
+                return ClassConvert.ToModel(food);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task AddFood(Realms.Realm realm, string name, float calories, float carbohydrates, float protein, float fat)
@@ -321,27 +331,6 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
-        }
-
-        public Food ReadFood(Realms.Realm realm, string name)
-        {
-            Food food = null;
-
-            try
-            {
-                food = realm.Find<Food>(name);
-
-                if (food == null)
-                {
-                    Console.WriteLine($"Food with name {name} not found in the database.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-
-            return food;
         }
 
         public async Task UpdateFood(Realms.Realm realm, string name, float calories, float carbohydrates, float protein, float fat)
@@ -398,14 +387,16 @@ namespace MauiApp8.Services.BackgroundServices.Realm
         }
 
 
-        public List<FoodEntry> ReadFoodEntries(Realms.Realm realm)
+        public List<Model.FoodEntry> ReadFoodEntries(Realms.Realm realm)
         {
-            return realm.All<FoodEntry>().ToList();
+            var foodEntryList = realm.All<FoodEntry>().ToList();
+            return foodEntryList.ConvertAll(ClassConvert.ToModel);
         }
 
-        public FoodEntry ReadFoodEntry(Realms.Realm realm, int foodEntryId)
+        public Model.FoodEntry ReadFoodEntry(Realms.Realm realm, int foodEntryId)
         {
-            return realm.Find<FoodEntry>(foodEntryId);
+            var foodEntry = realm.Find<FoodEntry>(foodEntryId);
+            return foodEntry != null ? ClassConvert.ToModel(foodEntry) : null;
         }
 
         private int GetNextFoodEntryId(Realms.Realm realm)
@@ -474,14 +465,16 @@ namespace MauiApp8.Services.BackgroundServices.Realm
         }
 
 
-        public List<Meal> ReadMeals(Realms.Realm realm)
+        public List<Model.Meal> ReadMeals(Realms.Realm realm)
         {
-            return realm.All<Meal>().ToList();
+            var mealList = realm.All<Meal>().ToList();
+            return mealList.ConvertAll(ClassConvert.ToModel);
         }
 
-        public Meal ReadMeal(Realms.Realm realm, int mealId)
+        public Model.Meal ReadMeal(Realms.Realm realm, int mealId)
         {
-            return realm.Find<Meal>(mealId);
+            var meal = realm.Find<Meal>(mealId);
+            return meal != null ? ClassConvert.ToModel(meal) : null;
         }
 
         private int GetNextMealId(Realms.Realm realm)
