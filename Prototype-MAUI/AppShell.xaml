@@ -14,7 +14,7 @@
 
 
     <TabBar>
-            <ShellContent Title="Home"
+        <ShellContent Title="Home"
                       ContentTemplate="{DataTemplate views:HomePage}"
                       Route="home" />
         <ShellContent Title="Food"
@@ -23,5 +23,8 @@
         <ShellContent Title="Settings"
                       ContentTemplate="{DataTemplate views:SettingsPage}"
                       Route="settings" />
-        </TabBar>
+        <ShellContent Title="Graph"
+                      ContentTemplate="{DataTemplate views:GraphPage}"
+                      Route="home" />
+    </TabBar>
     </Shell>

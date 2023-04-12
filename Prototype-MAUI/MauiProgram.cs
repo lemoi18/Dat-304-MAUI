@@ -32,6 +32,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ViewModel.LogFoodModel>();
         builder.Services.AddSingleton<ViewModel.FoodDetailsModel>();
         builder.Services.AddSingleton<ViewModel.FoodViewModel>();
+        builder.Services.AddSingleton<ViewModel.GraphPageModel>();
 
 
         //Views
@@ -40,7 +41,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<Views.SettingsPage>();
         builder.Services.AddSingleton<Views.FoodPage>();
         builder.Services.AddSingleton<Views.FoodDetailsPage>();
+        builder.Services.AddSingleton<Views.GraphPage>();
         builder.Services.AddTransient<Views.FoodItemView>();
+
 
         builder.Services.AddTransient<Model.Food>();
 
