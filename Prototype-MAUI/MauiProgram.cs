@@ -3,7 +3,9 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Logging;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.DataServices;
-
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using LiveChartsCore;
+using MauiApp8.Services.GraphService;
 
 namespace MauiApp8;
 
@@ -14,6 +16,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseSkiaSharp(true)
             .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
@@ -49,7 +52,7 @@ public static class MauiProgram
 
 
         //Services
-
+        builder.Services.AddSingleton<IChartService>((e)=> new Services.GraphService.LineChartService());
         builder.Services.AddSingleton<Services.Authentication.IAuthenticationService>((e)=> new Services.Authentication.Authenticated_stub());
         builder.Services.AddTransient<Services.DataServices.IDataService>((e) => new Services.DataServices.FoodService_stub(e.GetService<Services.BackgroundServices.IBackgroundService>()));
         builder.Services.AddTransient<Realms.Realm>(e => Services.DBService.CreateDB.RealmCreate());

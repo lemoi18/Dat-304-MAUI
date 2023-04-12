@@ -1,38 +1,76 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using MauiApp8.Views;
-using MauiApp8.Model;
-using CommunityToolkit.Mvvm.ComponentModel;
-using MauiApp8.Services.Authentication;
-using MauiApp8.Services.BackgroundServices;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using MauiApp8.Services.GraphService;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using SkiaSharp;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 
 namespace MauiApp8.ViewModel
 {
     public partial class GraphPageModel : ObservableObject
     {
-        IAuthenticationService authService;
-        private Account _user;
-        public Account User
+        private int XMax { get; set; }
+        private readonly IChartService _chartService;
+        [ObservableProperty]
+        private ISeries[] _series;
+
+        public GraphPageModel(IChartService chartService)
         {
-            get => _user;
-            set => SetProperty(ref _user, value);
+            _chartService = chartService;
+            _series = _chartService.GetSeries();
+            XMax = ((LineSeries<int>)_series[0]).Values.Count();
+
+            Title = new LabelVisual
+            {
+                Text = "Health Data",
+                TextSize = 72,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+
+            XAxes = new Axis[]
+{
+                new Axis
+                {
+                    Name = "Time",
+                    NameTextSize = 50,
+                    MinLimit = (XMax-10),
+                    MaxLimit = XMax,
+                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    MinStep = 1,
+                    LabelsPaint = new SolidColorPaint(SKColors.Black),
+                    TextSize = 72,
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
+                }
+ };
+            YAxes = new Axis[]
+           {
+                new Axis
+                {
+                    Name = "Levels",
+                    NameTextSize = 50,
+                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    MinStep = 1,
+                    LabelsPaint = new SolidColorPaint(SKColors.Black),
+                    TextSize = 72,
+                },
+           };
+            LegendTextPaint = new SolidColorPaint
+            {
+                Color = new SKColor(50, 50, 50),
+                SKTypeface = SKTypeface.FromFamilyName("Courier New")
+            };
+            LegendBackgroundPaint = new SolidColorPaint(new SKColor(240, 240, 240));
+
         }
+        public SolidColorPaint LegendTextPaint { get; set; }
+        public SolidColorPaint LegendBackgroundPaint { get; set; }
+        public LabelVisual Title { get; set; }
+        public Axis[] XAxes { get; set; }
 
-        IBackgroundService backgroundService;
-
-        public GraphPageModel(IAuthenticationService _authService, IBackgroundService _backgroundService) 
-        {
-            this.authService = _authService;
-            backgroundService = _backgroundService;
-
-        }
-
-        [RelayCommand]
-        Task NavigateBack() => Shell.Current.GoToAsync("..");
-        [RelayCommand]
-        async Task<Page> SignOut()
-        {
-            await authService.SignOutAsync();
-            return Application.Current.MainPage = new LoginShell();
-        }
+        public Axis[] YAxes { get; set; }
     }
 }

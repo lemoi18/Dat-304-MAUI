@@ -2,21 +2,35 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              x:Class="MauiApp8.Views.GraphPage"
-             xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:GraphPageModel"
-             Title="Graph">
-             
-    <VerticalStackLayout>
-        <Label 
-            Text="{Binding User.Name}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
+             xmlns:lvcore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore"
 
-        <Button 
-                Text="Logout"
-                FontAttributes="Bold"
-                Command="{Binding SignOutCommand}"
-                HorizontalOptions="Center" />
+             Title="Graph">
+
+
+    <VerticalStackLayout>
+        
+        <lvc:CartesianChart 
+            Series="{Binding Series}" 
+            Title="{Binding Title}"
+            HeightRequest="600"
+            YAxes="{Binding YAxes}"
+            XAxes="{Binding XAxes}"
+            TooltipTextSize="50"
+            ZoomMode="X"
+            EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}"
+            LegendPosition="Bottom"
+            LegendTextPaint="{Binding LegendTextPaint}"
+            LegendTextSize="45"
+            LegendBackgroundPaint="{Binding LegendBackgroundPaint}">
+        </lvc:CartesianChart>
+
+
+
+
     </VerticalStackLayout>
+    
 </ContentPage>

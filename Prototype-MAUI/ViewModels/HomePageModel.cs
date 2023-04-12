@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Model;
+using MauiApp8.Views;
+using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices;
 using MauiApp8.Services.BackgroundServices.Realm;
@@ -7,6 +9,15 @@ using Realms;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Windows.Input;
+using System;
+using static Google.Apis.Requests.BatchRequest;
+using LiveChartsCore;
+using MauiApp8.Services.GraphService;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using SkiaSharp;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 
 namespace MauiApp8.ViewModel
 {
@@ -37,7 +48,10 @@ namespace MauiApp8.ViewModel
 
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<MauiApp8.Model.GlucoseInfo> glucoseInfo;
-
+        // Chart stuff
+        private readonly IChartService _chartService;
+        [ObservableProperty]
+        private ISeries[] _series;
         public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, ICRUD crudStub)
         {
             _crudStub = crudStub;
@@ -46,15 +60,71 @@ namespace MauiApp8.ViewModel
             _backgroundService = backgroundService;
             Task.Run(() => InitializeAsync());
 
-            
             var objects = realm.All<Services.BackgroundServices.Realm.GlucoseInfo>();
 
-            //foreach (Services.BackgroundServices.Realm.GlucoseInfo obj in objects)
-            //{
-            //    Console.WriteLine($"Loaded {obj.Glucose} from db");
-            //}
-        }
+            foreach (GlucoseInfo obj in objects)
+            {
+                Console.WriteLine($"Loaded {obj.Glucose} from db");
+            }
+            // chart stuff
+            _chartService = chartService;
+            _series = _chartService.GetSeries();
 
+            // extract last value from the LineSeries and assign to public property
+            LastInsulinLevel = ((LineSeries<int>)_series[0]).Values.LastOrDefault();
+            LastGlucoseLevel = ((LineSeries<int>)_series[1]).Values.LastOrDefault();
+
+
+            Title = new LabelVisual
+            {
+                Text = "Insulin Levels",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+
+        }
+        public LabelVisual Title { get; set; }
+        public int LastInsulinLevel { get; set; }
+        public int LastGlucoseLevel { get; set; }
+
+
+
+
+
+        public Axis[] XAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "X Axis",
+                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    MinStep = 1,
+
+                    LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                    TextSize = 10,
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
+                }
+            };
+
+        public Axis[] YAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Y Axis",
+                    NamePaint = new SolidColorPaint(SKColors.Red),
+                    MinStep = 1,
+                    LabelsPaint = new SolidColorPaint(SKColors.Green),
+                    TextSize = 20,
+
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
+                    {
+                        StrokeThickness = 2,
+                        PathEffect = new DashEffect(new float[] { 3, 3 })
+                    }
+                }
+            };
         private async Task InitializeAsync()
         {
             await UpdateStuff();
@@ -71,6 +141,7 @@ namespace MauiApp8.ViewModel
         public static async Task<List<GlucoseAPI>> GetGlucose(string RestUrl, string StartDate, string EndDate)
         {
             JsonSerializerOptions _serializerOptions;
+
             _serializerOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

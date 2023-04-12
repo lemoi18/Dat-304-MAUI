@@ -13,22 +13,13 @@
         <Label 
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-
-        
-
+            HorizontalOptions="Center" 
+            />
         <Button 
                 Text="Login with Google"
                 FontAttributes="Bold"
                 Command="{Binding NavigateToGoogleCommand}"
-                HorizontalOptions="Center" />
-
-        
-
-
-
-
-
-
+                HorizontalOptions="Center"
+            />
     </VerticalStackLayout>
 </ContentPage>
