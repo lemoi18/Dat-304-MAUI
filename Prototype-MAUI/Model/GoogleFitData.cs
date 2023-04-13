@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace MauiApp8.Services.GoogleFitService
+namespace MauiApp8.Services.ThirdPartyHealthService
 {
    
          public class GoogleFitData

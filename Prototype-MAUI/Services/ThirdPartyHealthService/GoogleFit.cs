@@ -13,12 +13,9 @@ using MauiApp8.Model;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 
-namespace MauiApp8.Services.GoogleFitService
+namespace MauiApp8.Services.ThirdPartyHealthService
 {
-    /// <summary>
-    /// await _googlefit.FetchGoogleFitDataAsync(long.Parse(startTime), long.Parse(currentTime));
-    /// This Code is not working, ill look at it later...
-    /// </summary>
+    
 
     public class GoogleFit : IThirdPartyHealthService
     {
@@ -29,7 +26,7 @@ namespace MauiApp8.Services.GoogleFitService
 
         public GoogleFitData Data { get; set; }
 
-        internal GoogleFit(IAuthenticationService authService)
+        public GoogleFit(IAuthenticationService authService)
         {
             _authService = authService;
 
@@ -230,7 +227,7 @@ namespace MauiApp8.Services.GoogleFitService
                 };
 
                 var jsonPayload = JsonConvert.SerializeObject(requestBody);
-                Console.WriteLine("JSON Payload: " + jsonPayload);
+                
 
                 var data = await PostGoogleFitDataAsync(requestUrl, jsonPayload, accessToken);
 
@@ -240,7 +237,7 @@ namespace MauiApp8.Services.GoogleFitService
                     {
                         PropertyNameCaseInsensitive = true
                     };
-                    Console.WriteLine(data);
+                    
                     var googleFitData = System.Text.Json.JsonSerializer.Deserialize<GoogleFitData>(data);
                     Data = googleFitData;
 

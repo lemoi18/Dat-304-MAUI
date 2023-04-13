@@ -5,7 +5,6 @@ using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundFetchService;
 using MauiApp8.Services.BackgroundServices;
-using MauiApp8.Services.GoogleFitService;
 using MauiApp8.Services.PublishSubscribeService;
 using MauiApp8.Services.ThirdPartyHealthService;
 using Realms;
@@ -62,6 +61,7 @@ namespace MauiApp8.ViewModel
 
         private async Task InitializeAsync()
         {
+            await TestFunction();
             //await UpdateStuff();
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
             //await UpdateStuff();
@@ -75,13 +75,7 @@ namespace MauiApp8.ViewModel
             // For Tests
             DateTime now = DateTime.UtcNow;
             DateTime startTime = now.AddDays(-1);
-            Console.WriteLine("-------------------------------------------------------");
-
-            Console.WriteLine(now.ToString());
-
-            Console.WriteLine(startTime.ToString());
-            Console.WriteLine("-------------------------------------------------------");
-
+            
             await _thirdPartyHealthService.FetchActivityDataAsync(now, startTime);
             await _thirdPartyHealthService.FetchCalorieDataAsync(now, startTime);
 
