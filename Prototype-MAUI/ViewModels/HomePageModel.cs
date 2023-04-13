@@ -88,7 +88,8 @@ namespace MauiApp8.ViewModel
             Console.WriteLine(startTime);
             await _publish.CheckSubscribe();
             Console.WriteLine("...");
-
+            await _publish.CheckTimeDiffrence();
+            await _publish.GoogleFetchSub();
 
         }
         [RelayCommand]
@@ -99,7 +100,7 @@ namespace MauiApp8.ViewModel
             //{
             //    Console.WriteLine("BAckground.2");
             //});
-
+            
             await _publish.Turn_On();
             //await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
             Console.WriteLine("OUT CALL");

@@ -126,30 +126,7 @@ namespace MauiApp8.Platforms.Android.AndroidServices
         {
             //_notificationHelper.SendNotificationForVariable("Sample Notification", "Hello World! This is my first notification!");
         }
-        //public void SendNotificationForVariable()
-        //{
-        //    // Instantiate the builder and set notification elements:
-        //    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-        //        .SetContentTitle("Sample Notification")
-        //        .SetContentText("Hello World! This is my first notification!")
-        //        .SetSmallIcon(Resource.Drawable.xwar);
-
-        //    // Build the notification:
-        //    Notification notification = builder.Build();
-
-        //    // Get the NotificationManagerCompat instance
-        //    NotificationManagerCompat notificationManager = NotificationManagerCompat.From(this);
-
-        //    // Publish the notification:
-        //    const int notificationId = 0;
-        //    notificationManager.Notify(notificationId, notification);
-        //}
-
-
-
-
-
-
+       
 
         public void SendAppOffNotification()
         {

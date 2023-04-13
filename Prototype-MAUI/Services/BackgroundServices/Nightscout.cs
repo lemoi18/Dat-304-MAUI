@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text.Json;
 using MauiApp8.Model2;
+using MauiApp8.Model;
 
 namespace MauiApp8.Services.BackgroundServices
 {
@@ -98,7 +99,7 @@ namespace MauiApp8.Services.BackgroundServices
 
             List<TreatmentAPI> Items;
             Items = new List<TreatmentAPI>();
-            string Order = $"api/v1/treatments.json?find[created_at][$gte]={StartDate}&find[created_at][$lte]={EndDate}&count=all";
+            string Order = $"api/v1/treatments.json?find[created_at][$gte]={StartDate}&find[created_at][$lte]={EndDate}&count=all";     
             Uri uri = new Uri($"{RestUrl}{Order}");
 
             try
@@ -131,6 +132,58 @@ namespace MauiApp8.Services.BackgroundServices
 
             return Items;
         }
+
+
+        public static async Task<List<BasalData.NightscoutProfile>> GetInsulinBasal(string RestUrl)
+        {
+            
+           
+
+            JsonSerializerOptions _serializerOptions;
+            _serializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            BasalData.NightscoutProfile Test;
+            List<BasalData.NightscoutProfile> Items;
+            Items = new List<BasalData.NightscoutProfile>();
+            string Order = $"api/v1/profile.json?&count=3";
+            Uri uri = new Uri($"{RestUrl}{Order}");
+
+            try
+            {
+                using (HttpClient _client = new HttpClient())
+                {
+                    Console.WriteLine("Getting Response...");
+                    HttpResponseMessage response = await _client.GetAsync(uri);
+
+                    if (response.Content.Headers.ContentLength == 0)
+                    {
+                        Console.WriteLine("The response content is empty.");
+                    }
+                    else if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("The JSON is being serialized...");
+                        string content = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine(content);
+                        Items = JsonSerializer.Deserialize<List<BasalData.NightscoutProfile>>(content, _serializerOptions);
+                        
+                    }
+
+                    response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not a success code (2xx)
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                return Items;
+            }
+
+            return Items;
+        }
+
     }
 }
 

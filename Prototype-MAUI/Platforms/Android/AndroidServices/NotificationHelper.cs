@@ -46,12 +46,7 @@ namespace MauiApp8.Platforms.Android.AndroidServices
             var notificationManager = NotificationManagerCompat.From(_context);
             notificationManager.Notify(0, notificationBuilder.Build());
         }
-        //private readonly Context _context;
-
-        //public NotificationHelper(Context context)
-        //{
-        //    _context = context;
-        //}
+        
 
         public void ShowNotification()
         {
@@ -83,20 +78,6 @@ namespace MauiApp8.Platforms.Android.AndroidServices
             LocalNotificationCenter.Current.Show(notification);
         }
 
-        //private void CreateNotificationChannel()
-        //{
-        //    if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-        //    {
-        //        var channelName = "My Notification Channel";
-        //        var channelDescription = "Notification channel for my app";
-        //        var channel = new NotificationChannel("channel_id", channelName, NotificationImportance.Default)
-        //        {
-        //            Description = channelDescription
-        //        };
-
-        //        var notificationManager = (NotificationManager)_context.GetSystemService(Context.NotificationService);
-        //        notificationManager.CreateNotificationChannel(channel);
-        //    }
-        //}
+        
     }
 }
