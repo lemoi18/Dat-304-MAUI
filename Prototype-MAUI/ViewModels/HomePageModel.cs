@@ -111,11 +111,11 @@ namespace MauiApp8.ViewModel
         async Task CallFunction() {
 
             Console.WriteLine("INN CALL");
-            StartBackgroundFetch();
             //_backgroundFetchService.ScheduleFetchTask(TimeSpan.FromMinutes(1), () =>
             //{
             //    Console.WriteLine("BAckground.2");
             //});
+            StartBackgroundFetch();
             await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
             Console.WriteLine("OUT CALL");
             

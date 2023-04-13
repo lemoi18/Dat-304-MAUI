@@ -14,8 +14,7 @@ using AndroidX.Core.App; // Add this for NotificationCompat
 using Android.Support.V4.App; // Add this for NotificationCompat
 using System;
 using System.Threading.Tasks;
-using MauiApp8.Services.BackgroundServices;
-
+using BGF =  MauiApp8.Platforms.Android.AndroidServices;
 
 
 namespace MauiApp8.Platforms.Android.AndroidServices
@@ -26,6 +25,8 @@ namespace MauiApp8.Platforms.Android.AndroidServices
         private const int ServiceId = 1001;
         private const string CHANNEL_ID = "my_foreground_service_channel";
 
+
+       
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
             // Create the notification channel
@@ -44,15 +45,26 @@ namespace MauiApp8.Platforms.Android.AndroidServices
             // Execute the background fetch logic every 15 minutes (900000 milliseconds)
             Task.Run(async () =>
             {
-                //while (true)
-                //{
-                //    DataBase db = new DataBase();
-                //    await db.UpdateGlucose("https://oskarnightscoutweb1.azurewebsites.net/");
-                //    await db.UpdateInsulin("https://oskarnightscoutweb1.azurewebsites.net/");
-                //    Console.WriteLine("Testing Background fetch...");
-                //    // Your background fetch logic here
-                //    await Task.Delay(60000);
-                //}
+                int check = 0;
+                while (check < 2)
+                {
+                    if (check == 1)
+                    {
+                        // Define your fetch action
+                        Action fetchAction = () =>
+                        {
+                            // Your background fetch logic here
+                            // Logic in Background reciver in android directory
+                        };
+
+                        // Call the ScheduleFetchTask method to schedule the background fetch every 1 minute
+                        BGF.BackgroundFetchServiceAndroid bgf = new BGF.BackgroundFetchServiceAndroid();
+                        bgf.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction);
+                        
+                    }
+                    check += 1;
+                    await Task.Delay(TimeSpan.FromMinutes(1));
+                }
             });
 
             return StartCommandResult.Sticky;
