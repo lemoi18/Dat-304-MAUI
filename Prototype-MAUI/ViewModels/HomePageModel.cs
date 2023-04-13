@@ -18,6 +18,7 @@ using SkiaSharp;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using MauiApp8.Services.Health;
+using System.Collections.ObjectModel;
 
 namespace MauiApp8.ViewModel
 {
@@ -60,8 +61,19 @@ namespace MauiApp8.ViewModel
             _crudStub = crudStub;
             _healthService = healthService;
 
-            // Find out how to read glucose & Insulin data, Fix healthService injection
+            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            DateTimeOffset toDate = DateTimeOffset.UtcNow;
 
+            // Read Glucose & Insulin Data
+            var glucoses = _healthService.ReadGlucoses(fromDate, toDate);
+            var insulins = _healthService.ReadInsulins(fromDate, toDate);
+
+            var glucosevalues = new ObservableCollection<float>(glucoses.Select(g => g.Glucose));
+            var insulinvalues = new ObservableCollection<double>(insulins.Select(i => i.Insulin));
+
+
+            LastGlucoseLevel = glucosevalues.Last();
+            LastInsulinLevel = insulinvalues.Last();
             realm = _realm;
             _backgroundService = backgroundService;
             Task.Run(() => InitializeAsync());
@@ -74,8 +86,7 @@ namespace MauiApp8.ViewModel
             _series = _chartService.GetSeries();
 
             // extract last value from the LineSeries and assign to public property
-            LastInsulinLevel = ((LineSeries<int>)_series[0]).Values.LastOrDefault();
-            LastGlucoseLevel = ((LineSeries<int>)_series[1]).Values.LastOrDefault();
+            //LastInsulinLevel = 
 
 
             Title = new LabelVisual
@@ -85,11 +96,10 @@ namespace MauiApp8.ViewModel
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
             };
-
         }
         public LabelVisual Title { get; set; }
-        public int LastInsulinLevel { get; set; }
-        public int LastGlucoseLevel { get; set; }
+        public double LastInsulinLevel { get; set; }
+        public float LastGlucoseLevel { get; set; }
         public Axis[] XAxes { get; set; }
             = new Axis[]
             {
@@ -104,7 +114,7 @@ namespace MauiApp8.ViewModel
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
                 }
             };
-
+        
         public Axis[] YAxes { get; set; }
             = new Axis[]
             {
@@ -128,12 +138,15 @@ namespace MauiApp8.ViewModel
 
         private async Task ExecutePrintDataCommand()
         {
+            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            DateTimeOffset toDate = DateTimeOffset.UtcNow;
             try
             {
-                var glucoses = _healthService.ReadGlucoses(DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
-                var insulins = _healthService.ReadInsulins(DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
+                var glucoses = _healthService.ReadGlucoses(fromDate, toDate);
+                var insulins = _healthService.ReadInsulins(fromDate, toDate);
 
                 Debug.WriteLine("Glucoses:");
+
                 foreach (var glucose in glucoses)
                 {
                     Debug.WriteLine($"Glucose level: {glucose.Glucose}, Date: {glucose.Timestamp}");

@@ -12,7 +12,7 @@ namespace MauiApp8.ViewModel
 {
     public partial class GraphPageModel : ObservableObject
     {
-        private int XMax { get; set; }
+        private float XMax { get; set; }
         private readonly IChartService _chartService;
         [ObservableProperty]
         private ISeries[] _series;
@@ -21,7 +21,7 @@ namespace MauiApp8.ViewModel
         {
             _chartService = chartService;
             _series = _chartService.GetSeries();
-            XMax = ((LineSeries<int>)_series[0]).Values.Count();
+            XMax = ((LineSeries<float>)_series[0]).Values.Count();
 
             Title = new LabelVisual
             {
@@ -56,6 +56,8 @@ namespace MauiApp8.ViewModel
                     MinStep = 1,
                     LabelsPaint = new SolidColorPaint(SKColors.Black),
                     TextSize = 72,
+                    MinLimit = 0,
+                    MaxLimit = 260,
                 },
            };
             LegendTextPaint = new SolidColorPaint

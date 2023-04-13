@@ -55,7 +55,7 @@ public static class MauiProgram
 
 
         //Services
-        builder.Services.AddSingleton<IChartService>((e) => new LineChartService());
+        builder.Services.AddSingleton<IChartService>((e) => new LineChartService(e.GetService<IHealthService>()));
         builder.Services.AddTransient<Services.BackgroundServices.Realm.ICRUD>((e) => new Services.BackgroundServices.Realm.CRUD());
         builder.Services.AddTransient<Services.BackgroundServices.Realm.IUtils>((e) => new Services.BackgroundServices.Realm.Utils());
         builder.Services.AddTransient<IHealthService>((e) => new HealthService(e.GetService<IUtils>(), e.GetService<ICRUD>())); 

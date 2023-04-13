@@ -15,6 +15,7 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             />
+        <Button Text="Print Glucose Info" Command="{Binding PrintDataCommand}" />
         <Frame>
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnFrameTapped" />
