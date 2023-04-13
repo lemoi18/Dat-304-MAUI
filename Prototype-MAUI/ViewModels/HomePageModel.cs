@@ -85,26 +85,7 @@ namespace MauiApp8.ViewModel
             
             ///Todo Make a the DateTime in sync with the bgService
             // For Tests
-            DateTime now = DateTime.UtcNow;
-            DateTime startTime = now.AddDays(-1);
-            
-            await _thirdPartyHealthService.FetchActivityDataAsync(now, startTime);
-            await _thirdPartyHealthService.FetchCalorieDataAsync(now, startTime);
-
-            foreach (var stepData in _thirdPartyHealthService.CommonHealthData.StepDataList)
-            {
-                Console.WriteLine($"Steps: {stepData.Steps}, Start Time: {stepData.StartTime}, End Time: {stepData.EndTime}");
-            }
-
-            foreach (var calorieData in _thirdPartyHealthService.CommonHealthData.CalorieDataList)
-            {
-                Console.WriteLine($"Calories: {calorieData.Calories}, Start Time: {calorieData.StartTime}, End Time: {calorieData.EndTime}");
-            }
-
-            foreach (var activityData in _thirdPartyHealthService.CommonHealthData.ActivityDataList)
-            {
-                Console.WriteLine($"count: {activityData.Count}, Start Time: {activityData.StartTime}, End Time: {activityData.EndTime}, Activity Duration: {activityData.ActivityDuration}, Activity Type: { activityData.ActivityType} ");
-            }
+           
 
 
 

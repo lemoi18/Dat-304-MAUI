@@ -14,7 +14,7 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
     [BroadcastReceiver(Enabled = true)]
     public class BackgroundFetchReceiver : BroadcastReceiver
     {
-        public override void OnReceive(Context context, Intent intent)
+        public override async void OnReceive(Context context, Intent intent)
         {
             WeakReferenceMessenger.Default.Send(new Fetch.Update_Google { Response = 8 });
             // Implement youribf background fetch logic here
