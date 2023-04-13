@@ -2,10 +2,12 @@
 
 namespace MauiApp8.Services.Health
 {
-    internal class HealthService : IHealthService
+    public class HealthService : IHealthService
     {
         private readonly IUtils _utils;
         private readonly ICRUD _crud;
+
+
 
         public HealthService(IUtils utils, ICRUD crud)
         {

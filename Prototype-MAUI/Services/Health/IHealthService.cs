@@ -5,7 +5,7 @@ using MauiApp8.Model;
 
 namespace MauiApp8.Services.Health
 {
-    internal interface IHealthService
+    public interface IHealthService
     {
         List<GlucoseInfo> ReadGlucoses(DateTimeOffset fromDate, DateTimeOffset toDate);
         List<InsulinInfo> ReadInsulins(DateTimeOffset fromDate, DateTimeOffset toDate);

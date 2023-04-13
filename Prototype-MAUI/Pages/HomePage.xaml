@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns:controls="clr-namespace:MauiApp8.Controls"
-             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MauiApp8.Views.HomePage"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:HomePageModel"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             xmlns:lvcore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore"
+             xmlns:controls="clr-namespace:MauiApp8.Controls"
              Title="Home">
 
     <VerticalStackLayout>
@@ -43,8 +45,21 @@
            
             />
 
-     
+                </Label.FormattedText>
+            </Label>
+        </Frame>
 
+        <Frame BackgroundColor="LightGray" Padding="10" CornerRadius="5" HorizontalOptions="Center">
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Current Glucose Level: " FontSize="18" />
+                        <Span Text="{Binding LastGlucoseLevel}" FontSize="18" TextColor="Blue" />
+                    </FormattedString>
+
+                </Label.FormattedText>
+            </Label>
+        </Frame>
     </VerticalStackLayout>
   
 </ContentPage>

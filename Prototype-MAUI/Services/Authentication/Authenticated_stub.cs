@@ -23,7 +23,7 @@ namespace MauiApp8.Services.Authentication
         public Task<Account> AuthenticateAsync()
         {
             string email = "uia@test.no";
-            string name = " Test stub";
+            string name = "Test stub";
             string givenName = "Test";
             string familyName = "stub";
             string picture = "test";
