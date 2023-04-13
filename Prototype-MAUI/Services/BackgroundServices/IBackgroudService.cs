@@ -15,6 +15,8 @@ namespace MauiApp8.Services.BackgroundServices
         Task<int> UpdateGlucose(string domainName);
         Task<int> UpdateInsulin(string domainName);
 
-        
+        DateTimeOffset Get_NewestTimestamp(DateTimeOffset first_datetime, DateTimeOffset second_datetime);
+
+        Task<double?> GetBasalInsulin(string DomainName, DateTimeOffset time);
     }
 }

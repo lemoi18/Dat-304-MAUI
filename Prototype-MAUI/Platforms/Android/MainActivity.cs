@@ -6,6 +6,19 @@ using Android.App;
 using AW =Android.Widget;
 using Android.Views;
 using MauiApp8.Platforms.Android.AndroidServices;
+using XE = Xamarin.Essentials;
+using MauiApp8;
+using static Android.Manifest;
+
+using AndroidX.Core.App;
+
+
+using AndroidX;
+using Android.Net;
+using Android.Runtime;
+using Android.Support.V4.App;
+
+using Android.Provider;
 
 namespace MauiApp8;
 
@@ -15,14 +28,21 @@ public class MainActivity : MauiAppCompatActivity
 {
     
     public static MainActivity ActivityCurrent { get; set; }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+
+        RequestNotificationPermission();
+    }
     protected override void OnCreate(Bundle savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+        Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
         RequestDndAccess();
         // Start the foreground service
-        //var intentForGround = new Intent(this, typeof(MauiApp8.Platforms.Android.AndroidServices.MyForegroundService));
-        //StartService(intentForGround);
+        
         StartMyForegroundService();
         if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
         {
@@ -38,6 +58,38 @@ public class MainActivity : MauiAppCompatActivity
 
 
     }
+    private void RequestNotificationPermission()
+    {
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+        {
+            if (NotificationManagerCompat.From(this).AreNotificationsEnabled())
+            {
+                // notifications are enabled
+            }
+            else
+            {
+                // request notification permission
+                var permissionIntent = new Intent(Settings.ActionApplicationDetailsSettings);
+                var uri = Android.Net.Uri.FromParts("package", PackageName, null);
+                permissionIntent.SetData(uri);
+                StartActivity(permissionIntent);
+            }
+        }
+        else
+        {
+            // notifications are enabled
+        }
+    }
+    public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
+    {
+        Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    
+
+    
+
     private void RequestDndAccess()
     {
         if (Build.VERSION.SdkInt >= BuildVersionCodes.M)

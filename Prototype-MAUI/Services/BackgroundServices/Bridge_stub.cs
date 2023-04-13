@@ -54,6 +54,10 @@ namespace MauiApp8.Services.BackgroundServices
             // No implementation needed for the stub
             return Task.FromResult(0);
         }
+
+        public DateTimeOffset Get_NewestTimestamp(DateTimeOffset first_datetime, DateTimeOffset second_datetime) { DateTimeOffset r = new DateTimeOffset(); return r; }
+
+        public async Task<double?> GetBasalInsulin(string DomainName, DateTimeOffset time) { return 22; }
     }
 }
 

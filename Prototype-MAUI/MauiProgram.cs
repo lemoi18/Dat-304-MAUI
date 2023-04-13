@@ -57,7 +57,7 @@ public static class MauiProgram
         builder.Services.AddTransient<Realms.Realm>(e => Services.DBService.CreateDB.RealmCreate());
         builder.Services.AddTransient<Services.BackgroundServices.IBackgroundService>((e) => new Services.BackgroundServices.DataBase());
         builder.Services.AddSingleton<Services.ThirdPartyHealthService.IThirdPartyHealthService>(e => new Services.ThirdPartyHealthService.GoogleFit(e.GetRequiredService<IAuthenticationService>()));
-        builder.Services.AddSingleton<Services.PublishSubscribeService.Publish>(e => new Services.PublishSubscribeService.Publish(e.GetRequiredService<Services.BackgroundServices.IBackgroundService>()));
+        builder.Services.AddSingleton<Services.PublishSubscribeService.Publish>(e => new Services.PublishSubscribeService.Publish(e.GetRequiredService<Services.BackgroundServices.IBackgroundService> (), e.GetRequiredService<Services.IThirdPartyHealthService>()));
 #if __ANDROID__
         builder.Services.AddSingleton<Services.BackgroundFetchService.IBackgroundFetchService, MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid>(services => new MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid());
 #endif

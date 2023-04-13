@@ -8,25 +8,25 @@ using Google.Apis.Oauth2.v2;
 using MauiApp8.Services.BackgroundServices;
 using Microsoft.Toolkit.Mvvm.Messaging; 
 using CommunityToolkit.Mvvm;
-using MauiApp8.Services.ThirdPartyHealthService;
+using MauiApp8.Model;
+using System.Globalization;
+
+
+
 
 namespace MauiApp8.Services.PublishSubscribeService
 {
     public class Publish
     {
         internal readonly IBackgroundService _backgroundService;
-        private readonly IThirdPartyHealthService _thirdPartyHealthService;
-
-
-        public Publish(IBackgroundService backgroundService)
+        internal readonly Services.Authentication.IAuthenticationService _authService;
+        internal Publish(IBackgroundService backgroundService, Services.Authentication.IAuthenticationService authService)
         {
             _backgroundService = backgroundService;
-
+            _authService = authService;
         }
-        public class UpdateResponse
-        {
-            public int Response { get; set; }
-        }
+        
+       
 
         public class Alarm
         {
@@ -34,55 +34,7 @@ namespace MauiApp8.Services.PublishSubscribeService
             public bool On { get; set; } = false;
         }
 
-        public async Task UpdateBackgroundData(string domainName)
-        {
-            int response = 0;
-
-            DateTime now = DateTime.UtcNow;
-            DateTime startTime = now.AddDays(-1);
-            try
-            {
-                response += await UpdateGlucose(domainName);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Glucose Update Issue: " + ex);
-            }
-
-            try
-            {
-                response += await UpdateInsulin(domainName);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Insulin Update Issue: " + ex);
-            }
-
-            try
-            {
-                response += await FetchActivityDataAsync(now,startTime);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Activity Update Issue: " + ex);
-            }
-
-            try
-            {
-                response += await FetchCalorieDataAsync(now, startTime);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Calorie Update Issue: " + ex);
-            }
-
-
-       
-
-            
-
-            WeakReferenceMessenger.Default.Send(new UpdateResponse { Response = response });
-        }
+        
 
         public async Task Turn_On() 
         {
@@ -94,11 +46,34 @@ namespace MauiApp8.Services.PublishSubscribeService
         }
         public async Task CheckSubscribe() 
         {
-            WeakReferenceMessenger.Default.Register<UpdateResponse>(this, (sender, message) =>
+            WeakReferenceMessenger.Default.Register<Fetch.UpdateResponse>(this, (sender, message) =>
             {
                 Console.WriteLine(message.Response);
                 Console.WriteLine(sender);
                 Console.WriteLine("Updated Data...");
+            });
+
+        }
+        public async Task CheckTimeDiffrence()
+        {
+            WeakReferenceMessenger.Default.Register<Alarm>(this, async (sender, message) =>
+            {
+                List < BasalData.NightscoutProfile > Items;
+                Items = await Nightscout.GetInsulinBasal("https://oskarnightscoutweb1.azurewebsites.net/");
+                Console.WriteLine(Items.Count);
+                DateTimeOffset date = DateTimeOffset.ParseExact("2023-04-12T19:34:56.626Z", "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+                Task<double?> a = _backgroundService.GetBasalInsulin("https://oskarnightscoutweb1.azurewebsites.net/", date);
+                
+            });
+
+        }
+        public async Task GoogleFetchSub()
+        {
+            WeakReferenceMessenger.Default.Register<Fetch.Update_Google>(this, async (sender, message) =>
+            {
+             
+                Console.WriteLine(" GoogleFetchSub");
+                
             });
 
         }
