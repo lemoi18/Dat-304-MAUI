@@ -5,9 +5,11 @@
              x:Class="MauiApp8.Views.SettingsPage"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:SettingsPageModel"
+             xmlns:controls="clr-namespace:MauiApp8.Controls"
              Title="Settings">
              
     <VerticalStackLayout>
+        <controls:NoInternetWarning />
         <Label 
             Text="{Binding User.Name}"
             VerticalOptions="Center" 

@@ -5,11 +5,12 @@
              x:Class="MauiApp8.Views.LoginPage"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:LoginPageModel"
+             xmlns:controls="clr-namespace:MauiApp8.Controls"
              >
 
 
-
     <VerticalStackLayout>
+        <controls:NoInternetWarning />
         <Label 
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 

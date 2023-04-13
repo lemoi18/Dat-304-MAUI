@@ -8,12 +8,13 @@
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:LogFoodModel"
              xmlns:view="clr-namespace:MauiApp8.Views"
-
-    >
+             xmlns:controls="clr-namespace:MauiApp8.Controls"
+             >
 
 
 
     <StackLayout>
+        <controls:NoInternetWarning />
 
        
 

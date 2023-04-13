@@ -7,11 +7,12 @@
              x:DataType="viewmodel:GraphPageModel"
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              xmlns:lvcore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore"
-
+             xmlns:controls="clr-namespace:MauiApp8.Controls"
              Title="Graph">
 
 
     <VerticalStackLayout>
+        <controls:NoInternetWarning />
         
         <lvc:CartesianChart 
             Series="{Binding Series}" 

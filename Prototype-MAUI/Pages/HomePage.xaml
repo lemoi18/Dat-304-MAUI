@@ -7,9 +7,11 @@
              x:DataType="viewmodel:HomePageModel"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              xmlns:lvcore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore"
+             xmlns:controls="clr-namespace:MauiApp8.Controls"
              Title="Home">
 
     <VerticalStackLayout>
+        <controls:NoInternetWarning />
         <Label
             Text="{Binding User.Name}"
             VerticalOptions="Center" 

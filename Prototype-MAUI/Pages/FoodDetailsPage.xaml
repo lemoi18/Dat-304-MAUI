@@ -7,10 +7,11 @@
              x:DataType="viewmodel:FoodDetailsModel"
              xmlns:model="clr-namespace:MauiApp8.Model"
              xmlns:local="clr-namespace:MauiApp8.Controls"
-             Title="{Binding Food.Name}"
-             >
+             xmlns:controls="clr-namespace:MauiApp8.Controls"
+             Title="{Binding Food.Name}">
 
     <VerticalStackLayout Spacing="15" Padding="15">
+        <controls:NoInternetWarning />
 
         <Frame BackgroundColor="White"
                CornerRadius="10"
