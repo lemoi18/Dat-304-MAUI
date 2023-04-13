@@ -1,22 +1,23 @@
 ﻿using MauiApp8.Model;
 using MauiApp8.Services.DBService;
 using Realms;
-using Realms.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MauiApp8.Model2;
+using System.Data.Common;
+using System.Globalization;
+using MauiApp8.Model;
+//using Xamarin.Google.Crypto.Tink.Shaded.Protobuf;
+
 
 namespace MauiApp8.Services.BackgroundServices
 {
     public class DataBase : IBackgroundService
     {
-        //public static string Pathgetter()
-        //{
-        //    string path = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
-        //    string actualPath = path.Substring(0, path.LastIndexOf("bin"));
-        //    actualPath = actualPath.Substring(0, actualPath.LastIndexOf("/"));
-        //    //actualPath = actualPath.Substring(0, actualPath.LastIndexOf("/"));
-        //    string projectPath = new Uri(actualPath).LocalPath;
-        //    path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, projectPath);
-        //    return path;
-        //}
+      
         public static string Pathgetter()
         {
             string executablePath = Environment.ProcessPath;
@@ -28,7 +29,6 @@ namespace MauiApp8.Services.BackgroundServices
         public static Realms.Realm RealmCreate()
         {
             string pathToDb = $"{AppDomain.CurrentDomain.BaseDirectory}";
-            //Console.WriteLine(pathToDb + "/my.realm");
             var config = new RealmConfiguration(pathToDb + "/my.realm")
             {
                 IsReadOnly = false,
@@ -56,6 +56,7 @@ namespace MauiApp8.Services.BackgroundServices
         {
             Realms.Realm localRealm = CreateDB.RealmCreate();
 
+            
             try
             {
                 string dbFullPath = localRealm.Config.DatabasePath;
@@ -177,7 +178,8 @@ namespace MauiApp8.Services.BackgroundServices
             Console.WriteLine("Adding " + Items.Count + " glucose entries... ");
             foreach (GlucoseAPI obj in Items)
             {
-                DB.AddGlucoseEntry(obj.sgv, obj.dateString);
+                if (obj.sgv != 0)
+                    DB.AddGlucoseEntry(obj.sgv, obj.dateString);
             }
             return 200;
         }
@@ -197,16 +199,78 @@ namespace MauiApp8.Services.BackgroundServices
             DateTime utcTime = DateTime.UtcNow;
             TimeZoneInfo norwegianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
-            Console.WriteLine(utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine(utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             List<TreatmentAPI> Items;
             Items = await Nightscout.GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
             Console.WriteLine("Adding " + Items.Count + " insulin entries... ");
             foreach (TreatmentAPI obj in Items)
             {
                 if (obj.insulin != null)
+                {
+                    Console.WriteLine(obj.insulin);
+                    TimeZoneInfo norwegianTime = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+                    DateTimeOffset utcBasalTime = TimeZoneInfo.ConvertTimeFromUtc(obj.created_at, norwegianTime);
                     DB.AddInsulinEntry((double)obj.insulin, obj.created_at);
+
+                }
             }
+            return 200;
+        }
+
+        public DateTimeOffset Get_NewestTimestamp(DateTimeOffset first_datetime, DateTimeOffset second_datetime)
+        {       
+           
+            Console.WriteLine(first_datetime);
+            Console.WriteLine(second_datetime);
+            if (DateTimeOffset.Compare(first_datetime, second_datetime) < 0)
+            {
+                Console.WriteLine("Newest: " + second_datetime);
+                return second_datetime;
+            }
+            else
+            {
+                Console.WriteLine("Newest: " + first_datetime);
+                return first_datetime;
+            }
+        }
+
+        public async Task<double?> GetBasalInsulin(string DomainName, DateTimeOffset time) {
+            //2023-04-12T19:34:56.626Z
+            DateTimeOffset ClosestTime;
+            List<BasalData.NightscoutProfile> Items;
+            Items = await Nightscout.GetInsulinBasal(DomainName);
+            Console.WriteLine(Items.Count);
+            foreach (BasalData.NightscoutProfile obj in Items)
+            {
+                Console.WriteLine("Created at: " + obj.CreatedAt);
+                ClosestTime = Get_NewestTimestamp(time, obj.CreatedAt);
+                Console.WriteLine("original at: " + time);
+                Console.WriteLine("Response at: " + ClosestTime);
+                if ( ClosestTime.ToString() == time.ToString()) { 
+                    Console.WriteLine(obj.CreatedAt.ToString());
+                    for (int i = 0; i < obj.Store["Patern 1"].Basal.Count; i++)
+                    {
+                        BasalData.Basal basal = obj.Store["Patern 1"].Basal[i];
+                        Console.WriteLine("Time: " + basal.Time);
+                        Console.WriteLine("Value: " + basal.Value);
+                        Console.WriteLine("TimeAsSeconds: " + basal.TimeAsSeconds);
+                    }
+                    break; 
+                }
+                else if (obj.Equals(Items.Last()))
+                {
+                    Console.WriteLine("This is the last object in Items!");
+                    Console.WriteLine(obj.CreatedAt.ToString());
+                    foreach (BasalData.Basal basal in obj.Store["default"].Basal)
+                    {
+                        Console.WriteLine("Time: " + basal.Time);
+                        Console.WriteLine("Value: " + basal.Value);
+                        Console.WriteLine("TimeAsSeconds: " + basal.TimeAsSeconds);
+                    }
+                    break;
+                }
+            }
+            
+
             return 200;
         }
 

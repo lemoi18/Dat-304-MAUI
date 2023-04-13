@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jl42">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Prototype-MAUI/obj/Debug/net7.0-android/lp/94/jl/classes.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Prototype-MAUI/obj/Debug/net7.0-android/lp/94/jl/res.zip!/" />
+      <root url="jar://$PROJECT_DIR$/Prototype-MAUI/obj/Debug/net7.0-android/lp/94/jl/annotations.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

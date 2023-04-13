@@ -12,11 +12,7 @@
 
     <VerticalStackLayout>
         <controls:NoInternetWarning />
-        <Label
-            Text="{Binding User.Name}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center"
-            />
+        
         <Frame>
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnFrameTapped" />

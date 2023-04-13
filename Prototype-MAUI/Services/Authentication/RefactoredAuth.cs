@@ -23,7 +23,7 @@ namespace MauiApp8.Services.Authentication
 
         public JwtSecurityToken Token { get; set; }
 
-
+        public string AccessToken { get; set; }
 
         public Account User { get; set; }
 
@@ -38,7 +38,7 @@ namespace MauiApp8.Services.Authentication
             auth_url = $"{auth_uri}?response_type=code" +
                 $"&redirect_uri=com.companyname.mauiapp8://" +
                 $"&client_id={client_id}" +
-                $"&scope=https://www.googleapis.com/auth/userinfo.profile" +
+                $"&scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/fitness.activity.read%20https://www.googleapis.com/auth/fitness.activity.write" +
                 $"&include_granted_scopes=true" +
                 $"&state=state_parameter_passthrough_value";
 
@@ -82,12 +82,16 @@ namespace MauiApp8.Services.Authentication
 
             var data = await accessTokenResponse.Content.ReadAsStringAsync();
             var loginResponse = JsonSerializer.Deserialize<LoginRespons>(data);
-            var accessToken = loginResponse.id_token;
-            
+
 
             try
             {
-                return ValidateAccessToken(accessToken);
+
+
+                return ValidateAccessToken(loginResponse.id_token, loginResponse.access_token);
+
+
+
             }
             catch (Exception e)
             {
@@ -102,15 +106,16 @@ namespace MauiApp8.Services.Authentication
             await Task.CompletedTask;
         }
 
-        private Account ValidateAccessToken(string accessToken)
+        private Account ValidateAccessToken(string id_token, string access_token)
         {
             var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(accessToken);
+            var token = handler.ReadJwtToken(id_token);
             var email = GetTokenClaim(token, "email");
             var name = GetTokenClaim(token, "name");
             var givenName = GetTokenClaim(token, "given_name");
             var picture = GetTokenClaim(token, "picture");
             var familyName = GetTokenClaim(token, "family_name");
+
 
             return new Account
             {
@@ -120,7 +125,8 @@ namespace MauiApp8.Services.Authentication
                 PictureUrl = picture,
                 FamilyName = familyName,
                 LoginSuccessful = true,
-                Token = token
+                Token = token,
+                AccessToken= access_token
             };
         }
 

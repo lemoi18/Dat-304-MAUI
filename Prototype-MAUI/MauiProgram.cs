@@ -3,12 +3,11 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Logging;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.DataServices;
-using SkiaSharp.Views.Maui.Controls.Hosting;
-using LiveChartsCore;
-using MauiApp8.Services.GraphService;
-using MauiApp8.Services.Health;
-using MauiApp8.Services.BackgroundServices.Realm;
-using Android.App;
+using Microsoft.Extensions.DependencyInjection;
+using Plugin.LocalNotification;
+#if __ANDROID__
+using MauiApp8.Platforms.Android.AndroidServices;
+#endif
 
 namespace MauiApp8;
 
@@ -21,6 +20,7 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseSkiaSharp(true)
             .UseMauiCommunityToolkit()
+            .UseLocalNotification()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -63,10 +63,11 @@ public static class MauiProgram
         builder.Services.AddTransient<Services.DataServices.IDataService>((e) => new Services.DataServices.FoodService_stub(e.GetService<Services.BackgroundServices.IBackgroundService>()));
         builder.Services.AddTransient<Realms.Realm>(e => Services.DBService.CreateDB.RealmCreate());
         builder.Services.AddTransient<Services.BackgroundServices.IBackgroundService>((e) => new Services.BackgroundServices.DataBase());
-
-
-
-
+        builder.Services.AddSingleton<Services.ThirdPartyHealthService.IThirdPartyHealthService>(e => new Services.ThirdPartyHealthService.GoogleFit(e.GetRequiredService<IAuthenticationService>()));
+        builder.Services.AddSingleton<Services.PublishSubscribeService.Publish>(e => new Services.PublishSubscribeService.Publish(e.GetRequiredService<Services.BackgroundServices.IBackgroundService> (), e.GetRequiredService<Services.ThirdPartyHealthService.IThirdPartyHealthService>()));
+#if __ANDROID__
+        builder.Services.AddSingleton<Services.BackgroundFetchService.IBackgroundFetchService, MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid>(services => new MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid());
+#endif
 
 
         var app = builder.Build();
