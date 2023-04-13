@@ -20,11 +20,11 @@
         <ShellContent Title="Food"
                       ContentTemplate="{DataTemplate views:FoodPage}"
                       Route="Food" />
-        <ShellContent Title="Settings"
-                      ContentTemplate="{DataTemplate views:SettingsPage}"
-                      Route="settings" />
         <ShellContent Title="Graph"
                       ContentTemplate="{DataTemplate views:GraphPage}"
                       Route="graph" />
+        <ShellContent Title="Settings"
+                      ContentTemplate="{DataTemplate views:SettingsPage}"
+                      Route="settings" />
     </TabBar>
     </Shell>
