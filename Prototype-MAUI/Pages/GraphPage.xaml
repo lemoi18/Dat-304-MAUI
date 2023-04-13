@@ -20,7 +20,6 @@
             YAxes="{Binding YAxes}"
             XAxes="{Binding XAxes}"
             TooltipTextSize="50"
-            ZoomMode="X"
             EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}"
             LegendPosition="Bottom"
             LegendTextPaint="{Binding LegendTextPaint}"
