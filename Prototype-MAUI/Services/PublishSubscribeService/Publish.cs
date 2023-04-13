@@ -20,7 +20,7 @@ namespace MauiApp8.Services.PublishSubscribeService
     {
         internal readonly IBackgroundService _backgroundService;
         internal readonly ThirdPartyHealthService.IThirdPartyHealthService _thirdPartyHealthService;
-        internal Publish(IBackgroundService backgroundService, ThirdPartyHealthService.IThirdPartyHealthService thirdPartyHealthService)
+        public Publish(IBackgroundService backgroundService, ThirdPartyHealthService.IThirdPartyHealthService thirdPartyHealthService)
         {
             _backgroundService = backgroundService;
             _thirdPartyHealthService = thirdPartyHealthService;

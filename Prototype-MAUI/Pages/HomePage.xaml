@@ -36,12 +36,7 @@
 
         
 
-        <Label 
-    Text="{Binding User.Name}"
-    VerticalOptions="Center" 
-    HorizontalOptions="Center"
-           
-            />
+        
 
      
 
