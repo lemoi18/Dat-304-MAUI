@@ -7,6 +7,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
+using MauiApp8.Services.Health;
 
 namespace MauiApp8.ViewModel
 {
@@ -14,15 +15,24 @@ namespace MauiApp8.ViewModel
     {
         private float XMax { get; set; }
         private readonly IChartService _chartService;
+        private readonly IHealthService _healthService;
         [ObservableProperty]
         private ISeries[] _series;
 
-        public GraphPageModel(IChartService chartService)
+        public GraphPageModel(IChartService chartService, IHealthService healthService)
         {
             _chartService = chartService;
             _series = _chartService.GetSeries();
-            XMax = ((LineSeries<float>)_series[0]).Values.Count();
+            _healthService = healthService;
 
+            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            DateTimeOffset toDate = DateTimeOffset.UtcNow;
+            var glucoses = _healthService.ReadGlucoses(fromDate, toDate);
+            var glucoseTimestampStrings = glucoses.Select(g => g.Timestamp.ToString("HH:mm")).ToArray();
+
+
+
+            XMax = ((LineSeries<float>)_series[0]).Values.Count();
             Title = new LabelVisual
             {
                 Text = "Health Data",
@@ -36,14 +46,15 @@ namespace MauiApp8.ViewModel
                 new Axis
                 {
                     Name = "Time",
+                    Labels = glucoseTimestampStrings,
                     NameTextSize = 50,
-                    MinLimit = (XMax-10),
+                    MinLimit = (XMax-5),
                     MaxLimit = XMax,
                     NamePaint = new SolidColorPaint(SKColors.Black),
                     MinStep = 1,
                     LabelsPaint = new SolidColorPaint(SKColors.Black),
-                    TextSize = 72,
-                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
+                    TextSize = 36,
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 },
                 }
  };
             YAxes = new Axis[]

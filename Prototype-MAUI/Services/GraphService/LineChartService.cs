@@ -33,7 +33,11 @@ namespace MauiApp8.Services.GraphService
             var insulins = _healthService.ReadInsulins(fromDate, toDate);
 
             var glucosevalues = new ObservableCollection<float>(glucoses.Select(g => g.Glucose));
+            var glucoseTimestamp = new ObservableCollection<System.DateTimeOffset>(glucoses.Select(g => g.Timestamp));
+                        var glucoseTimestampStrings = glucoses.Select(g => g.Timestamp.ToString("HH:mm")).ToArray();
+
             var insulinvalues = new ObservableCollection<double>(insulins.Select(i => i.Insulin));
+            var insulinTimestamp = new ObservableCollection<System.DateTimeOffset>(insulins.Select(i => i.Timestamp));
 
 
             return new ISeries[]
@@ -50,8 +54,9 @@ namespace MauiApp8.Services.GraphService
                 Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 10 },
                 ScalesYAt = 0,
                 LegendShapeSize = 35,
-
-            },
+                // Need to fix Tooltip
+                TooltipLabelFormatter = (chartPoint) => $"Time: {glucoseTimestamp[Convert.ToInt32(chartPoint.PrimaryValue)]:HH:mm}, Glucose Level: {chartPoint.PrimaryValue}"
+        },
             new LineSeries<double>
             {
                 Values = insulinvalues,
@@ -63,6 +68,7 @@ namespace MauiApp8.Services.GraphService
                 Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 5 },
                 ScalesYAt = 0,
                 LegendShapeSize = 35,
+                TooltipLabelFormatter = (chartPoint) => $"Time: {insulinTimestamp[Convert.ToInt32(chartPoint.PrimaryValue)]:HH:mm}, Insulin Level: {chartPoint.PrimaryValue}"
 
             }
         };

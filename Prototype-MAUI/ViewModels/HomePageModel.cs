@@ -71,9 +71,9 @@ namespace MauiApp8.ViewModel
             var glucosevalues = new ObservableCollection<float>(glucoses.Select(g => g.Glucose));
             var insulinvalues = new ObservableCollection<double>(insulins.Select(i => i.Insulin));
 
-
             LastGlucoseLevel = glucosevalues.Last();
             LastInsulinLevel = insulinvalues.Last();
+
             realm = _realm;
             _backgroundService = backgroundService;
             Task.Run(() => InitializeAsync());
@@ -84,9 +84,6 @@ namespace MauiApp8.ViewModel
             // chart stuff
             _chartService = chartService;
             _series = _chartService.GetSeries();
-
-            // extract last value from the LineSeries and assign to public property
-            //LastInsulinLevel = 
 
 
             Title = new LabelVisual
@@ -145,6 +142,7 @@ namespace MauiApp8.ViewModel
                 var glucoses = _healthService.ReadGlucoses(fromDate, toDate);
                 var insulins = _healthService.ReadInsulins(fromDate, toDate);
 
+                Debug.WriteLine(glucoses[0].Timestamp);
                 Debug.WriteLine("Glucoses:");
 
                 foreach (var glucose in glucoses)
