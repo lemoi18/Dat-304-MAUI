@@ -13,6 +13,7 @@ namespace MauiApp8;
 
 public class MainActivity : MauiAppCompatActivity
 {
+    
     public static MainActivity ActivityCurrent { get; set; }
     protected override void OnCreate(Bundle savedInstanceState)
     {

@@ -3,9 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Model;
 using MauiApp8.Model2;
 using MauiApp8.Services.Authentication;
+using MauiApp8.Services.BackgroundFetchService;
 using MauiApp8.Services.BackgroundServices;
-using MauiApp8.Services.GoogleFitService;
 using MauiApp8.Services.PublishSubscribeService;
+using MauiApp8.Services.ThirdPartyHealthService;
 using Realms;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ using System.Text.Json;
 using static Google.Apis.Requests.BatchRequest;
 using Microsoft.Maui.Controls;
 
+
 namespace MauiApp8.ViewModel
 {
     public partial class HomePageModel : ObservableObject
@@ -23,11 +25,11 @@ namespace MauiApp8.ViewModel
         
         IBackgroundService _backgroundService;
 
-        Services.BackgroundFetchService.IBackgroundFetchService _backgroundFetchService;
-
+        IBackgroundFetchService _backgroundFetchService;
+        IThirdPartyHealthService _thirdPartyHealthService;
         Realm realm;
 
-        GoogleFit _googlefit;
+        
 
         Publish _publish;
 
@@ -43,14 +45,15 @@ namespace MauiApp8.ViewModel
 
 
 
-        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, GoogleFit googlefit, Publish publish, Services.BackgroundFetchService.IBackgroundFetchService backgroundFetchService)
+        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, Realm _realm, IThirdPartyHealthService thirdPartyHealthService
+, Publish publish, IBackgroundFetchService backgroundFetchService)
         {
 
 
             realm = _realm;
             _publish = publish;
             _backgroundService = backgroundService;
-            _googlefit = googlefit;
+            _thirdPartyHealthService = thirdPartyHealthService;
             _backgroundFetchService = backgroundFetchService;
             Task.Run(() => InitializeAsync());
             
@@ -70,6 +73,7 @@ namespace MauiApp8.ViewModel
         
         private async Task InitializeAsync()
         {
+            await TestFunction();
             //await UpdateStuff();
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
             //await UpdateStuff();
@@ -78,15 +82,33 @@ namespace MauiApp8.ViewModel
         [RelayCommand]
         async Task TestFunction()
         {
-            //_googlefit.CheckAccount();
-            string iso8601DateTime = "2023-04-01T15:53:17";
-            long unixTimeMilliseconds = _googlefit.ConvertToUnixTimeMilliseconds(iso8601DateTime);
-            int currentUnixTimestamp = _googlefit.GetCurrentUnixTimestamp();
-            string currentTime = currentUnixTimestamp.ToString() + "000";
-            string startTime = unixTimeMilliseconds.ToString();
-            Console.WriteLine(currentTime);
-            Console.WriteLine(startTime);
-            await _publish.CheckSubscribe();
+            
+            ///Todo Make a the DateTime in sync with the bgService
+            // For Tests
+            DateTime now = DateTime.UtcNow;
+            DateTime startTime = now.AddDays(-1);
+            
+            await _thirdPartyHealthService.FetchActivityDataAsync(now, startTime);
+            await _thirdPartyHealthService.FetchCalorieDataAsync(now, startTime);
+
+            foreach (var stepData in _thirdPartyHealthService.CommonHealthData.StepDataList)
+            {
+                Console.WriteLine($"Steps: {stepData.Steps}, Start Time: {stepData.StartTime}, End Time: {stepData.EndTime}");
+            }
+
+            foreach (var calorieData in _thirdPartyHealthService.CommonHealthData.CalorieDataList)
+            {
+                Console.WriteLine($"Calories: {calorieData.Calories}, Start Time: {calorieData.StartTime}, End Time: {calorieData.EndTime}");
+            }
+
+            foreach (var activityData in _thirdPartyHealthService.CommonHealthData.ActivityDataList)
+            {
+                Console.WriteLine($"count: {activityData.Count}, Start Time: {activityData.StartTime}, End Time: {activityData.EndTime}, Activity Duration: {activityData.ActivityDuration}, Activity Type: { activityData.ActivityType} ");
+            }
+
+
+
+            //await _publish.CheckSubscribe();
             Console.WriteLine("...");
 
 
@@ -139,14 +161,6 @@ namespace MauiApp8.ViewModel
 
         
 
-
-        public Account User
-        {
-            get => _user;
-            set => SetProperty(ref _user, value);
-        }
-        private Account _user;
-
        
 
 
@@ -158,21 +172,7 @@ namespace MauiApp8.ViewModel
 
        
 
-        public void DBTest()
-        {
-            Console.WriteLine($"Loaded {realm} db from DBLib");
-            var amount = realm.All<InsulinInfo>().Count();
-            Console.WriteLine($"{amount}");
-            realm.Write(() =>
-            {
-                var dog = new InsulinInfo { Insulin = 13, Timestamp = new DateTimeOffset() };
-                // Add the instance to the realm.
-                realm.Add(dog);
-            });
-            var amount1 = realm.All<InsulinInfo>().Count();
-
-            Console.WriteLine($"Loaded {amount1} from db");
-        }
+        
 
         
     }

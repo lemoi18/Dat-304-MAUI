@@ -8,20 +8,21 @@ using Google.Apis.Oauth2.v2;
 using MauiApp8.Services.BackgroundServices;
 using Microsoft.Toolkit.Mvvm.Messaging; 
 using CommunityToolkit.Mvvm;
-
-
+using MauiApp8.Services.ThirdPartyHealthService;
 
 namespace MauiApp8.Services.PublishSubscribeService
 {
     public class Publish
     {
         internal readonly IBackgroundService _backgroundService;
+        private readonly IThirdPartyHealthService _thirdPartyHealthService;
 
-        internal Publish(IBackgroundService backgroundService)
+
+        public Publish(IBackgroundService backgroundService)
         {
             _backgroundService = backgroundService;
+
         }
-        
         public class UpdateResponse
         {
             public int Response { get; set; }
@@ -33,29 +34,52 @@ namespace MauiApp8.Services.PublishSubscribeService
             public bool On { get; set; } = false;
         }
 
-        public async Task UpdateBackgroundData(string DomainName) 
+        public async Task UpdateBackgroundData(string domainName)
         {
             int response = 0;
-            await _backgroundService.UpdateGlucose(DomainName);
-                try
-            {
-                response += 1;
-                // handle the result
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Glucose Uptdate Issue:  " + ex);
-            }
-            await _backgroundService.UpdateInsulin(DomainName);
+
+            DateTime now = DateTime.UtcNow;
+            DateTime startTime = now.AddDays(-1);
             try
             {
-                response += 2;
-                // handle the result
+                response += await UpdateGlucose(domainName);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Glucose Uptdate Issue:  " + ex);
+                Console.WriteLine("Glucose Update Issue: " + ex);
             }
+
+            try
+            {
+                response += await UpdateInsulin(domainName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Insulin Update Issue: " + ex);
+            }
+
+            try
+            {
+                response += await FetchActivityDataAsync(now,startTime);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Activity Update Issue: " + ex);
+            }
+
+            try
+            {
+                response += await FetchCalorieDataAsync(now, startTime);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Calorie Update Issue: " + ex);
+            }
+
+
+       
+
+            
 
             WeakReferenceMessenger.Default.Send(new UpdateResponse { Response = response });
         }
