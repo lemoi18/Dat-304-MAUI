@@ -17,6 +17,30 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             />
+        <Frame>
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnFrameTapped" />
+            </Frame.GestureRecognizers>
+
+            <lvc:CartesianChart
+                Title="{Binding Title}"
+                Series="{Binding Series}" 
+                HeightRequest="200"
+                WidthRequest="350"
+                YAxes="{Binding YAxes}"
+                XAxes="{Binding XAxes}"
+                EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">
+            </lvc:CartesianChart>
+
+        </Frame>
+
+        <Frame BackgroundColor="LightGray" Padding="10" CornerRadius="5" HorizontalOptions="Center">
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Current insulin Level: " FontSize="18" />
+                        <Span Text="{Binding LastInsulinLevel}" FontSize="18" TextColor="Red" />
+                    </FormattedString>
 
                 </Label.FormattedText>
             </Label>
@@ -34,5 +58,5 @@
             </Label>
         </Frame>
     </VerticalStackLayout>
-  
+
 </ContentPage>
