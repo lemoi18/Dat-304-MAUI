@@ -2,7 +2,7 @@
 using MauiApp8.Services.Health;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices.Realm;
-
+using MauiApp8.Model;
 
 namespace MauiApp8.Services
 {
@@ -10,7 +10,8 @@ namespace MauiApp8.Services
     {
         public static MauiAppBuilder ConfigureServices(this MauiAppBuilder builder)
         {
-            builder.Services.AddSingleton<IChartService>((e) => new LineChartService());
+            builder.Services.AddSingleton<IChartService<HealthData>>((e) => new LineChartService<HealthData>(e.GetRequiredService<PublishSubscribeService.Publish>(), e.GetRequiredService<IHealthService>()));
+            builder.Services.AddSingleton<IChartConfigurationProvider>((e) => new ChartConfigurationProvider(e.GetRequiredService<IChartService<HealthData>>()));
             builder.Services.AddTransient<BackgroundServices.Realm.ICRUD>((e) => new Services.BackgroundServices.Realm.CRUD());
             builder.Services.AddTransient<BackgroundServices.Realm.IUtils>((e) => new Services.BackgroundServices.Realm.Utils());
             builder.Services.AddTransient<IHealthService>((e) => new HealthService(e.GetService<IUtils>(), e.GetService<ICRUD>()));

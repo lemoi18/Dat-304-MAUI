@@ -36,6 +36,7 @@ namespace MauiApp8.ViewModel
 
         IBackgroundFetchService _backgroundFetchService;
         IThirdPartyHealthService _thirdPartyHealthService;
+        IChartConfigurationProvider _chartConfigurationProvider;
 
         Publish _publish;
 
@@ -48,10 +49,10 @@ namespace MauiApp8.ViewModel
 
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<MauiApp8.Model.GlucoseInfo> glucoseInfo;
-        private readonly IChartService _chartService;
+        private readonly IChartService<HealthData> _chartService;
         IHealthService _healthService;
         [ObservableProperty]
-        private ISeries[] _series;
+         ISeries[] series;
 
         private readonly ICRUD curd;
 
@@ -62,18 +63,30 @@ namespace MauiApp8.ViewModel
 
         ObservableCollection<Model.InsulinInfo> insulins;
 
-        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, IChartService chartService, IHealthService healthService, Publish publish, IBackgroundFetchService backgroundFetchService)
-        {
-            _healthService = healthService;
 
-            
+
+        [ObservableProperty]
+        ChartConfiguration chartConfiguration;
+
+
+        public HomePageModel(
+            IAuthenticationService authService, 
+            IBackgroundService backgroundService, 
+            IChartService<HealthData> chartService, 
+            IChartConfigurationProvider chartConfigurationProvider,
+            Publish publish, 
+            IBackgroundFetchService backgroundFetchService,
+            IHealthService healthService
+)
+        {
+            _chartConfigurationProvider = chartConfigurationProvider;
+            _healthService = healthService;
             _publish = publish;
             _backgroundService = backgroundService;
             _backgroundFetchService = backgroundFetchService;
             Task.Run(() => InitializeAsync());
 
             _chartService = chartService;
-            _series = _chartService.GetSeries();
 
             DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
@@ -98,7 +111,6 @@ namespace MauiApp8.ViewModel
                 foreach (var insulin in e.InsulinData)
                 {
                     Insulins.Add(insulin);
-
                 }
                 LastInsulinLevel = int.TryParse(Insulins.Where(g => g.Timestamp <= toDate)
                                .LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0;
@@ -106,62 +118,28 @@ namespace MauiApp8.ViewModel
 
 
             // extract last value from the LineSeries and assign to public property
-            LastInsulinLevel = ((LineSeries<int>)_series[0]).Values.LastOrDefault();
-            LastGlucoseLevel = ((LineSeries<int>)_series[1]).Values.LastOrDefault();
-
-            Title = new LabelVisual
-            {
-                Text = "Insulin Levels",
-                TextSize = 25,
-                Padding = new LiveChartsCore.Drawing.Padding(15),
-                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
-            };
+            
         }
-        public LabelVisual Title { get; set; }
         [ObservableProperty]
         public int lastInsulinLevel;
         [ObservableProperty]
         public int lastGlucoseLevel;
-        public Axis[] XAxes { get; set; }
-            = new Axis[]
-            {
-                new Axis
-                {
-                    Name = "X Axis",
-                    NamePaint = new SolidColorPaint(SKColors.Black),
-                    MinStep = 1,
+      
 
-                    LabelsPaint = new SolidColorPaint(SKColors.Blue),
-                    TextSize = 10,
-                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
-                }
-            };
-        
-        public Axis[] YAxes { get; set; }
-            = new Axis[]
-            {
-                new Axis
-                {
-                    Name = "Y Axis",
-                    NamePaint = new SolidColorPaint(SKColors.Red),
-                    MinStep = 1,
-                    LabelsPaint = new SolidColorPaint(SKColors.Green),
-                    TextSize = 20,
-
-                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
-                    {
-                        StrokeThickness = 2,
-                        PathEffect = new DashEffect(new float[] { 3, 3 })
-                    }
-                }
-            };
         private async Task InitializeAsync()
         {
 
            
 
             await TestFunction();
-            await Task.Run(()=> GetHealthData());
+            await GetHealthData();
+            this.Series = await _chartService.GetSeries();
+
+            var glucoseTimestampStrings = _chartService.GlucosesChart.Select(g => g.Timestamp.ToString("HH:mm")).ToArray();
+
+            ChartConfiguration = _chartConfigurationProvider.GetChartConfiguration(glucoseTimestampStrings);
+            LastGlucoseLevel = _chartService.LastPointInData.Glucose;
+            LastInsulinLevel = _chartService.LastPointInData.Insulin;
         }
 
         [RelayCommand]
@@ -179,8 +157,9 @@ namespace MauiApp8.ViewModel
         [RelayCommand]
         async Task GetHealthData()
         {
-            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
+            DateTimeOffset fromDate = toDate.AddDays(-1);
+            
 
             var glucose = await _healthService.ReadGlucoses(
                 fromDate,
@@ -189,6 +168,7 @@ namespace MauiApp8.ViewModel
             foreach (var item in insulin)
             {
                 Insulins.Add(item);
+                Console.WriteLine(item);
 
             }
             foreach (var item in glucose)
@@ -198,9 +178,11 @@ namespace MauiApp8.ViewModel
 
             }
             //LastGlucoseLevel = int.TryParse(Glucoses.LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0;
-            LastInsulinLevel = int.TryParse(Insulins.LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0;
             LastGlucoseLevel = int.TryParse(Glucoses.Where(g => g.Timestamp <= toDate)
             .LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0;
+
+            LastInsulinLevel = int.TryParse(Insulins.Where(g => g.Timestamp <= toDate)
+                               .LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0;
 
         }
         [RelayCommand]

@@ -15,17 +15,17 @@
         <controls:NoInternetWarning />
         
         <lvc:CartesianChart 
-            Series="{Binding Series}" 
-            Title="{Binding Title}"
+            Series="{Binding SeriesChart}" 
+            Title="{Binding ChartConfiguration.Title}"
             HeightRequest="600"
-            YAxes="{Binding YAxes}"
-            XAxes="{Binding XAxes}"
+            YAxes="{Binding ChartConfiguration.YAxes}"
+            XAxes="{Binding ChartConfiguration.XAxes}"
             TooltipTextSize="50"
             EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}"
             LegendPosition="Bottom"
-            LegendTextPaint="{Binding LegendTextPaint}"
+            LegendTextPaint="{Binding ChartConfiguration.LegendTextPaint}"
             LegendTextSize="45"
-            LegendBackgroundPaint="{Binding LegendBackgroundPaint}">
+            LegendBackgroundPaint="{Binding ChartConfiguration.LegendBackgroundPaint}">
         </lvc:CartesianChart>
 
 

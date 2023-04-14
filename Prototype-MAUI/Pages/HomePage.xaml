@@ -18,13 +18,14 @@
                 <TapGestureRecognizer Tapped="OnFrameTapped" />
             </Frame.GestureRecognizers>
 
+
             <lvc:CartesianChart
-                Title="{Binding Title}"
+                Title="{Binding ChartConfiguration.Title}"
                 Series="{Binding Series}" 
                 HeightRequest="200"
                 WidthRequest="350"
-                YAxes="{Binding YAxes}"
-                XAxes="{Binding XAxes}"
+                YAxes="{Binding ChartConfiguration.YAxes}"
+                XAxes="{Binding ChartConfiguration.XAxes}"
                 EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">
             </lvc:CartesianChart>
 
