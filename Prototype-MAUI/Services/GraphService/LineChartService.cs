@@ -10,40 +10,63 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
 using Newtonsoft.Json.Linq;
+using MauiApp8.Services.Health;
+using System.Collections.ObjectModel;
 
 namespace MauiApp8.Services.GraphService
 {
     internal class LineChartService : IChartService
     {
+        private readonly IHealthService _healthService;
+
+        public LineChartService(IHealthService healthService)
+        {
+            _healthService = healthService;
+        }
+
         [Obsolete]
         public ISeries[] GetSeries()
         {
+            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            DateTimeOffset toDate = DateTimeOffset.UtcNow;
+            var glucoses = _healthService.ReadGlucoses(fromDate, toDate);
+            var insulins = _healthService.ReadInsulins(fromDate, toDate);
+
+            var glucosevalues = new ObservableCollection<float>(glucoses.Select(g => g.Glucose));
+            var glucoseTimestamp = new ObservableCollection<DateTimeOffset>(glucoses.Select(g => g.Timestamp));
+            var insulinvalues = new ObservableCollection<double>(insulins.Select(i => i.Insulin));
+            var insulinTimestamp = new ObservableCollection<DateTimeOffset>(insulins.Select(i => i.Timestamp));
+
+
             return new ISeries[]
             {
-            new LineSeries<int>
+            new LineSeries<float>
+
             {
-                Values = new int[] { 2, 4, 5, 6, 5, 4, 5, 2, 4, 5, 6, 5, 4, 5, 2, 4, 5, 6, 5, 4, 5, 2, 4, 5, 6, 5, 4, 5, 2, 4, 5, 6, 5, 4, 5, 2, 4, 5, 6, 5, 4, 5, },
+                Values = glucosevalues,
                 GeometrySize = 30,
                 GeometryFill = new SolidColorPaint(SKColors.AliceBlue),
                 GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 4 },
                 Fill = new SolidColorPaint(SKColors.Blue.WithAlpha(45)),
-                Name = "Insulin",
+                Name = "Glucose",
                 Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 10 },
                 ScalesYAt = 0,
                 LegendShapeSize = 35,
-
-            },
-            new LineSeries<int>
+                // Need to fix label
+                TooltipLabelFormatter = (chartPoint) => $"Time: {glucoseTimestamp[Convert.ToInt32(chartPoint.PrimaryValue)]}, Glucose: {chartPoint.PrimaryValue} mg/dL"
+        },
+            new LineSeries<double>
             {
-                Values = new int[] { 10, 4, 7, 2, 9, 1, 6, 8, 3, 5, 2, 7, 9, 3, 1, 5, 8, 6, 10, 4, 1, 5, 7, 9, 2, 10, 6, 4, 8, 3, 1, 5, 7, 9, 2, 10, 6, 4, 8, 3 },
+                Values = insulinvalues,
                 GeometrySize = 30,
                 GeometryFill = new SolidColorPaint(SKColors.MistyRose),
                 GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 4 },
                 Fill = new SolidColorPaint(SKColors.Red.WithAlpha(45)),
-                Name = "Glucose",
+                Name = "Insulin",
                 Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 5 },
                 ScalesYAt = 0,
                 LegendShapeSize = 35,
+                TooltipLabelFormatter = (chartPoint) => $"Time: {insulinTimestamp[Convert.ToInt32(chartPoint.PrimaryValue)]:HH:mm}, Insulin Level: {chartPoint.PrimaryValue}"
 
             }
         };

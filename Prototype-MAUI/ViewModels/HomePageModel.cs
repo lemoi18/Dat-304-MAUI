@@ -109,7 +109,6 @@ namespace MauiApp8.ViewModel
             LastInsulinLevel = ((LineSeries<int>)_series[0]).Values.LastOrDefault();
             LastGlucoseLevel = ((LineSeries<int>)_series[1]).Values.LastOrDefault();
 
-
             Title = new LabelVisual
             {
                 Text = "Insulin Levels",
@@ -117,7 +116,6 @@ namespace MauiApp8.ViewModel
                 Padding = new LiveChartsCore.Drawing.Padding(15),
                 Paint = new SolidColorPaint(SKColors.DarkSlateGray)
             };
-
         }
         public LabelVisual Title { get; set; }
         [ObservableProperty]
@@ -138,7 +136,7 @@ namespace MauiApp8.ViewModel
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
                 }
             };
-
+        
         public Axis[] YAxes { get; set; }
             = new Axis[]
             {
