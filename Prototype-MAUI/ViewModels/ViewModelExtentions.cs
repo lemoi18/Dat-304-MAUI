@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MauiApp8.ViewModels
+﻿namespace MauiApp8.ViewModel
 {
-    internal class ViewModelExtentions
+    public static class ViewModelExtensions
     {
+        public static MauiAppBuilder ConfigureViewModels(this MauiAppBuilder builder)
+        {
+
+            // ViewModels
+            builder.Services.AddTransient<ViewModel.HomePageModel>();
+            builder.Services.AddSingleton<ViewModel.SettingsPageModel>();
+            builder.Services.AddSingleton<ViewModel.LoginPageModel>();
+            builder.Services.AddSingleton<ViewModel.LogFoodModel>();
+            builder.Services.AddSingleton<ViewModel.FoodDetailsModel>();
+            builder.Services.AddSingleton<ViewModel.FoodViewModel>();
+            builder.Services.AddSingleton<ViewModel.GraphPageModel>();
+
+
+            return builder;
+        }
     }
 }

@@ -80,9 +80,6 @@
 	  <Compile Update="Pages\GraphPage.xaml.cs">
 	    <DependentUpon>GraphPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\FoodItemView.xaml.cs">
-	    <DependentUpon>FoodItemView.xaml</DependentUpon>
-	  </Compile>
 	  <Compile Update="Pages\HomePage.xaml.cs">
 	    <DependentUpon>HomePage.xaml</DependentUpon>
 	  </Compile>
@@ -96,9 +93,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\GraphPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\FoodItemView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\FoodPage.xaml">

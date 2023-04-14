@@ -17,5 +17,11 @@ namespace MauiApp8.Model
         {
             public int Response { get; set; }
         }
+
+        public class Update_Health
+        {
+            public int Response { get; set; }
+
+        }
     }
 }

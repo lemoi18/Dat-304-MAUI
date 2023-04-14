@@ -1,15 +1,7 @@
 ﻿using MauiApp8.Model;
 using MauiApp8.Services.DBService;
 using Realms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MauiApp8.Model2;
-using System.Data.Common;
-using System.Globalization;
-using MauiApp8.Model;
+using Realms.Exceptions;
 //using Xamarin.Google.Crypto.Tink.Shaded.Protobuf;
 
 
@@ -206,7 +198,6 @@ namespace MauiApp8.Services.BackgroundServices
             {
                 if (obj.insulin != null)
                 {
-                    Console.WriteLine(obj.insulin);
                     TimeZoneInfo norwegianTime = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
                     DateTimeOffset utcBasalTime = TimeZoneInfo.ConvertTimeFromUtc(obj.created_at, norwegianTime);
                     DB.AddInsulinEntry((double)obj.insulin, obj.created_at);

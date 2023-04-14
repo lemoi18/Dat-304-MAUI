@@ -17,6 +17,8 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
         public override async void OnReceive(Context context, Intent intent)
         {
             WeakReferenceMessenger.Default.Send(new Fetch.Update_Google { Response = 8 });
+            WeakReferenceMessenger.Default.Send(new Fetch.Update_Health { Response = 101 });
+
             // Implement youribf background fetch logic here
             IBF.IBackgroundService ibf = new IBF.DataBase();
             

@@ -22,6 +22,8 @@ using SkiaSharp;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using MauiApp8.Services.Health;
+using CommunityToolkit.Mvvm.Input;
+using MauiApp8.Services.BackgroundServices.Realm;
 
 
 namespace MauiApp8.ViewModel
@@ -34,7 +36,6 @@ namespace MauiApp8.ViewModel
 
         IBackgroundFetchService _backgroundFetchService;
         IThirdPartyHealthService _thirdPartyHealthService;
-        
 
         Publish _publish;
 
@@ -47,29 +48,62 @@ namespace MauiApp8.ViewModel
 
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<MauiApp8.Model.GlucoseInfo> glucoseInfo;
-        // Chart stuff
         private readonly IChartService _chartService;
-        private readonly IHealthService _healthService;
+        IHealthService _healthService;
         [ObservableProperty]
         private ISeries[] _series;
 
+        private readonly ICRUD curd;
 
+        [ObservableProperty]
 
-        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, IChartService chartService, IHealthService healthService)
+        ObservableCollection<Model.GlucoseInfo> glucoses;
+        [ObservableProperty]
+
+        ObservableCollection<Model.InsulinInfo> insulins;
+
+        public HomePageModel(IAuthenticationService authService, IBackgroundService backgroundService, IChartService chartService, IHealthService healthService, Publish publish, IBackgroundFetchService backgroundFetchService)
         {
             _healthService = healthService;
 
-
+            
             _publish = publish;
             _backgroundService = backgroundService;
             _backgroundFetchService = backgroundFetchService;
             Task.Run(() => InitializeAsync());
 
-
-
-            // chart stuff
             _chartService = chartService;
             _series = _chartService.GetSeries();
+
+            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            DateTimeOffset toDate = DateTimeOffset.UtcNow;
+
+            Glucoses = new ObservableCollection<Model.GlucoseInfo>();
+            Insulins = new ObservableCollection<Model.InsulinInfo>();
+
+
+
+            _publish.GlucoseDataAvailable += (sender, e) =>
+            {
+                foreach (var glucose in e.GlucoseData)
+                {
+                    Glucoses.Add(glucose);
+                }
+                LastGlucoseLevel = int.TryParse(Glucoses.Where(g => g.Timestamp <= toDate)
+                .LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0;
+            };
+
+            _publish.InsulinDataAvailable += (sender, e) =>
+            {
+                foreach (var insulin in e.InsulinData)
+                {
+                    Insulins.Add(insulin);
+
+                }
+                LastInsulinLevel = int.TryParse(Insulins.Where(g => g.Timestamp <= toDate)
+                               .LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0;
+            };
+
 
             // extract last value from the LineSeries and assign to public property
             LastInsulinLevel = ((LineSeries<int>)_series[0]).Values.LastOrDefault();
@@ -86,8 +120,10 @@ namespace MauiApp8.ViewModel
 
         }
         public LabelVisual Title { get; set; }
-        public int LastInsulinLevel { get; set; }
-        public int LastGlucoseLevel { get; set; }
+        [ObservableProperty]
+        public int lastInsulinLevel;
+        [ObservableProperty]
+        public int lastGlucoseLevel;
         public Axis[] XAxes { get; set; }
             = new Axis[]
             {
@@ -103,19 +139,8 @@ namespace MauiApp8.ViewModel
                 }
             };
 
-            
-            //    Console.WriteLine($"Loaded {obj.Glucose} from db");
-            //}
-            //_backgroundFetchService = backgroundFetchService; // Get the service using dependency injection
-            //_backgroundFetchService.ScheduleFetchTask(TimeSpan.FromMinutes(2), () =>
-            //{
-            //    Console.WriteLine("BAckground.2");
-            //});
-           
-        }
-        
-        private async Task InitializeAsync()
-        {
+        public Axis[] YAxes { get; set; }
+            = new Axis[]
             {
                 new Axis
                 {
@@ -132,123 +157,67 @@ namespace MauiApp8.ViewModel
                     }
                 }
             };
-
-        public Command PrintDataCommand => new Command(async () => await ExecutePrintDataCommand());
-
-        private async Task ExecutePrintDataCommand()
-        {
-            try
-            {
-                var glucoses = _healthService.ReadGlucoses(DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
-                var insulins = _healthService.ReadInsulins(DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
-
-                Debug.WriteLine("Glucoses:");
-                foreach (var glucose in glucoses)
-                {
-                    Debug.WriteLine($"Glucose level: {glucose.Glucose}, Date: {glucose.Timestamp}");
-                }
-
-                Debug.WriteLine("Insulins:");
-                foreach (var insulin in insulins)
-                {
-                    Debug.WriteLine($"Insulin dose: {insulin.Insulin}, Date: {insulin.Timestamp}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error: {ex.Message}");
-            }
-        }
         private async Task InitializeAsync()
         {
+
+           
+
             await TestFunction();
-            //await UpdateStuff();
-            await UpdateStuff();
+            await Task.Run(()=> GetHealthData());
+        }
+
+        [RelayCommand]
+        async Task TestFunction()
+        {
+            await _publish.CheckTimeDiffrence();
+            await _publish.GoogleFetchSub();
+            await _publish.HealthSub();
+
         }
 
 
-        private async Task UpdateStuff()
+
+
+        [RelayCommand]
+        async Task GetHealthData()
         {
-            
-            
-            // For Tests
-           
+            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            DateTimeOffset toDate = DateTimeOffset.UtcNow;
 
+            var glucose = await _healthService.ReadGlucoses(
+                fromDate,
+                toDate);
+            var insulin = await _healthService.ReadInsulins(fromDate, toDate);
+            foreach (var item in insulin)
+            {
+                Insulins.Add(item);
 
+            }
+            foreach (var item in glucose)
+            {
+                Glucoses.Add(item);
+                
 
-            //await _publish.CheckSubscribe();
-            Console.WriteLine("...");
-            await _publish.CheckTimeDiffrence();
-            await _publish.GoogleFetchSub();
+            }
+            //LastGlucoseLevel = int.TryParse(Glucoses.LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0;
+            LastInsulinLevel = int.TryParse(Insulins.LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0;
+            LastGlucoseLevel = int.TryParse(Glucoses.Where(g => g.Timestamp <= toDate)
+            .LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0;
 
         }
         [RelayCommand]
-        async Task CallFunction() {
-
-
-        public static async Task<List<GlucoseAPI>> GetGlucose(string RestUrl, string StartDate, string EndDate)
-            //{
-            //    Console.WriteLine("BAckground.2");
-            //});
-            
-            await _publish.Turn_On();
-            //await _publish.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
-            Console.WriteLine("OUT CALL");
-            
-        }
-
-        public void StartBackgroundFetch()
+        async Task CallFunction()
         {
-            // Create an instance of BackgroundFetchServiceAndroid
-            _serializerOptions = new JsonSerializerOptions
-            //IBackgroundService backgroundFetchService = new MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid();
-
-            // Define your fetch action
-            Action fetchAction = () =>
-            {
-                // Your background fetch logic here
-            _backgroundFetchService.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction);
-#endif
+            await _publish.Turn_On();
         }
 
+    }
 
-            {
-                using (HttpClient _client = new HttpClient())
-                {
-                    Console.WriteLine($"Getting Response... from {uri}");
-                    HttpResponseMessage response = await _client.GetAsync(uri);
-                    if (response.Content.Headers.ContentLength == 0)
-                    {
-                        Debug.WriteLine("The response content is empty.");
-                    }
-                    else if (response.IsSuccessStatusCode)
-                    {
-                        string content = await response.Content.ReadAsStringAsync();
-                        Items = JsonSerializer.Deserialize<List<GlucoseAPI>>(content, _serializerOptions);
-                        Console.WriteLine("Finnished request...");
-                        Console.WriteLine($"Received {Items.Count} items from API: {string.Join(", ", Items.Select(i => i.ToString()))}");
+            
+}
 
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error in GetGlucose method: Received status code {response.StatusCode}");
-                        throw new HttpRequestException($"Error in GetGlucose method: Received status code {response.StatusCode}");
-                    }
+  
 
-                    response.EnsureSuccessStatusCode(); // This will throw an exception if the status code is not a success code (2xx)
-                }
-            }
-
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in GetGlucose method: {ex.Message}");
-                Debug.WriteLine($"Error in GetGlucose method: {ex}");
-                Console.WriteLine($"URI: {uri}");
-                // you could also display an error message to the user here, or retry the request if appropriate
-                return Items;
-            }
-
-        }
 
 
 
@@ -260,14 +229,5 @@ namespace MauiApp8.ViewModel
         
 
         
-    }
-}
-
-            Console.WriteLine($"Loaded {amount1} from db");
-        }
-
-        
-        
-    }
-}
+  
 

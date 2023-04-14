@@ -7,7 +7,7 @@ namespace MauiApp8.Services.Health
 {
     public interface IHealthService
     {
-        List<GlucoseInfo> ReadGlucoses(DateTimeOffset fromDate, DateTimeOffset toDate);
-        List<InsulinInfo> ReadInsulins(DateTimeOffset fromDate, DateTimeOffset toDate);
+        Task<List<GlucoseInfo>> ReadGlucoses(DateTimeOffset fromDate, DateTimeOffset toDate);
+        Task<List<InsulinInfo>> ReadInsulins(DateTimeOffset fromDate, DateTimeOffset toDate);
     }
 }

@@ -1,8 +1,9 @@
-﻿using MauiApp8.Services.BackgroundServices.Realm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MauiApp8.Services.BackgroundServices.Realm;
 
 namespace MauiApp8.Services.Food
 {
-    internal class FoodService
+    internal class FoodService: ObservableObject, IFoodService
     {
         private readonly IUtils _utils;
         private readonly ICRUD _crud;

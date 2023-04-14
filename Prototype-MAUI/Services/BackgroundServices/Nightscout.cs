@@ -1,7 +1,6 @@
 ﻿using MauiApp8.Model;
 using System.Diagnostics;
 using System.Text.Json;
-using MauiApp8.Model2;
 using MauiApp8.Model;
 
 namespace MauiApp8.Services.BackgroundServices
