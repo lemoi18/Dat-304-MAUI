@@ -236,6 +236,7 @@ namespace MauiApp8.Services.BackgroundServices
         public async Task<double?> GetBasalInsulin(string DomainName, DateTimeOffset time) {
             //2023-04-12T19:34:56.626Z
             DateTimeOffset ClosestTime;
+            DateTimeOffset ClosestValue;
             List<BasalData.NightscoutProfile> Items;
             Items = await Nightscout.GetInsulinBasal(DomainName);
             Console.WriteLine(Items.Count);
@@ -243,16 +244,22 @@ namespace MauiApp8.Services.BackgroundServices
             {
                 Console.WriteLine("Created at: " + obj.CreatedAt);
                 ClosestTime = Get_NewestTimestamp(time, obj.CreatedAt);
-                Console.WriteLine("original at: " + time);
-                Console.WriteLine("Response at: " + ClosestTime);
                 if ( ClosestTime.ToString() == time.ToString()) { 
                     Console.WriteLine(obj.CreatedAt.ToString());
-                    for (int i = 0; i < obj.Store["Patern 1"].Basal.Count; i++)
+                    foreach (var storeEntry in obj.Store)
                     {
-                        BasalData.Basal basal = obj.Store["Patern 1"].Basal[i];
-                        Console.WriteLine("Time: " + basal.Time);
-                        Console.WriteLine("Value: " + basal.Value);
-                        Console.WriteLine("TimeAsSeconds: " + basal.TimeAsSeconds);
+                        var storeName = storeEntry.Key;
+                        var storeData = storeEntry.Value;
+                        DateTimeOffset newDateTime = obj.CreatedAt;
+                        for (int i = 0; i < storeData.Basal.Count; i++)
+                        {
+                            var basal = storeData.Basal[i];
+                            DateTimeOffset newDateTimeOffset = newDateTime.AddSeconds(Double.Parse(basal.TimeAsSeconds, System.Globalization.CultureInfo.InvariantCulture));
+                            ClosestValue = Get_NewestTimestamp(newDateTimeOffset, time);
+                            if(ClosestValue != time) { Console.WriteLine("Getting Basal..."); return Double.Parse(basal.Value, System.Globalization.CultureInfo.InvariantCulture); }
+                            if(i == storeData.Basal.Count - 1) { Console.WriteLine("Getting Basal..."); return Double.Parse(basal.Value, System.Globalization.CultureInfo.InvariantCulture); }
+                            newDateTime = newDateTimeOffset;
+                        }
                     }
                     break; 
                 }
@@ -260,18 +267,28 @@ namespace MauiApp8.Services.BackgroundServices
                 {
                     Console.WriteLine("This is the last object in Items!");
                     Console.WriteLine(obj.CreatedAt.ToString());
-                    foreach (BasalData.Basal basal in obj.Store["default"].Basal)
+                    foreach (var storeEntry in obj.Store)
                     {
-                        Console.WriteLine("Time: " + basal.Time);
-                        Console.WriteLine("Value: " + basal.Value);
-                        Console.WriteLine("TimeAsSeconds: " + basal.TimeAsSeconds);
+                        var storeName = storeEntry.Key;
+                        var storeData = storeEntry.Value;
+                        DateTimeOffset newDateTime = obj.CreatedAt;
+                        for (int i = 0; i < storeData.Basal.Count; i++)
+                        {
+                            var basal = storeData.Basal[i];
+                            DateTimeOffset newDateTimeOffset = newDateTime.AddSeconds(Double.Parse(basal.TimeAsSeconds, System.Globalization.CultureInfo.InvariantCulture));
+                            ClosestValue = Get_NewestTimestamp(newDateTimeOffset, time);
+                            if (ClosestValue != time) { Console.WriteLine("Getting Basal..."); return Double.Parse(basal.Value, System.Globalization.CultureInfo.InvariantCulture); }
+                            if (i == storeData.Basal.Count - 1) { Console.WriteLine("Getting Basal..."); return Double.Parse(basal.Value, System.Globalization.CultureInfo.InvariantCulture); }
+                            newDateTime = newDateTimeOffset;
+
+                        }
                     }
                     break;
                 }
             }
             
 
-            return 200;
+            return 0;
         }
 
     }

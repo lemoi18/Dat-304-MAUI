@@ -61,9 +61,10 @@ namespace MauiApp8.Services.PublishSubscribeService
                 List < BasalData.NightscoutProfile > Items;
                 Items = await Nightscout.GetInsulinBasal("https://oskarnightscoutweb1.azurewebsites.net/");
                 Console.WriteLine(Items.Count);
-                DateTimeOffset date = DateTimeOffset.ParseExact("2023-04-12T19:34:56.626Z", "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+                DateTimeOffset date = DateTimeOffset.ParseExact("2023-04-13T08:34:56.626Z", "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
                 Task<double?> a = _backgroundService.GetBasalInsulin("https://oskarnightscoutweb1.azurewebsites.net/", date);
-                
+                double? result = await a;
+                Console.WriteLine(result);
             });
 
         }
