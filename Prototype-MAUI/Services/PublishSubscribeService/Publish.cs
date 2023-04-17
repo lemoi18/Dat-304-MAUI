@@ -19,11 +19,11 @@ namespace MauiApp8.Services.PublishSubscribeService
     public class Publish
     {
         internal readonly IBackgroundService _backgroundService;
-        internal readonly Services.Authentication.IAuthenticationService _authService;
-        internal Publish(IBackgroundService backgroundService, Services.Authentication.IAuthenticationService authService)
+        internal readonly ThirdPartyHealthService.IThirdPartyHealthService _thirdPartyHealthService;
+        public Publish(IBackgroundService backgroundService, ThirdPartyHealthService.IThirdPartyHealthService thirdPartyHealthService)
         {
             _backgroundService = backgroundService;
-            _authService = authService;
+            _thirdPartyHealthService = thirdPartyHealthService;
         }
         
        
@@ -72,9 +72,29 @@ namespace MauiApp8.Services.PublishSubscribeService
         {
             WeakReferenceMessenger.Default.Register<Fetch.Update_Google>(this, async (sender, message) =>
             {
-             
-                Console.WriteLine(" GoogleFetchSub");
-                
+
+                DateTime now = DateTime.UtcNow;
+                DateTime startTime = now.AddDays(-1);
+
+                await _thirdPartyHealthService.FetchActivityDataAsync(now, startTime);
+                await _thirdPartyHealthService.FetchCalorieDataAsync(now, startTime);
+
+                foreach (var stepData in _thirdPartyHealthService.CommonHealthData.StepDataList)
+                {
+                    Console.WriteLine($"Steps: {stepData.Steps}, Start Time: {stepData.StartTime}, End Time: {stepData.EndTime}");
+                }
+
+                foreach (var calorieData in _thirdPartyHealthService.CommonHealthData.CalorieDataList)
+                {
+                    Console.WriteLine($"Calories: {calorieData.Calories}, Start Time: {calorieData.StartTime}, End Time: {calorieData.EndTime}");
+                }
+
+                foreach (var activityData in _thirdPartyHealthService.CommonHealthData.ActivityDataList)
+                {
+                    Console.WriteLine($"count: {activityData.Count}, Start Time: {activityData.StartTime}, End Time: {activityData.EndTime}, Activity Duration: {activityData.ActivityDuration}, Activity Type: {activityData.ActivityType} ");
+                }
+
+
             });
 
         }

@@ -55,6 +55,7 @@ namespace MauiApp8.Services.BackgroundServices
         {
             Realm localRealm = RealmCreate();
 
+            
             try
             {
                 string dbFullPath = localRealm.Config.DatabasePath;

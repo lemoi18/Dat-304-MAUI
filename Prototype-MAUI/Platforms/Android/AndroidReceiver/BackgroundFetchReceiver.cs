@@ -14,10 +14,6 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
     [BroadcastReceiver(Enabled = true)]
     public class BackgroundFetchReceiver : BroadcastReceiver
     {
-
-       
-
-        
         public override async void OnReceive(Context context, Intent intent)
         {
             WeakReferenceMessenger.Default.Send(new Fetch.Update_Google { Response = 8 });
