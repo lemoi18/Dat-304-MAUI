@@ -37,6 +37,9 @@ namespace MauiApp8.Services.GraphService
             InsulinsChart = new ObservableCollection<Model.InsulinInfo>();
             _healthService = healthService;
 
+            Task.Run(()=>_publish.HealthSub());
+
+
 
             _publish.GlucoseDataAvailable += (sender, e) =>
             {
@@ -61,28 +64,22 @@ namespace MauiApp8.Services.GraphService
         [RelayCommand]
         async Task GetHealthData()
         {
-
             DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
-
-            
-
-            
-
             var glucose = await _healthService.ReadGlucoses(
                 fromDate,
                 toDate);
-            var insulin = await _healthService.ReadInsulins(fromDate, toDate);
+            var insulin = await _healthService.ReadInsulins(
+                fromDate,
+                toDate);
+
             foreach (var item in insulin)
             {
                 InsulinsChart.Add(item);
-
             }
             foreach (var item in glucose)
             {
                 GlucosesChart.Add(item);
-
-
             }
 
             switch (typeof(T).Name)
@@ -115,43 +112,56 @@ namespace MauiApp8.Services.GraphService
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
             if (GlucosesChart.Count + InsulinsChart.Count == 0)
             {
-                GetHealthData();
+                await GetHealthData();
             }
-            var glucoseValues = GlucosesChart.Select(g => g.Glucose).ToList();
+            var glucoseValues = GlucosesChart.Select(g => g.Glucose).ToArray();
             var insulinValues = InsulinsChart.Select(i => i.Insulin).ToArray();
 
 
             return new ISeries[]
-            {
-        new LineSeries<float>
+{
+    new LineSeries<float>
+    {
+        Values = glucoseValues,
+        GeometrySize = 15,
+        GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
+        Name = "Glucose",
+        Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
+        ScalesYAt = 0,
+        LegendShapeSize = 35,
+        Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
+        TooltipLabelFormatter = (chartPoint) =>
         {
-            Values = glucoseValues,
-            GeometrySize = 30,
-            GeometryFill = new SolidColorPaint(SKColors.AliceBlue),
-            GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 4 },
-            Fill = new SolidColorPaint(SKColors.Blue.WithAlpha(45)),
-            Name = "Glucose",
-            Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 10 },
-            ScalesYAt = 0,
-            LegendShapeSize = 35,
-            // Need to fix label
-            TooltipLabelFormatter = (chartPoint) => $"Time: {GlucosesChart[Convert.ToInt32(chartPoint.PrimaryValue)]}, Glucose: {chartPoint.PrimaryValue} mg/dL"
-        },
-        new LineSeries<double>
-        {
-            Values = insulinValues,
-            GeometrySize = 30,
-            GeometryFill = new SolidColorPaint(SKColors.MistyRose),
-            GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 4 },
-            Fill = new SolidColorPaint(SKColors.Red.WithAlpha(45)),
-            Name = "Insulin",
-            Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 5 },
-            ScalesYAt = 0,
-            LegendShapeSize = 35,
-            TooltipLabelFormatter = (chartPoint) => $"Time: {InsulinsChart[Convert.ToInt32(chartPoint.PrimaryValue)]:HH:mm}, Insulin Level: {chartPoint.PrimaryValue}"
+            int index = Convert.ToInt32(chartPoint.PrimaryValue);
+            GlucoseInfo glucoseInfo = GlucosesChart[index];
+            string time = glucoseInfo.Timestamp.ToString("HH:mm");
+            float glucoseValue = glucoseInfo.Glucose;
+            return $"Time: {time}, Glucose: {glucoseValue} mg/dL";
         }
-            };
-            
+    },
+    new LineSeries<double>
+    {
+        Values = insulinValues,
+        GeometrySize = 15,
+        GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 2 },
+        Name = "Insulin",
+        Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 2 },
+        ScalesYAt = 0,
+        LegendShapeSize = 35,
+        Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
+        TooltipLabelFormatter = (chartPoint) =>
+        {
+            int index = Convert.ToInt32(chartPoint.PrimaryValue);
+            InsulinInfo insulinInfo = InsulinsChart[index];
+            string time = insulinInfo.Timestamp.ToString("HH:mm");
+            double insulinValue = insulinInfo.Insulin;
+            return $"Time: {time}, Insulin Level: {insulinValue}";
+        }
+    }
+};
+
+
+
         }
 
 

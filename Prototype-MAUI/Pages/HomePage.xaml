@@ -23,7 +23,7 @@
                 Title="{Binding ChartConfiguration.Title}"
                 Series="{Binding Series}" 
                 HeightRequest="200"
-                WidthRequest="350"
+                WidthRequest="400"
                 YAxes="{Binding ChartConfiguration.YAxes}"
                 XAxes="{Binding ChartConfiguration.XAxes}"
                 EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">

@@ -22,13 +22,18 @@ namespace MauiApp8.ViewModel
         {
             _chartService = chartService;
             _chartConfigurationProvider = chartConfiguration;
-            InitializeAsync();
+            Task.Run(()=>InitializeAsync());
         }
 
         [ObservableProperty]
         ISeries[] seriesChart;
         [ObservableProperty]
         ChartConfiguration chartConfiguration;
+        [ObservableProperty]
+        public int lastInsulinLevel;
+        [ObservableProperty]
+        public int lastGlucoseLevel;
+
         public SolidColorPaint LegendTextPaint { get; set; }
         public SolidColorPaint LegendBackgroundPaint { get; set; }
         public LabelVisual Title { get; set; }
@@ -36,18 +41,23 @@ namespace MauiApp8.ViewModel
 
         public Axis[] YAxes { get; set; }
 
-
-        ObservableCollection<Model.GlucoseInfo> glucosesChart => _chartService.GlucosesChart;
-        ObservableCollection<Model.InsulinInfo> insulinsChart => _chartService.InsulinsChart;
+        [ObservableProperty]
+        ObservableCollection<Model.GlucoseInfo> glucosesChart;
+        [ObservableProperty]
+        ObservableCollection<Model.InsulinInfo> insulinsChart;
         
 
         private async Task InitializeAsync()
         {
+            this.GlucosesChart = _chartService.GlucosesChart;
+            this.InsulinsChart = _chartService.InsulinsChart;
+            LastGlucoseLevel = _chartService.LastPointInData.Glucose;
+            LastInsulinLevel = _chartService.LastPointInData.Insulin;
             SeriesChart = await _chartService.GetSeries();
 
             DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
-            var timestapts = glucosesChart.Select(g => g.Timestamp.ToString("HH:mm")).ToArray();
+            var timestapts = GlucosesChart.Select(g => g.Timestamp.ToString("HH:mm")).ToArray();
             ChartConfiguration = _chartConfigurationProvider.GetChartConfiguration(timestapts);
 
             // Implement chart-specific configuration

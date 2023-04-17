@@ -18,5 +18,6 @@ namespace MauiApp8.Model
         public Axis[] XAxes { get; set; }
         public Axis[] YAxes { get; set; }
         public SolidColorPaint LegendTextPaint { get; set; }
-    }
+
+        }
 }

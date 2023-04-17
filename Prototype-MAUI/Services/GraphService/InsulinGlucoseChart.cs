@@ -37,39 +37,39 @@ namespace MauiApp8.Services.GraphService
             float xMax = _chartService.GlucosesChart.Count;
             var legendBackgroundPaint = new SolidColorPaint(new SKColor(240, 240, 240));
 
-            
-            // Configure XAxes
             var XAxes = new Axis[]
-            {
-    new Axis
-    {
-        Name = "Time",
-        Labels = strings,
-        NameTextSize = 36,
-        MinLimit = (xMax - 5),
-        MaxLimit = xMax,
-        NamePaint = new SolidColorPaint(SKColors.Black),
-        MinStep = 1,
-        LabelsPaint = new SolidColorPaint(SKColors.Black),
-        TextSize = 28,
-        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 },
-    }
-            };
+          {
+                new Axis
+                {
+                    Name = "Time",
+                    Labels = strings,
+                    NameTextSize = 36,
+                    MinLimit = (xMax - 100),
+                    MaxLimit = xMax,
+                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    MinStep = 1,
+                    LabelsPaint = new SolidColorPaint(SKColors.Black),
+                    TextSize = 28,
+                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 },
+                    
+                }
+          };
 
             // Configure YAxes
             var YAxes = new Axis[]
             {
-    new Axis
-    {
-        Name = "Levels",
-        NameTextSize = 36,
-        NamePaint = new SolidColorPaint(SKColors.Black),
-        MinStep = 1,
-        LabelsPaint = new SolidColorPaint(SKColors.Black),
-        TextSize = 28,
-        MinLimit = 0,
-        MaxLimit = 260,
-    },
+                new Axis
+                {
+                    Name = "Levels",
+                    NameTextSize = 36,
+                    NamePaint = new SolidColorPaint(SKColors.Black),
+                    MinStep = 1,
+                    LabelsPaint = new SolidColorPaint(SKColors.Black),
+                    TextSize = 28,
+                    MinLimit = 0,
+                    MaxLimit = 260,
+                    
+                },
             };
 
             // Configure LegendTextPaint

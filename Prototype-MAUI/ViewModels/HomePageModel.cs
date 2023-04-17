@@ -31,39 +31,32 @@ namespace MauiApp8.ViewModel
     public partial class HomePageModel : ObservableObject
     {
         IAuthenticationService authService;
-
         IBackgroundService _backgroundService;
-
         IBackgroundFetchService _backgroundFetchService;
         IThirdPartyHealthService _thirdPartyHealthService;
         IChartConfigurationProvider _chartConfigurationProvider;
-
+        private readonly IChartService<HealthData> _chartService;
+        IHealthService _healthService;
         Publish _publish;
 
         [ObservableProperty]
-        string sgv;
-        [ObservableProperty]
-        string date;
-        [ObservableProperty]
-        string bgl;
-
-        [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<MauiApp8.Model.GlucoseInfo> glucoseInfo;
-        private readonly IChartService<HealthData> _chartService;
-        IHealthService _healthService;
+        
         [ObservableProperty]
          ISeries[] series;
 
         private readonly ICRUD curd;
 
         [ObservableProperty]
-
         ObservableCollection<Model.GlucoseInfo> glucoses;
-        [ObservableProperty]
 
+        [ObservableProperty]
         ObservableCollection<Model.InsulinInfo> insulins;
 
-
+        [ObservableProperty]
+        public int lastInsulinLevel;
+        [ObservableProperty]
+        public int lastGlucoseLevel;
 
         [ObservableProperty]
         ChartConfiguration chartConfiguration;
@@ -84,13 +77,9 @@ namespace MauiApp8.ViewModel
             _publish = publish;
             _backgroundService = backgroundService;
             _backgroundFetchService = backgroundFetchService;
-            Task.Run(() => InitializeAsync());
-
             _chartService = chartService;
-
             DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
             DateTimeOffset toDate = DateTimeOffset.UtcNow;
-
             Glucoses = new ObservableCollection<Model.GlucoseInfo>();
             Insulins = new ObservableCollection<Model.InsulinInfo>();
 
@@ -117,13 +106,15 @@ namespace MauiApp8.ViewModel
             };
 
 
-            // extract last value from the LineSeries and assign to public property
+            Task.Run(() => InitializeAsync());
+
+            
+            
+
+
             
         }
-        [ObservableProperty]
-        public int lastInsulinLevel;
-        [ObservableProperty]
-        public int lastGlucoseLevel;
+        
       
 
         private async Task InitializeAsync()
@@ -131,15 +122,20 @@ namespace MauiApp8.ViewModel
 
            
 
-            await TestFunction();
-            await GetHealthData();
+            
+            //await GetHealthData();
+            
             this.Series = await _chartService.GetSeries();
+            this.Glucoses = _chartService.GlucosesChart;
+            this.Insulins = _chartService.InsulinsChart;
+            LastGlucoseLevel = _chartService.LastPointInData.Glucose;
+            LastInsulinLevel = _chartService.LastPointInData.Insulin;
 
             var glucoseTimestampStrings = _chartService.GlucosesChart.Select(g => g.Timestamp.ToString("HH:mm")).ToArray();
 
             ChartConfiguration = _chartConfigurationProvider.GetChartConfiguration(glucoseTimestampStrings);
-            LastGlucoseLevel = _chartService.LastPointInData.Glucose;
-            LastInsulinLevel = _chartService.LastPointInData.Insulin;
+
+            await TestFunction();
         }
 
         [RelayCommand]
