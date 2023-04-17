@@ -1,14 +1,10 @@
 ﻿using CommunityToolkit.Maui;
-using Google.Apis.Auth.OAuth2;
-using Microsoft.Extensions.Logging;
-using MauiApp8.Services.Authentication;
-using MauiApp8.Services.DataServices;
-using SkiaSharp.Views.Maui.Controls.Hosting;
-using LiveChartsCore;
+using MauiApp8.Services.BackgroundServices.Realm;
 using MauiApp8.Services.GraphService;
 using MauiApp8.Services.Health;
-using MauiApp8.Services.BackgroundServices.Realm;
-using Android.App;
+using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using MauiApp8.Services.Food;
 
 namespace MauiApp8;
 
@@ -54,15 +50,18 @@ public static class MauiProgram
         builder.Services.AddTransient<Model.Food>();
 
 
-        //Services
+        // Services
         builder.Services.AddSingleton<IChartService>((e) => new LineChartService());
         builder.Services.AddTransient<Services.BackgroundServices.Realm.ICRUD>((e) => new Services.BackgroundServices.Realm.CRUD());
         builder.Services.AddTransient<Services.BackgroundServices.Realm.IUtils>((e) => new Services.BackgroundServices.Realm.Utils());
-        builder.Services.AddTransient<IHealthService>((e) => new HealthService(e.GetService<IUtils>(), e.GetService<ICRUD>())); 
-        builder.Services.AddSingleton<Services.Authentication.IAuthenticationService>((e)=> new Services.Authentication.Authenticated_stub());
+        builder.Services.AddTransient<IHealthService>((e) => new HealthService(e.GetService<IUtils>(), e.GetService<ICRUD>()));
+        builder.Services.AddSingleton<Services.Authentication.IAuthenticationService>((e) => new Services.Authentication.Authenticated_stub());
         builder.Services.AddTransient<Services.DataServices.IDataService>((e) => new Services.DataServices.FoodService_stub(e.GetService<Services.BackgroundServices.IBackgroundService>()));
         builder.Services.AddTransient<Realms.Realm>(e => Services.DBService.CreateDB.RealmCreate());
         builder.Services.AddTransient<Services.BackgroundServices.IBackgroundService>((e) => new Services.BackgroundServices.DataBase());
+        builder.Services.AddSingleton<IFoodService, FoodService>(); // Add this line
+
+
 
 
 

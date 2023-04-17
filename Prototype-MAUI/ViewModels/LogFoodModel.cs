@@ -1,14 +1,13 @@
-
-
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Model;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.DataServices;
-using MvvmHelpers;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using MauiApp8.Services.Food;
 using MauiApp8.Views;
-using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
+using MvvmHelpers;
+using System.Windows.Input;
+
 namespace MauiApp8.ViewModel
 {
 
@@ -18,16 +17,46 @@ namespace MauiApp8.ViewModel
 
     public partial class LogFoodModel : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
     {
+        //For testing 
+        private string _createdMealText;
+        public string CreatedMealText
+        {
+            get => _createdMealText;
+            set => SetProperty(ref _createdMealText, value);
+        }
+
+
         IAuthenticationService authService;
         IDataService dataService;
-        
+        IFoodService _foodService;
+        private ICommand _createMealCommand;
+        public ICommand CreateMealCommand => _createMealCommand ?? (_createMealCommand = new Command(async () => await CreateMealAsync()));
+
+        private async Task CreateMealAsync()
+        {
+            List<int> foodEntryIds = new List<int>();
+
+            foreach (var foodVM in SelectedFoodsVM)
+            {
+                int foodEntryId = await _foodService.CreateFoodEntry(foodVM.Name, (float)foodVM.Grams);
+                foodEntryIds.Add(foodEntryId);
+            }
+
+            await _foodService.CreateMeal(foodEntryIds);
+
+            // Update the created meal text
+            CreatedMealText = $"Meal created with {foodEntryIds.Count} food entries";
+
+            SelectedFoodsVM.Clear();
+        }
+
         private string _searchText;
 
 
         [ObservableProperty]
         double grams;
 
-       
+
 
         [ObservableProperty]
         Food food;
@@ -46,7 +75,21 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<FoodViewModel> selectedFoodsVM;
 
+        private async Task CreateMeal()
+        {
+            List<int> foodEntryIds = new List<int>();
 
+            foreach (var foodVM in SelectedFoodsVM)
+            {
+                int foodEntryId = await _foodService.CreateFoodEntry(foodVM.Name, (float)foodVM.Grams);
+                foodEntryIds.Add(foodEntryId);
+            }
+
+            await _foodService.CreateMeal(foodEntryIds);
+
+            SelectedFoodsVM.Clear();
+
+        }
 
         public string SearchText
         {
@@ -54,22 +97,23 @@ namespace MauiApp8.ViewModel
             set
             {
                 if (SetProperty(ref _searchText, value))
-                Task.Run(()=> UpdateSearchResultsAsync(value));
+                    Task.Run(() => UpdateSearchResultsAsync(value));
 
             }
         }
 
 
 
-        public LogFoodModel(IAuthenticationService authService, IDataService dataService)
+        public LogFoodModel(IAuthenticationService authService, IDataService dataService, IFoodService foodService)
         {
 
             this.authService = authService;
-            
-           this.dataService = dataService;
+            this.dataService = dataService;
+            this._foodService = foodService;
+
             this.Foods = new MvvmHelpers.ObservableRangeCollection<Food>();
             this.FoodVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
-            this.selectedFoodsVM= new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
+            this.selectedFoodsVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
             Task.Run(() => InitializeAsync());
             //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
 
@@ -97,7 +141,7 @@ namespace MauiApp8.ViewModel
                            "Close");
                 return;
             }
-            
+
             Console.WriteLine($"Loaded {foodService.Count} food items from the dataService");
 
             this.Foods = new ObservableRangeCollection<Food>(foodService);
@@ -202,32 +246,33 @@ namespace MauiApp8.ViewModel
 
 
         [RelayCommand]
-         Task RemoveFoodFromList(FoodViewModel foodView)
+        Task RemoveFoodFromList(FoodViewModel foodView)
         {
             SelectedFoodsVM.Remove(foodView);
-            return  Task.CompletedTask;
+            return Task.CompletedTask;
 
         }
         [RelayCommand]
         async Task EditFoodFromList(FoodViewModel foodView)
         {
 
-            
-            
-                var parameters = new Dictionary<string, object>();
 
-                if (!parameters.ContainsKey("Food"))
-                {
-                    parameters.Add("Food", foodView.Food);
-                }
 
-                foodView.IsEdit = true;
-                await Shell.Current.GoToAsync($"{nameof(FoodDetailsPage)}?IsEdit={foodView.IsEdit}", parameters);
-            
+            var parameters = new Dictionary<string, object>();
+
+            if (!parameters.ContainsKey("Food"))
+            {
+                parameters.Add("Food", foodView.Food);
+            }
+
+            foodView.IsEdit = true;
+            await Shell.Current.GoToAsync($"{nameof(FoodDetailsPage)}?IsEdit={foodView.IsEdit}", parameters);
+
 
         }
         [RelayCommand]
-         async Task RemoveSelectedFoods(FoodViewModel foodView) {
+        async Task RemoveSelectedFoods(FoodViewModel foodView)
+        {
             var selectedFoods = this.SelectedFoodsVM.Where(vm => vm.IsSelected).ToList();
 
             if (!selectedFoods.Any())

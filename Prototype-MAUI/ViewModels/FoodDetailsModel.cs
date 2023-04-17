@@ -4,11 +4,12 @@ using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Model;
 using MauiApp8.Services.DataServices;
 using MauiApp8.Views;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace MauiApp8.ViewModel
 {
     [QueryProperty(nameof(Food), nameof(Food))]
-
     [QueryProperty(nameof(IsEdit), nameof(IsEdit))]
 
     public partial class FoodDetailsModel : ObservableObject
@@ -18,12 +19,28 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         Food food;
 
-
         [ObservableProperty]
         string entry;
 
-        [ObservableProperty]
-        double grams;
+        private double _grams;
+        public double Grams
+        {
+            get => _grams;
+            set
+            {
+                if (SetProperty(ref _grams, value))
+                {
+                    CarbohydratesInGrams = (int)(food.Carbohydrates * _grams / 1000);
+                }
+            }
+        }
+
+        private double _carbohydratesInGrams;
+        public double CarbohydratesInGrams
+        {
+            get => _carbohydratesInGrams;
+            set => SetProperty(ref _carbohydratesInGrams, value);
+        }
 
         [ObservableProperty]
         LogFoodModel logFood;
@@ -36,14 +53,10 @@ namespace MauiApp8.ViewModel
 
         public FoodDetailsModel(IDataService dataService, LogFoodModel logFoodModel)
         {
-
             this.dataService = dataService;
-
             this.logFood = logFoodModel;
             IsEdit = IsEdit;
         }
-
-
 
         [RelayCommand]
         async Task NavigateToBackLog()
@@ -58,26 +71,23 @@ namespace MauiApp8.ViewModel
 
             if (IsEdit == true)
             {
-                var foodToUpdate = LogFood.SelectedFoodsVM.FirstOrDefault(f => f.Name == foodVM.Name);
+                var foodToUpdate = logFood.SelectedFoodsVM.FirstOrDefault(f => f.Name == foodVM.Name);
                 if (foodToUpdate != null)
                 {
                     foodToUpdate.Grams = foodVM.Grams;
                 }
-
             }
             else
             {
-
-                if (LogFood.SelectedFoodsVM == null)
+                if (logFood.SelectedFoodsVM == null)
                 {
-                    LogFood.SelectedFoodsVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
+                    logFood.SelectedFoodsVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
                 }
 
-                LogFood.SelectedFoodsVM.Add(foodVM);
+                logFood.SelectedFoodsVM.Add(foodVM);
             }
 
             await Shell.Current.GoToAsync($"{nameof(FoodPage)}");
-
             ClearGrams();
         }
 
@@ -86,18 +96,14 @@ namespace MauiApp8.ViewModel
             Grams = 0;
         }
 
-
         [RelayCommand]
         async Task NavigateBack()
         {
-
             await Shell.Current.GoToAsync("..");
             ClearGrams();
-
         }
 
         [RelayCommand]
         Task AddSelectedFood() => Shell.Current.GoToAsync("..");
-
     }
 }

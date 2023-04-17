@@ -21,6 +21,7 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         bool isSelected;
 
+        public int CarbohydratesPerKg => (int)(Carbohydrates * Grams / 1000);
 
         public FoodViewModel(Food food)
         {

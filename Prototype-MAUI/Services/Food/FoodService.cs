@@ -2,7 +2,7 @@
 
 namespace MauiApp8.Services.Food
 {
-    internal class FoodService
+    public class FoodService : IFoodService
     {
         private readonly IUtils _utils;
         private readonly ICRUD _crud;

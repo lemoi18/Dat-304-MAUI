@@ -19,18 +19,27 @@
                Padding="20"
                HorizontalOptions="FillAndExpand">
 
-            <StackLayout Spacing="15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <Label Text="{Binding Food.Carbohydrates, StringFormat='Carbohydrates : {0} '}"
+                <Label Text="{Binding Food.Carbohydrates, StringFormat='Carbs/Kg : {0}'}"
                        FontSize="18"
                        FontAttributes="Bold"
                        TextColor="#2D2D2D"/>
-            </StackLayout>
+                <Label Text="{Binding CarbohydratesInGrams, StringFormat='Carbs/Amount: {0:F0}'}"
+                       Grid.Row="1"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#2D2D2D"/>
+            </Grid>
 
         </Frame>
 
         <Entry Text="{Binding Grams}"
-               Placeholder="Enter grams of food"
+               Placeholder="Grams"
                FontSize="14"
                TextColor="Black"
                PlaceholderColor="Gray"
@@ -39,9 +48,7 @@
                VerticalOptions="CenterAndExpand"
                HorizontalOptions="FillAndExpand"
                WidthRequest="250"
-               Completed="OnEntryCompleted"
-
-               />
+               Completed="OnEntryCompleted"/>
 
         <Button Text="Add Food"
             Command="{Binding NavigateToBackLogCommand}"
@@ -51,10 +58,7 @@
             VerticalOptions="CenterAndExpand"
             HorizontalOptions="FillAndExpand"
             WidthRequest="250"
-            HeightRequest="50"
-            
-/>
-
+            HeightRequest="50"/>
 
         <Button Text="Cancel"
             Command="{Binding NavigateBackCommand}"
@@ -67,7 +71,5 @@
             HeightRequest="50"/>
 
     </VerticalStackLayout>
-
-
 
 </ContentPage>

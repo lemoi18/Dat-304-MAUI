@@ -2,7 +2,7 @@
 
 namespace MauiApp8.Services.Food
 {
-    internal interface IFoodService
+    public interface IFoodService
     {
         List<Model.Food> ReadFoods();
         Model.Food ReadFood(string name);
