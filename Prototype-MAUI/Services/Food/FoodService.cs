@@ -8,16 +8,16 @@ namespace MauiApp8.Services.Food
         private readonly IUtils _utils;
         private readonly ICRUD _crud;
 
-        public async Task MockFood()
-        {
-            using var realm = _utils.RealmCreate();
-            await _crud.MockFood(realm);
-        }
-
         public FoodService(IUtils utils, ICRUD crud)
         {
             _utils = utils;
             _crud = crud;
+        }
+
+        public async Task MockFood()
+        {
+            using var realm = _utils.RealmCreate();
+            await _crud.MockFood(realm);
         }
 
         public async Task<List<Model.Food>> GetFoods()
