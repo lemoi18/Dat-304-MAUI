@@ -1,76 +1,70 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
+using System;
+using System.Linq;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using MauiApp8.Services.GraphService;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
-using LiveChartsCore.SkiaSharpView.Painting.Effects;
+using MauiApp8.Services.Health;
+using MauiApp8.ViewModel;
+using MauiApp8.Model;
+using System.Collections.ObjectModel;
 
 namespace MauiApp8.ViewModel
 {
     public partial class GraphPageModel : ObservableObject
     {
-        private int XMax { get; set; }
-        private readonly IChartService _chartService;
-        [ObservableProperty]
-        private ISeries[] _series;
-
-        public GraphPageModel(IChartService chartService)
+        IChartService<HealthData> _chartService;
+        IChartConfigurationProvider _chartConfigurationProvider;
+        public GraphPageModel(IChartService<HealthData> chartService, IChartConfigurationProvider chartConfiguration)
         {
             _chartService = chartService;
-            _series = _chartService.GetSeries();
-            XMax = ((LineSeries<int>)_series[0]).Values.Count();
-
-            Title = new LabelVisual
-            {
-                Text = "Health Data",
-                TextSize = 72,
-                Padding = new LiveChartsCore.Drawing.Padding(15),
-                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
-            };
-
-            XAxes = new Axis[]
-{
-                new Axis
-                {
-                    Name = "Time",
-                    NameTextSize = 50,
-                    MinLimit = (XMax-10),
-                    MaxLimit = XMax,
-                    NamePaint = new SolidColorPaint(SKColors.Black),
-                    MinStep = 1,
-                    LabelsPaint = new SolidColorPaint(SKColors.Black),
-                    TextSize = 72,
-                    SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
-                }
- };
-            YAxes = new Axis[]
-           {
-                new Axis
-                {
-                    Name = "Levels",
-                    NameTextSize = 50,
-                    NamePaint = new SolidColorPaint(SKColors.Black),
-                    MinStep = 1,
-                    LabelsPaint = new SolidColorPaint(SKColors.Black),
-                    TextSize = 72,
-                },
-           };
-            LegendTextPaint = new SolidColorPaint
-            {
-                Color = new SKColor(50, 50, 50),
-                SKTypeface = SKTypeface.FromFamilyName("Courier New")
-            };
-            LegendBackgroundPaint = new SolidColorPaint(new SKColor(240, 240, 240));
-
+            _chartConfigurationProvider = chartConfiguration;
+            Task.Run(()=>InitializeAsync());
         }
+
+        [ObservableProperty]
+        ISeries[] seriesChart;
+        [ObservableProperty]
+        ChartConfiguration chartConfiguration;
+        [ObservableProperty]
+        public int lastInsulinLevel;
+        [ObservableProperty]
+        public int lastGlucoseLevel;
+
         public SolidColorPaint LegendTextPaint { get; set; }
         public SolidColorPaint LegendBackgroundPaint { get; set; }
         public LabelVisual Title { get; set; }
         public Axis[] XAxes { get; set; }
 
         public Axis[] YAxes { get; set; }
+
+        [ObservableProperty]
+        ObservableCollection<Model.GlucoseInfo> glucosesChart;
+        [ObservableProperty]
+        ObservableCollection<Model.InsulinInfo> insulinsChart;
+        
+
+        private async Task InitializeAsync()
+        {
+            this.GlucosesChart = _chartService.GlucosesChart;
+            this.InsulinsChart = _chartService.InsulinsChart;
+            LastGlucoseLevel = _chartService.LastPointInData.Glucose;
+            LastInsulinLevel = _chartService.LastPointInData.Insulin;
+            SeriesChart = await _chartService.GetSeries();
+
+            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            DateTimeOffset toDate = DateTimeOffset.UtcNow;
+            var timestapts = GlucosesChart.Select(g => g.Timestamp.ToString("HH:mm")).ToArray();
+            ChartConfiguration = _chartConfigurationProvider.GetChartConfiguration(timestapts);
+
+            // Implement chart-specific configuration
+        }
     }
+
+    
+
+    
 }

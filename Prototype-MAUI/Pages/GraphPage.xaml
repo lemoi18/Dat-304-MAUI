@@ -13,20 +13,20 @@
 
     <VerticalStackLayout>
         <controls:NoInternetWarning />
-        
+
         <lvc:CartesianChart 
-            Series="{Binding Series}" 
-            Title="{Binding Title}"
-            HeightRequest="600"
-            YAxes="{Binding YAxes}"
-            XAxes="{Binding XAxes}"
-            TooltipTextSize="50"
-            ZoomMode="X"
-            EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}"
-            LegendPosition="Bottom"
-            LegendTextPaint="{Binding LegendTextPaint}"
-            LegendTextSize="45"
-            LegendBackgroundPaint="{Binding LegendBackgroundPaint}">
+              Series="{Binding SeriesChart}" 
+                Title="{Binding ChartConfiguration.Title}"
+                HeightRequest="600"
+                TooltipTextSize="20"
+                LegendPosition="Bottom"
+                LegendTextSize="20"
+                ZoomMode="X"
+                 YAxes="{Binding ChartConfiguration.YAxes}"
+                XAxes="{Binding ChartConfiguration.XAxes}"           
+            >
+
+            
         </lvc:CartesianChart>
 
 

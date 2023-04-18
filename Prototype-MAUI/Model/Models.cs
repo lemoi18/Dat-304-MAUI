@@ -1,4 +1,6 @@
-﻿namespace MauiApp8.Model
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace MauiApp8.Model
 {
     public class RealmUser
     {
@@ -56,14 +58,20 @@
         public float CaloriesBurned { get; set; }
         public DateTimeOffset Timestamp { get; set; }
     }
-    public class GlucoseInfo
+    public class GlucoseInfo : ObservableObject
     {
         public float Glucose { get; set; }
         public DateTimeOffset Timestamp { get; set; }
     }
-    public class InsulinInfo
+    public class InsulinInfo : ObservableObject
     {
         public double Insulin { get; set; }
         public DateTimeOffset Timestamp { get; set; }
+    }
+
+    public class HealthData : ObservableObject
+    {
+        public int Insulin { get; set; }
+        public int Glucose { get; set; }
     }
 }

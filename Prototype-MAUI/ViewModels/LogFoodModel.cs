@@ -69,7 +69,7 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         MvvmHelpers.ObservableRangeCollection<FoodViewModel> foodVM;
         [ObservableProperty]
-        MvvmHelpers.ObservableRangeCollection<Food> foods;
+        MvvmHelpers.ObservableRangeCollection<Food> foods;  
         [ObservableProperty]
         FoodViewModel selectedFood;
         [ObservableProperty]

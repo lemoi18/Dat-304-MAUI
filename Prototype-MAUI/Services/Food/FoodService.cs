@@ -1,4 +1,5 @@
-﻿using MauiApp8.Services.BackgroundServices.Realm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MauiApp8.Services.BackgroundServices.Realm;
 
 namespace MauiApp8.Services.Food
 {

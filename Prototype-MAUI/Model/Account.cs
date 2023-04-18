@@ -30,5 +30,7 @@ namespace MauiApp8.Model
 
        
         public JwtSecurityToken Token { get; set; }
+
+        public string AccessToken { get; set; }
     }
 }
