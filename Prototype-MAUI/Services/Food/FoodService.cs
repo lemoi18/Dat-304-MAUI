@@ -8,19 +8,25 @@ namespace MauiApp8.Services.Food
         private readonly IUtils _utils;
         private readonly ICRUD _crud;
 
+        public async Task MockFood()
+        {
+            using var realm = _utils.RealmCreate();
+            await _crud.MockFood(realm);
+        }
+
         public FoodService(IUtils utils, ICRUD crud)
         {
             _utils = utils;
             _crud = crud;
         }
 
-        public List<Model.Food> ReadFoods()
+        public async Task<List<Model.Food>> GetFoods()
         {
             using var realm = _utils.RealmCreate();
             return _crud.ReadFoods(realm).ConvertAll(ClassConvert.ToModel); ;
         }
 
-        public Model.Food ReadFood(string name)
+        public async Task<Model.Food> GetFood(string name)
         {
             using var realm = _utils.RealmCreate();
             return ClassConvert.ToModel(_crud.ReadFood(realm, name));
@@ -44,13 +50,13 @@ namespace MauiApp8.Services.Food
             await _crud.DeleteFood(realm, foodName);
         }
 
-        public List<Model.FoodEntry> ReadFoodEntries()
+        public async Task<List<Model.FoodEntry>> GetFoodEntries()
         {
             using var realm = _utils.RealmCreate();
             return _crud.ReadFoodEntries(realm).ConvertAll(ClassConvert.ToModel);
         }
 
-        public Model.FoodEntry ReadFoodEntry(int foodEntryId)
+        public async Task<Model.FoodEntry> GetFoodEntry(int foodEntryId)
         {
             using var realm = _utils.RealmCreate();
             return ClassConvert.ToModel(_crud.ReadFoodEntry(realm, foodEntryId));
@@ -68,13 +74,13 @@ namespace MauiApp8.Services.Food
             await _crud.DeleteFoodEntry(realm, foodEntryId);
         }
 
-        public List<Model.Meal> ReadMeals()
+        public async Task<List<Model.Meal>> GetMeals()
         {
             using var realm = _utils.RealmCreate();
             return _crud.ReadMeals(realm).ConvertAll(ClassConvert.ToModel);
         }
 
-        public Model.Meal ReadMeal(int mealId)
+        public async Task<Model.Meal> GetMeal(int mealId)
         {
             using var realm = _utils.RealmCreate();
             return ClassConvert.ToModel(_crud.ReadMeal(realm, mealId));

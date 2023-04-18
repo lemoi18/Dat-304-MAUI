@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Model;
 using MauiApp8.Services.Authentication;
-using MauiApp8.Services.DataServices;
 using MauiApp8.Services.Food;
 using MauiApp8.Views;
 using MvvmHelpers;
@@ -27,8 +26,8 @@ namespace MauiApp8.ViewModel
 
 
         IAuthenticationService authService;
-        IDataService dataService;
-        IFoodService _foodService;
+        IFoodService foodService;
+
         private ICommand _createMealCommand;
         public ICommand CreateMealCommand => _createMealCommand ?? (_createMealCommand = new Command(async () => await CreateMealAsync()));
 
@@ -38,15 +37,15 @@ namespace MauiApp8.ViewModel
 
             foreach (var foodVM in SelectedFoodsVM)
             {
-                int foodEntryId = await _foodService.CreateFoodEntry(foodVM.Name, (float)foodVM.Grams);
+                int foodEntryId = await foodService.CreateFoodEntry(foodVM.Name, (float)foodVM.Grams);
                 foodEntryIds.Add(foodEntryId);
             }
 
-            await _foodService.CreateMeal(foodEntryIds);
+            await foodService.CreateMeal(foodEntryIds);
 
             // Update the created meal text
             CreatedMealText = $"Meal created with {foodEntryIds.Count} food entries";
-
+            
             SelectedFoodsVM.Clear();
         }
 
@@ -81,11 +80,11 @@ namespace MauiApp8.ViewModel
 
             foreach (var foodVM in SelectedFoodsVM)
             {
-                int foodEntryId = await _foodService.CreateFoodEntry(foodVM.Name, (float)foodVM.Grams);
+                int foodEntryId = await foodService.CreateFoodEntry(foodVM.Name, (float)foodVM.Grams);
                 foodEntryIds.Add(foodEntryId);
             }
 
-            await _foodService.CreateMeal(foodEntryIds);
+            await foodService.CreateMeal(foodEntryIds);
 
             SelectedFoodsVM.Clear();
 
@@ -104,12 +103,11 @@ namespace MauiApp8.ViewModel
 
 
 
-        public LogFoodModel(IAuthenticationService authService, IDataService dataService, IFoodService foodService)
+        public LogFoodModel(IAuthenticationService authService, IFoodService foodService)
         {
 
             this.authService = authService;
-            this.dataService = dataService;
-            this._foodService = foodService;
+            this.foodService = foodService;
 
             this.Foods = new MvvmHelpers.ObservableRangeCollection<Food>();
             this.FoodVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
@@ -132,7 +130,7 @@ namespace MauiApp8.ViewModel
 
         private async Task LoadFoodsAsync(string query = null)
         {
-            var foodService = await dataService.GetFoods();
+            var foodService = await this.foodService.GetFoods();
             if (foodService == null)
             {
                 await Shell.Current.DisplayAlert(
@@ -142,7 +140,7 @@ namespace MauiApp8.ViewModel
                 return;
             }
 
-            Console.WriteLine($"Loaded {foodService.Count} food items from the dataService");
+            Console.WriteLine($"Loaded {foodService.Count} food items from the foodService");
 
             this.Foods = new ObservableRangeCollection<Food>(foodService);
             if (!string.IsNullOrEmpty(query))

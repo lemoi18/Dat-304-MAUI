@@ -3,7 +3,7 @@ using MauiApp8.Services.BackgroundServices;
 
 namespace MauiApp8.Services.DataServices
 {
-    internal class FoodService_stub : IDataService
+    internal class FoodService_stub : IFoodService
     {
 
         private readonly List<Model.Food> _mockFoods;

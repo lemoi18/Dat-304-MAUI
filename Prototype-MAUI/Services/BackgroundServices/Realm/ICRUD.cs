@@ -3,6 +3,7 @@
     public interface ICRUD
     {
         Task Test();
+        Task MockFood(Realms.Realm realm);
         Task AddGlucoseEntry(Realms.Realm realm, float sgv, DateTimeOffset date);
         Task AddInsulinEntry(Realms.Realm realm, double? insulin, DateTimeOffset date);
         DateTimeOffset? ReadLatestGlucoseTimestamp(Realms.Realm realm);
