@@ -1,20 +1,23 @@
-using MauiApp8.Model;
+using MauiApp8.Services.BackgroundServices.Realm;
+using MauiApp8.Services.Food;
 using MauiApp8.ViewModel;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
+using MauiApp8.Services.Authentication;
 
 namespace MauiApp8.Views;
 
 
 public partial class FoodDetailsPage : ContentPage
 {
-   
-
-    public FoodDetailsPage(FoodDetailsModel vm)
+    public FoodDetailsPage(LogFoodModel logFoodModel, FoodViewModel selectedFoodViewModel)
     {
         InitializeComponent();
-        BindingContext = vm;
+
+        var foodService = logFoodModel.FoodService;
+        BindingContext = new FoodDetailsModel(foodService, logFoodModel, selectedFoodViewModel);
     }
+
+
+
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
@@ -22,7 +25,6 @@ public partial class FoodDetailsPage : ContentPage
 
     private void OnEntryCompleted(object sender, EventArgs e)
     {
-        // Remove the focus from the Entry control
         ((Entry)sender).Unfocus();
     }
 

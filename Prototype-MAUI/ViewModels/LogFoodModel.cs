@@ -28,6 +28,8 @@ namespace MauiApp8.ViewModel
         IAuthenticationService authService;
         IFoodService foodService;
 
+        public IFoodService FoodService { get; }
+
         private ICommand _createMealCommand;
         public ICommand CreateMealCommand => _createMealCommand ?? (_createMealCommand = new Command(async () => await CreateMealAsync()));
 
@@ -96,8 +98,9 @@ namespace MauiApp8.ViewModel
             set
             {
                 if (SetProperty(ref _searchText, value))
-                    Task.Run(() => UpdateSearchResultsAsync(value));
-
+                {
+                    Find(value);
+                }
             }
         }
 
@@ -105,88 +108,39 @@ namespace MauiApp8.ViewModel
 
         public LogFoodModel(IAuthenticationService authService, IFoodService foodService)
         {
-
             this.authService = authService;
-            this.foodService = foodService;
+            this.FoodService = foodService;
 
             this.Foods = new MvvmHelpers.ObservableRangeCollection<Food>();
             this.FoodVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
             this.selectedFoodsVM = new MvvmHelpers.ObservableRangeCollection<FoodViewModel>();
             Task.Run(() => InitializeAsync());
-            //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
-
         }
 
-        //private async void NavigateToFoodDetails(FoodViewModel selectedFoodViewModel)
-        //{
-        //    var route = $"{nameof(FoodDetailsModel)}?foodId={selectedFoodViewModel.Food.Id}";
-        //    await Shell.Current.GoToAsync(route);
-        //}
         private async Task InitializeAsync()
         {
-            await LoadFoodsAsync("");
-            //NavigateToFoodDetailsCommand = new RelayCommand<FoodViewModel>(NavigateToFoodDetails);
+            await LoadFoodsAsync();
         }
+
 
         private async Task LoadFoodsAsync(string query = null)
         {
-            var foodService = await this.foodService.GetFoods();
-            if (foodService == null)
+            var foodServiceResult = await this.foodService.GetFoods();
+            if (foodServiceResult == null)
             {
                 await Shell.Current.DisplayAlert(
-                          "Error",
-                           "An error occurred.",
-                           "Close");
+                              "Error",
+                               "An error occurred.",
+                               "Close");
                 return;
             }
 
-            Console.WriteLine($"Loaded {foodService.Count} food items from the foodService");
+            Console.WriteLine($"Loaded {foodServiceResult.Count} food items from the foodService");
 
-            this.Foods = new ObservableRangeCollection<Food>(foodService);
-            if (!string.IsNullOrEmpty(query))
-            {
-                var filteredResults = await Task.Run(() => this.Foods
-                    .Where(p => !string.IsNullOrEmpty(p.Name) &&
-                            p.Name.ToLower().Contains(query.ToLower())).ToList());
-                this.FoodVM.ReplaceRange(filteredResults.Select(food => new FoodViewModel(food)));
-            }
-
+            this.Foods = new ObservableRangeCollection<Food>(foodServiceResult);
+            this.FoodVM.ReplaceRange(this.Foods.Select(food => new FoodViewModel(food)));
         }
 
-
-
-
-
-        //public async Task UpdateSearchResultsAsync(string query)
-        //{
-        //    if (this.Foods == null)
-        //    {
-        //        Console.WriteLine("FoodCollection is null");
-        //        return;
-        //    }
-
-        //    if (this.FoodVM == null)
-        //    {
-        //        Console.WriteLine("FoodCollectionVM is null");
-        //        return;
-        //    }
-
-        //    if (string.IsNullOrEmpty(query))
-        //    {
-        //        // populate the list with items when query is empty
-        //        //this.FoodVM.ReplaceRange(this.Foods?.Select(food => new FoodViewModel(food)) ?? Enumerable.Empty<FoodViewModel>());
-        //        this.FoodVM.Clear();
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        var filteredResults = await Task.Run(() => this.Foods
-        //           .Where(p => !string.IsNullOrEmpty(p.Name) &&
-        //                  p.Name.ToLower().Contains(query.ToLower())).ToList());
-        //        this.FoodVM.ReplaceRange(filteredResults.Select(food => new FoodViewModel(food)));
-        //    }
-        //    await Task.CompletedTask;
-        //}
 
         private CancellationTokenSource _debounceTokenSource;
 
@@ -206,8 +160,7 @@ namespace MauiApp8.ViewModel
 
             if (string.IsNullOrEmpty(query))
             {
-                Console.WriteLine(string.IsNullOrEmpty(query));
-                this.FoodVM.Clear();
+                this.FoodVM.ReplaceRange(this.Foods.Select(food => new FoodViewModel(food)));
                 return;
             }
             else
@@ -227,9 +180,12 @@ namespace MauiApp8.ViewModel
                 }
 
                 var filteredResults = await Task.Run(() => this.Foods
-                    .Where(p => !string.IsNullOrEmpty(p.Name) &&
-                            p.Name.ToLower().Contains(query.ToLower())).ToList());
+                .Where(p => !string.IsNullOrEmpty(p.Name) &&
+                       p.Name.ToLower().Contains(query.ToLower())).ToList());
+
                 this.FoodVM.ReplaceRange(filteredResults.Select(food => new FoodViewModel(food)));
+
+                Console.WriteLine($"Query: '{query}', Filtered results count: {filteredResults.Count}"); // Add this line
             }
         }
 

@@ -14,6 +14,10 @@ namespace MauiApp8.Views
 
             BindingContext = vm;
 
+            foreach (var foodViewModel in vm.FoodVM)
+            {
+                foodViewModel.Navigation = this.Navigation;
+            }
         }
 
         public void OnNavigated(Dictionary<string, string> queryParameters)

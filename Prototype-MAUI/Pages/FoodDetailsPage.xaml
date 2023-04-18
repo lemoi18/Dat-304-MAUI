@@ -38,7 +38,7 @@
 
         </Frame>
 
-        <Entry Text="{Binding Grams}"
+        <Entry Text="{Binding Grams, Mode=TwoWay}"
                Placeholder="Grams"
                FontSize="14"
                TextColor="Black"

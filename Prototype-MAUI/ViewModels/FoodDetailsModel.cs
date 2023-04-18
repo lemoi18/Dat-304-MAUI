@@ -49,12 +49,15 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         int index;
 
-        public FoodDetailsModel(IFoodService foodService, LogFoodModel logFoodModel)
+        public FoodDetailsModel(IFoodService foodService, LogFoodModel logFoodModel, FoodViewModel selectedFoodViewModel)
         {
             this.foodService = foodService;
             this.logFood = logFoodModel;
             IsEdit = IsEdit;
+            Food = selectedFoodViewModel.Food;
+            Grams = selectedFoodViewModel.Grams;
         }
+
 
         [RelayCommand]
         async Task NavigateToBackLog()
@@ -67,7 +70,7 @@ namespace MauiApp8.ViewModel
                     return;
                 }
 
-                var foodVM = new FoodViewModel(Food) { Grams = Grams };
+                var foodVM = new FoodViewModel(Food) { Grams = (int)Grams };
 
                 if (IsEdit == true)
                 {
