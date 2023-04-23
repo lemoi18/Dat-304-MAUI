@@ -44,7 +44,7 @@ namespace MauiApp8.Services.BackgroundServices
             return utcOffset;
         }
 
-        public async void AddGlucoseEntry(float sgv, DateTimeOffset date)
+        public async Task AddGlucoseEntry(float sgv, DateTimeOffset date)
         {
             Realms.Realm localRealm = CreateDB.RealmCreate();
 
@@ -57,8 +57,8 @@ namespace MauiApp8.Services.BackgroundServices
                 {
                     localRealm.Add(GlucoseEntry);
                 });
+                Console.WriteLine($"Adding Glucose Entry :  Insulin: {GlucoseEntry.Glucose}, Timestamp: {GlucoseEntry.Timestamp} ");
 
-                localRealm.Refresh();
             }
             catch (Exception ex)
             {
@@ -70,20 +70,19 @@ namespace MauiApp8.Services.BackgroundServices
             }
         }
 
-        public async void AddInsulinEntry(double? insulin, DateTimeOffset date)
+        public async Task AddInsulinEntry(double? insulin, double? basal, DateTimeOffset date)
         {
             Realms.Realm localRealm = RealmCreate();
 
             try
             {
                 string dbFullPath = localRealm.Config.DatabasePath;
-                var InsulinEntry = new Realm.InsulinInfo { Insulin = (double)insulin, Timestamp = date };
+                var InsulinEntry = new Realm.InsulinInfo { Insulin = (double)insulin,Basal = (double)basal, Timestamp = date };
                 await localRealm.WriteAsync(() =>
                 {
                     localRealm.Add(InsulinEntry);
                 });
-
-                localRealm.Refresh();
+                Console.WriteLine($"Adding Insulin Entry :  Insulin: {InsulinEntry.Insulin}, Basal: {InsulinEntry.Basal}, Timestamp: {InsulinEntry.Timestamp} ");
             }
             catch (Exception ex)
             {
@@ -128,7 +127,7 @@ namespace MauiApp8.Services.BackgroundServices
             var objects = localRealm.All<Realm.InsulinInfo>();
 
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
-            if (maxDateTime == null)
+            if (maxDateTime ==  null)
             {
                 Console.WriteLine("The insulin List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
@@ -167,12 +166,17 @@ namespace MauiApp8.Services.BackgroundServices
 
             List<GlucoseAPI> Items;
             Items = await Nightscout.GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine("Adding " + Items.Count + " glucose entries... ");
+
+            List<Task> tasks = new List<Task>();
             foreach (GlucoseAPI obj in Items)
             {
                 if (obj.sgv != 0)
-                    DB.AddGlucoseEntry(obj.sgv, obj.dateString);
+                {
+                    tasks.Add(DB.AddGlucoseEntry(obj.sgv, obj.dateString));
+                }
             }
+            await Task.WhenAll(tasks);
+
             return 200;
         }
 
@@ -192,18 +196,28 @@ namespace MauiApp8.Services.BackgroundServices
             TimeZoneInfo norwegianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
             List<TreatmentAPI> Items;
+            double? basal;
             Items = await Nightscout.GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine("Adding " + Items.Count + " insulin entries... ");
+
+            List<Task> tasks = new List<Task>();
             foreach (TreatmentAPI obj in Items)
             {
                 if (obj.insulin != null)
                 {
                     TimeZoneInfo norwegianTime = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
                     DateTimeOffset utcBasalTime = TimeZoneInfo.ConvertTimeFromUtc(obj.created_at, norwegianTime);
-                    DB.AddInsulinEntry((double)obj.insulin, obj.created_at);
+                    basal = await GetBasalInsulin(DomainName, obj.created_at);
 
+                    tasks.Add(DB.AddInsulinEntry((double)obj.insulin, (double)basal, obj.created_at));
                 }
             }
+
+            basal = await GetBasalInsulin(DomainName, utcEnd);
+            tasks.Add(DB.AddInsulinEntry((double)0, (double)basal, utcEnd));
+
+            await Task.WhenAll(tasks);
+
+
             return 200;
         }
 
@@ -226,14 +240,15 @@ namespace MauiApp8.Services.BackgroundServices
 
         public async Task<double?> GetBasalInsulin(string DomainName, DateTimeOffset time) {
             //2023-04-12T19:34:56.626Z
+            Console.WriteLine("Before GetBasalInsulin");
             DateTimeOffset ClosestTime;
             DateTimeOffset ClosestValue;
             List<BasalData.NightscoutProfile> Items;
             Items = await Nightscout.GetInsulinBasal(DomainName);
-            Console.WriteLine(Items.Count);
+            //Console.WriteLine(Items.Count);
             foreach (BasalData.NightscoutProfile obj in Items)
             {
-                Console.WriteLine("Created at: " + obj.CreatedAt);
+                //Console.WriteLine("Created at: " + obj.CreatedAt);
                 ClosestTime = Get_NewestTimestamp(time, obj.CreatedAt);
                 if ( ClosestTime.ToString() == time.ToString()) { 
                     Console.WriteLine(obj.CreatedAt.ToString());
@@ -256,8 +271,8 @@ namespace MauiApp8.Services.BackgroundServices
                 }
                 else if (obj.Equals(Items.Last()))
                 {
-                    Console.WriteLine("This is the last object in Items!");
-                    Console.WriteLine(obj.CreatedAt.ToString());
+                    //Console.WriteLine("This is the last object in Items!");
+                    //Console.WriteLine(obj.CreatedAt.ToString());
                     foreach (var storeEntry in obj.Store)
                     {
                         var storeName = storeEntry.Key;

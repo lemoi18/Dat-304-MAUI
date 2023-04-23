@@ -1,5 +1,6 @@
 using static MauiApp8.Services.BackgroundServices.Realm.Utils;
 using static MauiApp8.Services.BackgroundServices.Nightscout;
+using MauiApp8.Model;
 
 namespace MauiApp8.Services.BackgroundServices.Realm
 {
@@ -117,12 +118,12 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             }
         }
 
-        public async Task AddInsulinEntry(Realms.Realm realm, double? insulin, DateTimeOffset date)
+        public async Task AddInsulinEntry(Realms.Realm realm, double? insulin, double? basal, DateTimeOffset date)
         {
             try
             {
                 string dbFullPath = realm.Config.DatabasePath;
-                var InsulinEntry = new InsulinInfo { Insulin = (double)insulin, Timestamp = date };
+                var InsulinEntry = new InsulinInfo { Insulin = (double)insulin, Basal= (double)basal, Timestamp = date };
                 await realm.WriteAsync(() =>
                 {
                     realm.Add(InsulinEntry);
@@ -209,32 +210,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             return 200;
         }
 
-        public async Task<int> UpdateInsulin(Realms.Realm realm, string DomainName)
-        {
-
-            DateTimeOffset? utcStart = ReadLatestInsulinTimestamp(realm);
-
-            if (utcStart.HasValue == false)
-            {
-                return -1;
-            }
-
-            DateTimeOffset utcStartPlus = ((DateTimeOffset)utcStart).AddMinutes(5);
-            DateTime utcTime = DateTime.UtcNow;
-            TimeZoneInfo norwegianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            DateTime utcEnd = TimeZoneInfo.ConvertTimeFromUtc(utcTime, norwegianTimeZone);
-            Console.WriteLine(utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine(utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-            List<Model.TreatmentAPI> Items;
-            Items = await GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-            Console.WriteLine("Adding " + Items.Count + " insulin entries... ");
-            foreach (Model.TreatmentAPI obj in Items)
-            {
-                if (obj.insulin != null)
-                    await AddInsulinEntry(realm, (double)obj.insulin, obj.created_at);
-            }
-            return 200;
-        }
+       
 
         public List<GlucoseInfo> ReadGlucoses(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate)
         {

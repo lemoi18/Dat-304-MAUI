@@ -59,6 +59,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
     public class InsulinInfo : RealmObject
     {
         public double Insulin { get; set; }
+        public double Basal { get; set; }
         public DateTimeOffset Timestamp { get; set; }
     }
 }

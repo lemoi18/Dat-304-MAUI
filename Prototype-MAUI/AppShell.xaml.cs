@@ -1,6 +1,7 @@
 ﻿namespace MauiApp8;
 using Views;
 using Model;
+using LiveChartsCore;
 
 public partial class AppShell : Shell
 {
@@ -12,5 +13,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(FoodPage), typeof(FoodPage));
         Routing.RegisterRoute(nameof(FoodDetailsPage), typeof(FoodDetailsPage));
         Routing.RegisterRoute(nameof(GraphPage), typeof(GraphPage));
+
+        
     }
 }

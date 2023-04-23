@@ -9,5 +9,9 @@ namespace MauiApp8.Services.Health
     {
         Task<List<GlucoseInfo>> ReadGlucoses(DateTimeOffset fromDate, DateTimeOffset toDate);
         Task<List<InsulinInfo>> ReadInsulins(DateTimeOffset fromDate, DateTimeOffset toDate);
+        Task<string> DeleteGlucoseData(DateTimeOffset fromDate, DateTimeOffset toDate);
+        Task<string> DeleteInsulinData(DateTimeOffset fromDate, DateTimeOffset toDate);
+
+
     }
 }

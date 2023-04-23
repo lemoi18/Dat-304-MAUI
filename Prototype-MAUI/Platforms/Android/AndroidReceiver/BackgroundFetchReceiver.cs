@@ -16,15 +16,17 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
     {
         public override async void OnReceive(Context context, Intent intent)
         {
-            WeakReferenceMessenger.Default.Send(new Fetch.Update_Google { Response = 8 });
-            WeakReferenceMessenger.Default.Send(new Fetch.Update_Health { Response = 101 });
+            await UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
+            Console.WriteLine("Testing Background fetch...");
+
 
             // Implement youribf background fetch logic here
             IBF.IBackgroundService ibf = new IBF.DataBase();
             
-            await UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
            
-            Console.WriteLine("Testing Background fetch...");
+
+            WeakReferenceMessenger.Default.Send(new Fetch.Update_Google { Response = 8 });
+            WeakReferenceMessenger.Default.Send(new Fetch.Update_Health { Response = 101 });
         }
 
         public async Task UpdateBackgroundData(string DomainName)

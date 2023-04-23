@@ -39,12 +39,14 @@ namespace MauiApp8.Services.BackgroundServices
             Items = new List<GlucoseAPI>();
             string Order = $"/api/v1/entries/sgv.json?find[dateString][$gte]={StartDate}&find[dateString][$lte]={EndDate}&count=all";
             Uri uri = new Uri($"{RestUrl}{Order}");
+            Console.WriteLine(uri.ToString());
+
 
             try
             {
                 using (HttpClient _client = new HttpClient())
                 {
-                    Console.WriteLine("Getting Response...");
+                    Console.WriteLine("Getting Response... Ns Glucose");
                     HttpResponseMessage response = await _client.GetAsync(uri);
                     if (response.Content.Headers.ContentLength == 0)
                     {
@@ -54,7 +56,8 @@ namespace MauiApp8.Services.BackgroundServices
                     {
                         string content = await response.Content.ReadAsStringAsync();
                         Items = JsonSerializer.Deserialize<List<GlucoseAPI>>(content, _serializerOptions);
-                        Console.WriteLine("Finnished request...");
+                        Console.WriteLine($"{Items.Count} Glucose Items being added from NS");
+
                     }
 
                     response.EnsureSuccessStatusCode();
@@ -84,12 +87,13 @@ namespace MauiApp8.Services.BackgroundServices
             Items = new List<TreatmentAPI>();
             string Order = $"api/v1/treatments.json?find[created_at][$gte]={StartDate}&find[created_at][$lte]={EndDate}&count=all";     
             Uri uri = new Uri($"{RestUrl}{Order}");
+            Console.WriteLine(uri.ToString());
 
             try
             {
                 using (HttpClient _client = new HttpClient())
                 {
-                    Console.WriteLine("Getting Response...");
+                    Console.WriteLine("Getting Response... Insulin NS");
                     HttpResponseMessage response = await _client.GetAsync(uri);
 
                     if (response.Content.Headers.ContentLength == 0)
@@ -101,6 +105,7 @@ namespace MauiApp8.Services.BackgroundServices
                         Console.WriteLine("The JSON is being serialized...");
                         string content = await response.Content.ReadAsStringAsync();
                         Items = JsonSerializer.Deserialize<List<TreatmentAPI>>(content, _serializerOptions);
+                        Console.WriteLine($"{Items.Count} Insulin Items being added from NS");
                     }
 
                     response.EnsureSuccessStatusCode();

@@ -21,7 +21,7 @@
 
             <lvc:CartesianChart
                 Title="{Binding ChartConfiguration.Title}"
-                Series="{Binding Series}" 
+                Series="{Binding SeriesChart}" 
                 HeightRequest="200"
                 WidthRequest="400"
                 YAxes="{Binding ChartConfiguration.YAxes}"

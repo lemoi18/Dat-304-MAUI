@@ -4,11 +4,10 @@
     {
         Task Test();
         Task AddGlucoseEntry(Realms.Realm realm, float sgv, DateTimeOffset date);
-        Task AddInsulinEntry(Realms.Realm realm, double? insulin, DateTimeOffset date);
+        Task AddInsulinEntry(Realms.Realm realm, double? insulin, double? basal, DateTimeOffset date);
         DateTimeOffset? ReadLatestGlucoseTimestamp(Realms.Realm realm);
         DateTimeOffset? ReadLatestInsulinTimestamp(Realms.Realm realm);
         Task<int> UpdateGlucose(Realms.Realm realm, string DomainName);
-        Task<int> UpdateInsulin(Realms.Realm realm, string DomainName);
         Task AddFood(Realms.Realm realm, string name, float calories, float carbohydrates, float protein, float fat);
         Food ReadFood(Realms.Realm realm, string name);
         Task UpdateFood(Realms.Realm realm, string name, float calories, float carbohydrates, float protein, float fat);

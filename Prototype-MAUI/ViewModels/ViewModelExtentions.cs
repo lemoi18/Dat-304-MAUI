@@ -1,4 +1,7 @@
-﻿namespace MauiApp8.ViewModel
+﻿using LiveChartsCore;
+using MauiApp8.Model;
+
+namespace MauiApp8.ViewModel
 {
     public static class ViewModelExtensions
     {
@@ -13,6 +16,7 @@
             builder.Services.AddSingleton<ViewModel.FoodDetailsModel>();
             builder.Services.AddSingleton<ViewModel.FoodViewModel>();
             builder.Services.AddSingleton<ViewModel.GraphPageModel>();
+
 
 
             return builder;

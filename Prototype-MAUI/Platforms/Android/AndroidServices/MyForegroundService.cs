@@ -54,7 +54,7 @@ namespace MauiApp8.Platforms.Android.AndroidServices
                 //SendNotificationForVariable();
                 while (true)
                 {
-                    if (check < 1)
+                    if (check >= 0)
                     {
                         // Define your fetch action
                         Action fetchAction = () =>
@@ -80,7 +80,7 @@ namespace MauiApp8.Platforms.Android.AndroidServices
                     //    SendAppOffNotification();
                     //}
 
-                    await Task.Delay(TimeSpan.FromMinutes(1));
+                    await Task.Delay(TimeSpan.FromSeconds(120));
                 }
             });
 

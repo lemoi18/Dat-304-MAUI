@@ -15,7 +15,7 @@ namespace MauiApp8.Services
             builder.Services.AddTransient<BackgroundServices.Realm.ICRUD>((e) => new Services.BackgroundServices.Realm.CRUD());
             builder.Services.AddTransient<BackgroundServices.Realm.IUtils>((e) => new Services.BackgroundServices.Realm.Utils());
             builder.Services.AddTransient<IHealthService>((e) => new HealthService(e.GetService<IUtils>(), e.GetService<ICRUD>()));
-            builder.Services.AddSingleton<Authentication.IAuthenticationService>((e) => new Services.Authentication.RefactoredGoogleAuth());
+            builder.Services.AddSingleton<Authentication.IAuthenticationService>((e) => new Services.Authentication.Authenticated_stub());
             builder.Services.AddTransient<DataServices.IDataService>((e) => new Services.DataServices.FoodService_stub(e.GetService<Services.BackgroundServices.IBackgroundService>()));
             builder.Services.AddTransient<Realms.Realm>(e => Services.DBService.CreateDB.RealmCreate());
             builder.Services.AddTransient<Services.BackgroundServices.IBackgroundService>((e) => new Services.BackgroundServices.DataBase());

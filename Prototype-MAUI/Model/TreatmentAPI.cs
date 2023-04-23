@@ -11,6 +11,7 @@
         public int? utcOffset { get; set; }
         public float? carbs { get; set; }
         public double? insulin { get; set; }
+        public double? BasalInsulin { get; set; }
         public double? relative { get; set; }
     }
 }

@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Model;
 using CommunityToolkit.Mvvm.Input;
+using System.IO;
 
 namespace MauiApp8.Services.GraphService
 {
@@ -27,17 +28,36 @@ namespace MauiApp8.Services.GraphService
         ObservableCollection<Model.GlucoseInfo> glucosesChart;
         [ObservableProperty]
         ObservableCollection<Model.InsulinInfo> insulinsChart;
+
+        public event EventHandler DataChanged;
+        public event EventHandler NotifyDataChanged;
+        [ObservableProperty]
+        bool _isDataChanged;
+
         public T LastPointInData { get; private set; }
 
+        [ObservableProperty]
+        DateTimeOffset fromDate;
+        [ObservableProperty]
+        DateTimeOffset toDate;
 
         public LineChartService(Publish publish, IHealthService healthService)
         {
+            IsDataChanged = false;
             _publish = publish;
             GlucosesChart = new ObservableCollection<Model.GlucoseInfo>();
             InsulinsChart = new ObservableCollection<Model.InsulinInfo>();
             _healthService = healthService;
 
-            Task.Run(()=>_publish.HealthSub());
+            Task.Run(async () =>
+            {
+                await  _publish.HealthSub(); // Assuming this is a synchronous method
+
+                if (GlucosesChart.Count == 0 && InsulinsChart.Count == 0)
+                {
+                    await GetHealthData();
+                }
+            });
 
 
 
@@ -45,51 +65,103 @@ namespace MauiApp8.Services.GraphService
             {
                 foreach (var glucose in e.GlucoseData)
                 {
-                    GlucosesChart.Add(glucose);
+                    if (!GlucosesChart.Contains(glucose))
+                    {
+                        // Add the new Glucose object to the GlucosesChart collection
+                        GlucosesChart.Add(glucose);
+                        Console.WriteLine($"Glucose: {glucose.Glucose} Timestamp : {glucose.Timestamp}");
+
+                    }
                 }
-               
+                IsDataChanged = true;
+                OnDataChanged();
+
             };
 
             _publish.InsulinDataAvailable += (sender, e) =>
             {
                 foreach (var insulin in e.InsulinData)
                 {
-                    InsulinsChart.Add(insulin);
+                    if (!InsulinsChart.Contains(insulin))
+                    {
+                        InsulinsChart.Add(insulin);
+                        Console.WriteLine($"Insulin: {insulin.Insulin} Timestamp : {insulin.Timestamp} Basal : {insulin.Basal} ");
 
+                    }
+                    //Console.WriteLine($"Insulin: {insulin.Insulin} Timestamp : {insulin.Timestamp} Basal : {insulin.Basal} ");
                 }
-                
+                IsDataChanged = true;
+                OnDataChanged();
+
             };
+
+             FromDate = DateTimeOffset.UtcNow.AddDays(-1);
+             ToDate = DateTimeOffset.UtcNow;
+
         }
+
+     
+
+        protected virtual void OnDataChanged()
+        {
+            if (IsDataChanged)
+                DataChanged?.Invoke(this, EventArgs.Empty);
+
+        }
+
+
+
 
         [RelayCommand]
         async Task GetHealthData()
         {
-            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
-            DateTimeOffset toDate = DateTimeOffset.UtcNow;
+            
             var glucose = await _healthService.ReadGlucoses(
-                fromDate,
-                toDate);
+                FromDate,
+                ToDate);
             var insulin = await _healthService.ReadInsulins(
-                fromDate,
-                toDate);
+                FromDate,
+                ToDate);
+            // Set the time zone to Norway time
+            TimeZoneInfo norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
 
             foreach (var item in insulin)
             {
-                InsulinsChart.Add(item);
+                // Convert the Timestamp property to Norway time
+
+                // Create a new Insulin object with the converted timestamp
+                //item.Timestamp = item.Timestamp.AddHours(2);
+                // Add the new Insulin object to the InsulinsChart collection
+                
+                    InsulinsChart.Add(item);
+                    
+                
             }
+
             foreach (var item in glucose)
             {
-                GlucosesChart.Add(item);
+                // Convert the Timestamp property to Norway time
+                Console.WriteLine(item.Timestamp);
+                // Update the timestamp to Norway time by adding 2 hours
+                //item.Timestamp = item.Timestamp.AddHours(2);
+                Console.WriteLine(item.Timestamp);
+
+                
+                    // Add the new Glucose object to the GlucosesChart collection
+                    GlucosesChart.Add(item);
+                
             }
+
+
 
             switch (typeof(T).Name)
             {
                 case nameof(HealthData):
                     LastPointInData = (T)(object)new HealthData
                     {
-                        Glucose = int.TryParse(GlucosesChart.Where(g => g.Timestamp <= toDate)
+                        Glucose = int.TryParse(GlucosesChart.Where(g => g.Timestamp <= ToDate)
                             .LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0,
-                        Insulin = int.TryParse(InsulinsChart.Where(g => g.Timestamp <= toDate)
+                        Insulin = int.TryParse(InsulinsChart.Where(g => g.Timestamp <= ToDate)
                             .LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0
                     };
                     break;
@@ -100,72 +172,168 @@ namespace MauiApp8.Services.GraphService
                     throw new NotImplementedException($"Unknown data type: {typeof(T).Name}");
             }
 
+            IsDataChanged = true;
+            OnDataChanged();
+            IsDataChanged = false;
 
+
+            InsulinsChart.Add(new InsulinInfo { Basal= 0.752, Insulin= 5,Timestamp = DateTimeOffset.UtcNow.AddHours(-1) });
+            GlucosesChart.Add(new GlucoseInfo {Glucose = 30, Timestamp = ToDate });
 
         }
 
 
-        [Obsolete]
-        public async Task<ISeries[]> GetSeries()
+
+
+
+        public async Task<ISeries> AddBasalSeries()
         {
-            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-1);
-            DateTimeOffset toDate = DateTimeOffset.UtcNow;
-            if (GlucosesChart.Count + InsulinsChart.Count == 0)
+
+            double threshold = 10; // Set threshold value
+
+
+            var basalSeries = new LineSeries<Model.InsulinInfo>
             {
-                await GetHealthData();
-            }
-            var glucoseValues = GlucosesChart.Select(g => g.Glucose).ToArray();
-            var insulinValues = InsulinsChart.Select(i => i.Insulin).ToArray();
+                Values = InsulinsChart,
+                LineSmoothness = 1,
+                GeometrySize = 0,
+                GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
+                Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
+                ScalesYAt = 0,
+                Name = "Basal",
+                TooltipLabelFormatter = (point) => $"Basal: {point.PrimaryValue.ToString("0.0000")}U, Time: {DateTime.FromOADate(point.TertiaryValue):dd/MM HH:mm}",
+                Mapping = (insulins, point) =>
+                {
+                    if (insulins != null && point != null && point.Context != null && point.Context.Entity != null)
+                    {
+                        point.PrimaryValue = (float)insulins.Basal;
+                        point.SecondaryValue = point.Context.Entity.EntityIndex;
+                        point.TertiaryValue = insulins.Timestamp.ToLocalTime().DateTime.ToOADate();
+                    }
+                }
 
+        };
+            
+            OnDataChanged();
+            IsDataChanged = false;
+            return basalSeries;
+        }
 
-            return new ISeries[]
-{
-    new LineSeries<float>
-    {
-        Values = glucoseValues,
-        GeometrySize = 15,
-        GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
-        Name = "Glucose",
-        Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
-        ScalesYAt = 0,
-        LegendShapeSize = 35,
-        Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
-        TooltipLabelFormatter = (chartPoint) =>
+        public async Task<ISeries> AddGlucosesSeries()
         {
-            int index = Convert.ToInt32(chartPoint.PrimaryValue);
-            GlucoseInfo glucoseInfo = GlucosesChart[index];
-            string time = glucoseInfo.Timestamp.ToString("HH:mm");
-            float glucoseValue = glucoseInfo.Glucose;
-            return $"Time: {time}, Glucose: {glucoseValue} mg/dL";
+
+            double threshold = 10; // Set threshold value
+
+            var glucoseseries = new LineSeries<Model.GlucoseInfo>
+            {
+                Values = GlucosesChart,
+                GeometrySize = 4,
+                GeometryStroke =  new SolidColorPaint(SKColors.Green) { StrokeThickness = 2 },
+                Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
+                ScalesYAt = 0,
+                Name = "Glucose",
+                Stroke = null, // remove the line between points
+
+                TooltipLabelFormatter = (point) => $"Glucose: {point.PrimaryValue}mg/dl, Time: {DateTime.FromOADate(point.TertiaryValue):dd/MM HH:mm}",
+                Mapping = (glucoses, point) =>
+                {
+                    if (glucoses != null && point != null && point.Context != null && point.Context.Entity != null)
+                    {
+                        point.PrimaryValue = (float)glucoses.Glucose;
+                        point.SecondaryValue = point.Context.Entity.EntityIndex;
+                        point.TertiaryValue = glucoses.Timestamp.ToLocalTime().DateTime.ToOADate();
+
+                        
+
+                    }
+                   
+                },
+
+
+            };
+           
+
+            
+
+
+
+            var diffs = GlucosesChart.Zip(GlucosesChart.Skip(1), (prev, curr) => Math.Abs(curr.Glucose - prev.Glucose));
+            var hasLargeDiff = diffs.Any(d => d > threshold);
+            glucoseseries.Stroke = hasLargeDiff ? new SolidColorPaint(SKColors.Green) { StrokeThickness = 2 } : null;
+
+           
+
+            IsDataChanged = false;
+            return glucoseseries;
         }
-    },
-    new LineSeries<double>
-    {
-        Values = insulinValues,
-        GeometrySize = 15,
-        GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 2 },
-        Name = "Insulin",
-        Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 2 },
-        ScalesYAt = 0,
-        LegendShapeSize = 35,
-        Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
-        TooltipLabelFormatter = (chartPoint) =>
+
+        public async Task<ISeries> AddInsulinSeries()
         {
-            int index = Convert.ToInt32(chartPoint.PrimaryValue);
-            InsulinInfo insulinInfo = InsulinsChart[index];
-            string time = insulinInfo.Timestamp.ToString("HH:mm");
-            double insulinValue = insulinInfo.Insulin;
-            return $"Time: {time}, Insulin Level: {insulinValue}";
+
+            double threshold = 10; // Set threshold value
+
+
+            var insulinSeries = new LineSeries<Model.InsulinInfo>
+            {
+                Values = InsulinsChart,
+                GeometrySize = 4,
+                GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
+                Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
+                ScalesYAt = 0,
+                Name = "Insulin",
+                Stroke = null, // remove the line between points
+
+                TooltipLabelFormatter = (point) => $"Insulin: {point.QuaternaryValue} units, Time: {DateTime.FromOADate(point.TertiaryValue):dd/MM HH:mm}",
+                Mapping = (insulins, point) =>
+                {
+                    if (insulins != null && point != null && point.Context != null && point.Context.Entity != null && insulins.Insulin != 0)
+                    {
+                        point.PrimaryValue = (float)insulins.Insulin;
+                        point.SecondaryValue = -1;
+                        point.TertiaryValue = insulins.Timestamp.ToLocalTime().DateTime.ToOADate();
+
+                        // Match with glucose timestamps
+                        var glucose = GlucosesChart.FirstOrDefault(g => g.Timestamp == insulins.Timestamp);
+                        var index = GlucosesChart.IndexOf(glucose);
+
+                        if (glucose != null)
+                        {
+                            point.PrimaryValue += glucose.Glucose;
+                            point.QuaternaryValue = (float)insulins.Insulin; // Store the insulin value
+
+                            point.SecondaryValue = point.TertiaryValue;
+                        }
+                        else
+                        {
+                            // If no exact match, find closest glucose reading
+                            glucose = GlucosesChart.OrderBy(g => Math.Abs(g.Timestamp.Ticks - insulins.Timestamp.Ticks)).FirstOrDefault();
+                            glucose = GlucosesChart.OrderBy(g => Math.Abs(g.Timestamp.Ticks - insulins.Timestamp.Ticks)).FirstOrDefault();
+
+
+                            var index2 = GlucosesChart.IndexOf(glucose);
+
+                            if (glucose != null)
+                            {
+                                point.PrimaryValue += glucose.Glucose;
+                                point.SecondaryValue = index2;
+                                point.QuaternaryValue = (float)insulins.Insulin; // Store the insulin value
+
+                            }
+
+                        }
+                    }
+
+                },
+            
+        };
+
+            var insulinRange = InsulinsChart.Max(i => i.Insulin) - InsulinsChart.Min(i => i.Insulin);
+            insulinSeries.GeometrySize = (float)(insulinRange * 6);
+
+
+            IsDataChanged = false;
+            return insulinSeries;
         }
-    }
-};
-
-
-
-        }
-
-
-
 
 
 
@@ -173,5 +341,5 @@ namespace MauiApp8.Services.GraphService
 
 
     }
-
 }
+

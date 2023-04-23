@@ -20,5 +20,12 @@
                 FontAttributes="Bold"
                 Command="{Binding SignOutCommand}"
                 HorizontalOptions="Center" />
+
+
+        <Button 
+                Text="Delete Glucose and Insulin data"
+                FontAttributes="Bold"
+                Command="{Binding DeleteDataCommand}"
+                HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

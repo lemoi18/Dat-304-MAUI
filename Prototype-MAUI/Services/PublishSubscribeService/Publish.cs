@@ -120,24 +120,40 @@ namespace MauiApp8.Services.PublishSubscribeService
             WeakReferenceMessenger.Default.Register<Fetch.Update_Health>(this, async (sender, message) =>
             {
 
-                DateTime now = DateTime.UtcNow;
-                DateTime startTime = now.AddDays(-1);
+                DateTimeOffset now = DateTime.UtcNow;
+                DateTimeOffset startTime = now.AddDays(-1);
 
-                var glucose = await _healthService.ReadGlucoses(
-              startTime,
-              now);
+                var glucose = await _healthService.ReadGlucoses(startTime,now);
 
                 var insulin = await _healthService.ReadInsulins(startTime, now);
 
 
-                foreach (var item in insulin)
-                {
-                }
-                foreach (var item in glucose)
-                {
+                //glucose.Add(new GlucoseInfo
+                //{
+                //    Glucose = 99,
+                //    Timestamp = now,
+                //});
+                //insulin.Add(new InsulinInfo
+                //{
+                //    Insulin = 99,
+                //    Basal = 10,
+                //    Timestamp = now,
+                //});
 
+                //Console.WriteLine("Pub");
+                //foreach (var item in insulin)
+                //{
 
-                }
+                //    Console.WriteLine($"Insulin: {item.Insulin} Timestamp : {item.Timestamp} Basal : {item.Basal}");
+                //}
+
+                //foreach (var item in glucose)
+                //{
+                //    Console.WriteLine($"Glucose: {item.Glucose} Timestamp : {item.Timestamp}");
+
+                //}
+
+                Console.WriteLine("-------------------------------------------Invoke Glucose Event-----------------------------------------------------------");
 
                 GlucoseDataAvailable?.Invoke(this, new GlucoseInfoEventArgs { GlucoseData = glucose });
             
