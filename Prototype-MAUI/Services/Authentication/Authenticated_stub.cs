@@ -20,7 +20,7 @@ namespace MauiApp8.Services.Authentication
         }
         public Account User { get; set; }
 
-        public Task<Account> AuthenticateAsync()
+        public Task<Account> AuthenticateAsync(CancellationToken cancellationToken)
         {
             string email = "uia@test.no";
             string name = "Test stub";

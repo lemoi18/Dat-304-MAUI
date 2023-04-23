@@ -52,6 +52,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\barchart.png" />
+	  <None Remove="Resources\Images\dash.png" />
+	  <None Remove="Resources\Images\dashboard.png" />
+	  <None Remove="Resources\Images\food.png" />
+	  <None Remove="Resources\Images\Graph.png" />
+	  <None Remove="Resources\Images\healthyfood.png" />
+	  <None Remove="Resources\Images\settings.png" />
 	  <None Remove="Resources\Images\trashcan.svg" />
 	</ItemGroup>
 

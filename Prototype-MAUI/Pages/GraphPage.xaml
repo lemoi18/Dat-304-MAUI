@@ -15,18 +15,6 @@
         
         <controls:NoInternetWarning />
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Text="24h" Command="{Binding TimeAdjustCommand}" CommandParameter="24" />
-            <Button Grid.Column="1" Text="12h" Command="{Binding TimeAdjustCommand}" CommandParameter="12" />
-            <Button Grid.Column="2" Text="6h"  Command="{Binding TimeAdjustCommand}" CommandParameter="6" />
-            <Button Grid.Column="3" Text="3h"  Command="{Binding TimeAdjustCommand}" CommandParameter="3" />
-        </Grid>
 
         <lvc:CartesianChart 
               Series="{Binding SeriesChart}" 

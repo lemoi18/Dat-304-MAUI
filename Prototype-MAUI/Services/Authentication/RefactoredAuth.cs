@@ -48,7 +48,7 @@ namespace MauiApp8.Services.Authentication
             User = new Account();
         }
 
-        public async Task<Account> AuthenticateAsync()
+        public async Task<Account> AuthenticateAsync(CancellationToken cancellationToken)
         {
 
             
@@ -73,7 +73,7 @@ namespace MauiApp8.Services.Authentication
             });
 
             using var client = new HttpClient();
-            var accessTokenResponse = await client.PostAsync(token_uri, parameters);
+            var accessTokenResponse = await client.PostAsync(token_uri, parameters, cancellationToken);
 
             if (!accessTokenResponse.IsSuccessStatusCode)
             {

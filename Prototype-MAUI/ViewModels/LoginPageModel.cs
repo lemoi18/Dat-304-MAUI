@@ -14,42 +14,37 @@ namespace MauiApp8.ViewModel
     {
 
 
+        [ObservableProperty]
 
         IAuthenticationService _authService;
-        private Account _user;
+        private CancellationTokenSource _cancellationTokenSource;
 
-
+        [ObservableProperty]
+        Account user;
         public LoginPageModel(IAuthenticationService authService)
         {
 
-            this._authService = authService;
+            AuthService = authService;
 
 
         }
 
-        public Account User
-        {
-            get => _user;
-            set => SetProperty(ref _user, value);
-        }
 
 
-       
-        
-
-
-
-        [RelayCommand]
-        Task NavigateToSettings() => Shell.Current.GoToAsync(nameof(SettingsPage));
         [RelayCommand]
         Task NavigateToHome() => Shell.Current.GoToAsync(nameof(HomePage));
 
 
+
+      
+
         [RelayCommand]
         async Task NavigateToGoogle()
         {
-            User = await _authService.AuthenticateAsync();
-            _authService.User = User;
+
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            User = await AuthService.AuthenticateAsync(_cancellationTokenSource.Token);
             if (User.LoginSuccessful)
             {
                 Application.Current.MainPage = new AppShell();

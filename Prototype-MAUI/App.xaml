@@ -1,5 +1,4 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
-<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:MauiApp8"
              x:Class="MauiApp8.App">
@@ -9,6 +8,72 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Color x:Key="Primary">#512BD4</Color>
+            <Color x:Key="Secondary">#DFD8F7</Color>
+            <Color x:Key="Tertiary">#2B0B98</Color>
+
+
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Dark=Black, Light=White}" />
+                <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+                <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Dark=#95FFFFFF, Light=#DFD8F7}" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Dark=Black, Light=White}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Dark=#95FFFFFF, Light=#95000000}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+            </Style>
+
+            <Style TargetType="TabBar">
+                <Setter Property="Shell.TabBarBackgroundColor"
+            Value="{StaticResource Primary}" />
+                <Setter Property="Shell.TabBarTitleColor"
+            Value="Black" />
+                <Setter Property="Shell.TabBarUnselectedColor"
+            Value="{StaticResource Secondary}" />
+            </Style>
+
+            <!-- Primary Font Sizes -->
+            <x:Double x:Key="PrimaryFontSizeSmall">14</x:Double>
+            <x:Double x:Key="PrimaryFontSizeMedium">18</x:Double>
+            <x:Double x:Key="PrimaryFontSizeLarge">24</x:Double>
+
+            <!-- Secondary Font Sizes -->
+            <x:Double x:Key="SecondaryFontSizeSmall">12</x:Double>
+            <x:Double x:Key="SecondaryFontSizeMedium">16</x:Double>
+            <x:Double x:Key="SecondaryFontSizeLarge">20</x:Double>
+
+            <!-- Primary Padding Values -->
+            <Thickness x:Key="PrimaryPaddingSmall">5</Thickness>
+            <Thickness x:Key="PrimaryPaddingMedium">10</Thickness>
+            <Thickness x:Key="PrimaryPaddingLarge">15</Thickness>
+
+            <!-- Secondary Padding Values -->
+            <Thickness x:Key="SecondaryPaddingSmall">3</Thickness>
+            <Thickness x:Key="SecondaryPaddingMedium">6</Thickness>
+            <Thickness x:Key="SecondaryPaddingLarge">9</Thickness>
+
+            <!-- Button Style with Primary Font Size and Padding -->
+            <Style x:Key="ButtonOutline" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
+                <Setter Property="BorderWidth" Value="2"/>
+                <Setter Property="HeightRequest" Value="{StaticResource PrimaryFontSizeMedium}"/>
+                <Setter Property="Padding" Value="{StaticResource PrimaryPaddingMedium}"/>
+                <Setter Property="CornerRadius" Value="20"/>
+                <Setter Property="Visual" Value="Material"/>
+            </Style>
+
+            <!-- Label Style with Secondary Font Size and Padding -->
+            <Style x:Key="LabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="{StaticResource SecondaryFontSizeMedium}"/>
+                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                <Setter Property="Padding" Value="{StaticResource SecondaryPaddingMedium}"/>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

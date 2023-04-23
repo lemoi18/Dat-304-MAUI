@@ -6,7 +6,9 @@
              xmlns:viewmodel="clr-namespace:MauiApp8.ViewModel"
              x:DataType="viewmodel:SettingsPageModel"
              xmlns:controls="clr-namespace:MauiApp8.Controls"
-             Title="Settings">
+             Shell.TabBarBackgroundColor="{StaticResource PrimaryColor}"
+
+    Title="Settings">
              
     <VerticalStackLayout>
         <controls:NoInternetWarning />

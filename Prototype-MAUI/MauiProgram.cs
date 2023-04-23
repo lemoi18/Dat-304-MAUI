@@ -2,7 +2,6 @@
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Logging;
 using MauiApp8.Services.Authentication;
-using MauiApp8.Services.DataServices;
 using Microsoft.Extensions.DependencyInjection;
 using Plugin.LocalNotification;
 using SkiaSharp.Views.Maui.Controls.Hosting;

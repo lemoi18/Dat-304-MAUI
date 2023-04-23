@@ -10,50 +10,53 @@
              xmlns:controls="clr-namespace:MauiApp8.Controls"
              Title="Home">
 
-    <VerticalStackLayout>
+    <VerticalStackLayout BackgroundColor="White">
+        <VerticalStackLayout.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Offset="0" Color="Orange" />
+                <GradientStop Offset="1" Color="OrangeRed" />
+            </LinearGradientBrush>
+        </VerticalStackLayout.Background>
         <controls:NoInternetWarning />
-        
-        <Frame>
+
+        <Frame BackgroundColor="{StaticResource Primary}" CornerRadius="10" Margin="{StaticResource PrimaryPaddingMedium}">
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnFrameTapped" />
             </Frame.GestureRecognizers>
 
-
             <lvc:CartesianChart
                 Title="{Binding ChartConfiguration.Title}"
                 Series="{Binding SeriesChart}" 
-                HeightRequest="200"
-                WidthRequest="400"
+                HeightRequest="{StaticResource SecondaryFontSizeMedium}"
+                WidthRequest="{StaticResource PrimaryPaddingLarge}"
                 YAxes="{Binding ChartConfiguration.YAxes}"
                 XAxes="{Binding ChartConfiguration.XAxes}"
                 EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">
             </lvc:CartesianChart>
-
         </Frame>
 
-        <Frame BackgroundColor="LightGray" Padding="10" CornerRadius="5" HorizontalOptions="Center">
+        <Frame BackgroundColor="{StaticResource Primary}" Padding="{StaticResource PrimaryPaddingMedium}" CornerRadius="{StaticResource PrimaryFontSizeSmall}" Margin="{StaticResource PrimaryPaddingMedium}" HorizontalOptions="Center">
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="Current insulin Level: " FontSize="18" />
-                        <Span Text="{Binding LastInsulinLevel}" FontSize="18" TextColor="Red" />
+                        <Span Text="Current insulin Level: " FontSize="{StaticResource PrimaryFontSizeMedium}" />
+                        <Span Text="{Binding LastInsulinLevel}" FontSize="{StaticResource PrimaryFontSizeMedium}" TextColor="{StaticResource PrimaryDark}" />
                     </FormattedString>
-
                 </Label.FormattedText>
             </Label>
         </Frame>
 
-        <Frame BackgroundColor="LightGray" Padding="10" CornerRadius="5" HorizontalOptions="Center">
+        <Frame BackgroundColor="{StaticResource Primary}" Padding="{StaticResource PrimaryPaddingMedium}" CornerRadius="{StaticResource PrimaryFontSizeSmall}" Margin="{StaticResource PrimaryPaddingMedium}" HorizontalOptions="Center">
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="Current Glucose Level: " FontSize="18" />
-                        <Span Text="{Binding LastGlucoseLevel}" FontSize="18" TextColor="Blue" />
+                        <Span Text="Current Glucose Level: " FontSize="{StaticResource PrimaryFontSizeMedium}" />
+                        <Span Text="{Binding LastGlucoseLevel}" FontSize="{StaticResource PrimaryFontSizeMedium}" TextColor="{StaticResource Accent}" />
                     </FormattedString>
-
                 </Label.FormattedText>
             </Label>
         </Frame>
+
     </VerticalStackLayout>
 
 </ContentPage>

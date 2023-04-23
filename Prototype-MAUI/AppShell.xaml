@@ -7,23 +7,27 @@
     xmlns:local="clr-namespace:MauiApp8"
     xmlns:views="clr-namespace:MauiApp8.Views"
 
-    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutBehavior="Disabled"
     Shell.TabBarTitleColor="AliceBlue"
     >
 
-
-
+ 
     <TabBar>
         <ShellContent Title="Home"
+                      Icon="dashboard.png"
                       ContentTemplate="{DataTemplate views:HomePage}"
                       Route="home" />
         <ShellContent Title="Food"
+                      Icon="healthyfood.png"
                       ContentTemplate="{DataTemplate views:FoodPage}"
                       Route="Food" />
         <ShellContent Title="Graph"
+                      Icon="barchart.png"
                       ContentTemplate="{DataTemplate views:GraphPage}"
                       Route="graph" />
         <ShellContent Title="Settings"
+                      
+                      Icon="settings.png"
                       ContentTemplate="{DataTemplate views:SettingsPage}"
                       Route="settings" />
     </TabBar>

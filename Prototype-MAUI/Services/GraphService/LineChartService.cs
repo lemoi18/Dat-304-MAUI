@@ -277,7 +277,7 @@ namespace MauiApp8.Services.GraphService
             {
                 Values = InsulinsChart,
                 GeometrySize = 4,
-                GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
+                GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 2 },
                 Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
                 ScalesYAt = 0,
                 Name = "Insulin",

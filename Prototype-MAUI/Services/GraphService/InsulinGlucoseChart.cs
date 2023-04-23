@@ -120,12 +120,14 @@ namespace MauiApp8.Services.GraphService
                     MinLimit = 0, // Set the MinLimit to 0, which corresponds to the first label's index
                     MaxLimit = timeLabels.Count - 1,
                     NamePaint = new SolidColorPaint(SKColors.Black),
-                    MinStep = 1,
-                   
+
+                    UnitWidth = TimeSpan.FromMinutes(5).Ticks,
+                    MinStep = TimeSpan.FromMinutes(5).Ticks,
+
                     LabelsPaint = new SolidColorPaint(SKColors.Black),
                     TextSize = 14, // Reduce text size
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 1 }
-                    ,
+                    
 
                 }
           };

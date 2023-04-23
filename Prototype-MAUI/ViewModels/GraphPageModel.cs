@@ -116,42 +116,5 @@ namespace MauiApp8.ViewModel
 
         }
 
-
-        [RelayCommand]
-        async Task TimeAdjust(string interval)
-        {
-            switch (interval)
-            {
-                case "24":
-                    {
-                        FromDate = DateTimeOffset.UtcNow.AddDays(-1);
-                        ToDate = DateTimeOffset.UtcNow;
-                        break;
-                    }
-                case "12":
-                    {
-                        FromDate = DateTimeOffset.UtcNow.AddHours(-12);
-                        ToDate = DateTimeOffset.UtcNow;
-                        break;
-                    }
-                case "6":
-                    {
-                        FromDate = DateTimeOffset.UtcNow.AddHours(-6);
-                        ToDate = DateTimeOffset.UtcNow;
-                        break;
-                    }
-                case "3":
-                    {
-                        FromDate = DateTimeOffset.UtcNow.AddHours(-3);
-                        ToDate = DateTimeOffset.UtcNow;
-                        break;
-                    }
-
-            }
-
-        }
-
-
-
     }
 }
