@@ -3,6 +3,7 @@ using MauiApp8.Services.Health;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.BackgroundServices.Realm;
 using MauiApp8.Model;
+using MauiApp8.Services.Food;
 
 namespace MauiApp8.Services
 {
@@ -15,7 +16,7 @@ namespace MauiApp8.Services
             builder.Services.AddTransient<BackgroundServices.Realm.ICRUD>((e) => new Services.BackgroundServices.Realm.CRUD());
             builder.Services.AddTransient<BackgroundServices.Realm.IUtils>((e) => new Services.BackgroundServices.Realm.Utils());
             builder.Services.AddTransient<IHealthService>((e) => new HealthService(e.GetService<IUtils>(), e.GetService<ICRUD>()));
-            builder.Services.AddSingleton<Authentication.IAuthenticationService>((e) => new Services.Authentication.Authenticated_stub());
+            builder.Services.AddSingleton<Authentication.IAuthenticationService>((e) => new Services.Authentication.RefactoredGoogleAuth());
             builder.Services.AddTransient<DataServices.IDataService>((e) => new Services.DataServices.FoodService_stub(e.GetService<Services.BackgroundServices.IBackgroundService>()));
             builder.Services.AddTransient<Realms.Realm>(e => Services.DBService.CreateDB.RealmCreate());
             builder.Services.AddTransient<Services.BackgroundServices.IBackgroundService>((e) => new Services.BackgroundServices.DataBase());
@@ -24,7 +25,7 @@ namespace MauiApp8.Services
 #if __ANDROID__
             builder.Services.AddSingleton<Services.BackgroundFetchService.IBackgroundFetchService, MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid>(services => new MauiApp8.Platforms.Android.AndroidServices.BackgroundFetchServiceAndroid());
 #endif
-
+            builder.Services.AddSingleton<IFoodService, FoodService>();
             return builder;
         }
     }

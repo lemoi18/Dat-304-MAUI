@@ -50,7 +50,7 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             }
 
             Food exampleFood = ReadFood(realm, "Example Food");
-            Console.WriteLine($"ReadFood: Name: {exampleFood.Name}, Calories: {exampleFood.Calories}, Carbohydrates: {exampleFood.Carbohydrates}, Protein: {exampleFood.Protein}, Fat: {exampleFood.Fat}");
+            Console.WriteLine($"GetFood: Name: {exampleFood.Name}, Calories: {exampleFood.Calories}, Carbohydrates: {exampleFood.Carbohydrates}, Protein: {exampleFood.Protein}, Fat: {exampleFood.Fat}");
 
             await UpdateFood(realm, "Example Food", 120, 12, 6, 4);
             Console.WriteLine("Updated Food:");
@@ -97,6 +97,14 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             await DeleteMeal(realm, mealId);
             await DeleteFood(realm, "Example Food");
             await DeleteFood(realm, "Example Food 2");
+        }
+
+        public async Task MockFood(Realms.Realm realm)
+        {
+            await AddFood(realm, "Example Food", 100, 10, 5, 3);
+            await AddFood(realm, "Example Food 2", 200, 20, 10, 6);
+            await AddFood(realm, "Example Food 3", 300, 30, 15, 9);
+            var allFoods = ReadFoods(realm);
         }
 
         public async Task AddGlucoseEntry(Realms.Realm realm, float sgv, DateTimeOffset date)
@@ -485,7 +493,8 @@ namespace MauiApp8.Services.BackgroundServices.Realm
                 {
                     realm.Add(meal);
                 });
-                realm.Refresh();
+
+                Console.WriteLine("Meal with ID ", meal.ID, " added to database");
                 return meal.ID;
             }
             catch (Exception ex)

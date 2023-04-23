@@ -2,7 +2,7 @@
 
 namespace MauiApp8.Services.DataServices
 {
-    internal class DataService : IDataService
+    internal class DataService : IFoodService
     {
 
         HttpClient httpClient;
