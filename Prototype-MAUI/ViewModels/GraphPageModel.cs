@@ -26,10 +26,7 @@ namespace MauiApp8.ViewModel
         ObservableCollection<ISeries> seriesChart;
         [ObservableProperty]
         ObservableCollection<ISeries> glucoseSeriesChart;
-        [ObservableProperty]
-        ObservableCollection<ISeries[]> testSeriesChart;
-        [ObservableProperty]
-        ISeries[] seriesBolosChart;
+        
         [ObservableProperty]
         ChartConfiguration chartConfigurations;
         [ObservableProperty]
@@ -107,8 +104,6 @@ namespace MauiApp8.ViewModel
 
             this.GlucosesData = _chartService.GlucosesChart;
             this.InsulinsData = _chartService.InsulinsChart;
-            LastGlucoseLevel = _chartService.LastPointInData.Glucose;
-            LastInsulinLevel = _chartService.LastPointInData.Insulin;
            
 
             GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration(FromDate, ToDate);

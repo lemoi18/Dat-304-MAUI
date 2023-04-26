@@ -11,6 +11,7 @@ namespace MauiApp8.Services.GraphService
         event EventHandler NotifyDataChanged;
         bool IsDataChanged { get; set; }
         T LastPointInData { get; }
+
         Task<ISeries> AddBasalSeries();
         Task<ISeries> AddInsulinSeries();
         Task<ISeries> AddGlucosesSeries();

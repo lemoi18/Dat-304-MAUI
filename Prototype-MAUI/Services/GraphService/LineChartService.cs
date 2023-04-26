@@ -48,6 +48,8 @@ namespace MauiApp8.Services.GraphService
             GlucosesChart = new ObservableCollection<Model.GlucoseInfo>();
             InsulinsChart = new ObservableCollection<Model.InsulinInfo>();
             _healthService = healthService;
+            FromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            ToDate = DateTimeOffset.UtcNow;
 
             Task.Run(async () =>
             {
@@ -73,6 +75,30 @@ namespace MauiApp8.Services.GraphService
 
                     }
                 }
+
+                switch (typeof(T).Name)
+                {
+                    case nameof(HealthData):
+                        LastPointInData = (T)(object)new HealthData
+                        {
+                            LastGlucose = int.TryParse(GlucosesChart.Where(g => g.Timestamp <= ToDate)
+                            .LastOrDefault()?.Glucose.ToString() ?? "0", out int lastGlucoseLevel) ? lastGlucoseLevel : 0,
+
+                            SecondLastGlucose = int.TryParse(GlucosesChart.Where(g => g.Timestamp <= ToDate)
+                            .Reverse()
+                            .Skip(1)
+                            .LastOrDefault()?.Glucose.ToString() ?? "0", out int secondLastGlucoseLevel) ? secondLastGlucoseLevel : 0,
+
+
+
+                };
+                        break;
+
+
+
+                    default:
+                        throw new NotImplementedException($"Unknown data type: {typeof(T).Name}");
+                }
                 IsDataChanged = true;
                 OnDataChanged();
 
@@ -90,13 +116,15 @@ namespace MauiApp8.Services.GraphService
                     }
                     //Console.WriteLine($"Insulin: {insulin.Insulin} Timestamp : {insulin.Timestamp} Basal : {insulin.Basal} ");
                 }
+
+              
+
                 IsDataChanged = true;
                 OnDataChanged();
 
             };
 
-             FromDate = DateTimeOffset.UtcNow.AddDays(-1);
-             ToDate = DateTimeOffset.UtcNow;
+             
 
         }
 
@@ -154,31 +182,12 @@ namespace MauiApp8.Services.GraphService
 
 
 
-            switch (typeof(T).Name)
-            {
-                case nameof(HealthData):
-                    LastPointInData = (T)(object)new HealthData
-                    {
-                        Glucose = int.TryParse(GlucosesChart.Where(g => g.Timestamp <= ToDate)
-                            .LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0,
-                        Insulin = int.TryParse(InsulinsChart.Where(g => g.Timestamp <= ToDate)
-                            .LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0
-                    };
-                    break;
-
-
-
-                default:
-                    throw new NotImplementedException($"Unknown data type: {typeof(T).Name}");
-            }
+           
 
             IsDataChanged = true;
             OnDataChanged();
             IsDataChanged = false;
 
-
-            InsulinsChart.Add(new InsulinInfo { Basal= 0.752, Insulin= 5,Timestamp = DateTimeOffset.UtcNow.AddHours(-1) });
-            GlucosesChart.Add(new GlucoseInfo {Glucose = 30, Timestamp = ToDate });
 
         }
 
@@ -227,7 +236,7 @@ namespace MauiApp8.Services.GraphService
             var glucoseseries = new LineSeries<Model.GlucoseInfo>
             {
                 Values = GlucosesChart,
-                GeometrySize = 4,
+                GeometrySize = 12,
                 GeometryStroke =  new SolidColorPaint(SKColors.Green) { StrokeThickness = 2 },
                 Fill = new SolidColorPaint(SKColors.Transparent), // Set Fill to transparent
                 ScalesYAt = 0,
@@ -252,10 +261,6 @@ namespace MauiApp8.Services.GraphService
 
             };
            
-
-            
-
-
 
             var diffs = GlucosesChart.Zip(GlucosesChart.Skip(1), (prev, curr) => Math.Abs(curr.Glucose - prev.Glucose));
             var hasLargeDiff = diffs.Any(d => d > threshold);

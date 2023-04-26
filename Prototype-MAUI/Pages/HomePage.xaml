@@ -13,8 +13,8 @@
     <VerticalStackLayout BackgroundColor="White">
         <VerticalStackLayout.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Offset="0" Color="Orange" />
-                <GradientStop Offset="1" Color="OrangeRed" />
+                <GradientStop Offset="0" Color="{StaticResource Primary}" />
+                <GradientStop Offset="1" Color="{StaticResource Tertiary}" />
             </LinearGradientBrush>
         </VerticalStackLayout.Background>
         <controls:NoInternetWarning />
@@ -24,14 +24,17 @@
                 <TapGestureRecognizer Tapped="OnFrameTapped" />
             </Frame.GestureRecognizers>
 
-            <lvc:CartesianChart
-                Title="{Binding ChartConfiguration.Title}"
-                Series="{Binding SeriesChart}" 
-                HeightRequest="{StaticResource SecondaryFontSizeMedium}"
-                WidthRequest="{StaticResource PrimaryPaddingLarge}"
-                YAxes="{Binding ChartConfiguration.YAxes}"
-                XAxes="{Binding ChartConfiguration.XAxes}"
-                EasingFunction="{Binding Source={x:Static lvcore:EasingFunctions.BounceOut}}">
+            <lvc:CartesianChart 
+              Series="{Binding GlucoseSeriesChart}" 
+                Title="{Binding ChartConfigurations.Title}"
+                HeightRequest="400"
+                TooltipTextSize="50"
+                LegendPosition="Bottom"
+                LegendTextSize="20"
+                YAxes="{Binding ChartConfigurations.YAxes}"
+                XAxes="{Binding ChartConfigurations.XAxes}"   
+
+            >
             </lvc:CartesianChart>
         </Frame>
 
@@ -40,7 +43,7 @@
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="Current insulin Level: " FontSize="{StaticResource PrimaryFontSizeMedium}" />
-                        <Span Text="{Binding LastInsulinLevel}" FontSize="{StaticResource PrimaryFontSizeMedium}" TextColor="{StaticResource PrimaryDark}" />
+                        <Span Text="{Binding SecondlastglcoseLevel}" FontSize="{StaticResource PrimaryFontSizeMedium}" TextColor="{StaticResource PrimaryDark}" />
                     </FormattedString>
                 </Label.FormattedText>
             </Label>

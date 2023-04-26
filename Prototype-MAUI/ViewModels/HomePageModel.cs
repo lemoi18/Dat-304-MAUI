@@ -32,35 +32,30 @@ namespace MauiApp8.ViewModel
         IChartService<HealthData> _chartService;
         IHealthService _healthService;
         Publish _publish;
+        ICRUD curd;
 
         [ObservableProperty]
-        MvvmHelpers.ObservableRangeCollection<MauiApp8.Model.GlucoseInfo> glucoseInfo;
+         float lastGlucoseLevel;
+        [ObservableProperty]
+
+        float secondlastglcoseLevel;
+
 
         [ObservableProperty]
-        ObservableCollection<ISeries> seriesCollection;
-
-
-        private readonly ICRUD curd;
+        ChartConfiguration chartConfigurations;
+       
+        [ObservableProperty]
+        ChartConfiguration getBolosChartConfiguration;
 
         [ObservableProperty]
-        ObservableCollection<ISeries[]> seriesChart;
+        DateTimeOffset fromDate;
+        [ObservableProperty]
+        DateTimeOffset toDate;
 
         [ObservableProperty]
-        ObservableCollection<Model.GlucoseInfo> glucoses;
-
+        ObservableCollection<ISeries> seriesChart;
         [ObservableProperty]
-        ObservableCollection<Model.InsulinInfo> insulins;
-
-        [ObservableProperty]
-        public int lastInsulinLevel;
-        [ObservableProperty]
-        public int lastGlucoseLevel;
-
-        [ObservableProperty]
-        ChartConfiguration chartConfiguration;
-
-        [ObservableProperty]
-        ChartConfiguration boloschartConfiguration;
+        ObservableCollection<ISeries> glucoseSeriesChart;
 
 
         public HomePageModel(
@@ -79,49 +74,16 @@ namespace MauiApp8.ViewModel
             _backgroundService = backgroundService;
             _backgroundFetchService = backgroundFetchService;
             _chartService = chartService;
-            DateTimeOffset fromDate = DateTimeOffset.UtcNow.AddDays(-30);
-            DateTimeOffset toDate = DateTimeOffset.UtcNow;
-            Glucoses = new ObservableCollection<Model.GlucoseInfo>();
-            Insulins = new ObservableCollection<Model.InsulinInfo>();
-            SeriesCollection = new ObservableCollection<ISeries>();
-
-
-
-            _publish.GlucoseDataAvailable += async (sender, e) =>
-            {
-                foreach (var glucose in e.GlucoseData)
-                {
-                    Glucoses.Add(glucose);
-                }
-                
-                LastGlucoseLevel = _chartService.LastPointInData.Glucose;
-            };
-
-            _publish.InsulinDataAvailable += (sender, e) =>
-            {
-                foreach (var insulin in e.InsulinData)
-                {
-                    Insulins.Add(insulin);
-                }
-                LastInsulinLevel = int.TryParse(Insulins.Where(g => g.Timestamp <= toDate)
-                               .LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0;
-
-                LastInsulinLevel = _chartService.LastPointInData.Insulin;
-
-            };
-
-
            
 
+            GlucoseSeriesChart = new ObservableCollection<ISeries>();
+            SeriesChart = new ObservableCollection<ISeries>();
+            getBolosChartConfiguration = new ChartConfiguration();
+            chartConfigurations = new ChartConfiguration();
 
             Task.Run(()=> TestFunction());
             Task.Run(() => InitializeAsync());
 
-            
-            
-
-
-            
         }
         
       
@@ -130,12 +92,40 @@ namespace MauiApp8.ViewModel
         {
 
 
+            FromDate = DateTimeOffset.UtcNow.AddDays(-1);
+            ToDate = DateTimeOffset.UtcNow;
+            _chartService.IsDataChanged = false;
+            _chartService.DataChanged += async (sender, e) =>
+            {
+                if (!_chartService.IsDataChanged)
+                {
 
-           
-            //await GetHealthData();
+                    SeriesChart.Clear();
+                    GlucoseSeriesChart.Clear();
+                    var BolosSeries = await _chartService.AddBasalSeries();
+                    var GlucoseSeries = await _chartService.AddGlucosesSeries();
+                    GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration(FromDate, ToDate);
+                    ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
+                    //SeriesChart.Add(BolosSeries);
+                    //GlucoseSeriesChart.Add(GlucoseSeries);
+                }
+            };
 
+            _chartService.IsDataChanged = false;
+            var basalSeries = await _chartService.AddBasalSeries();
+            var glucoseSeries = await _chartService.AddGlucosesSeries();
+            var InsulinSeries = await _chartService.AddInsulinSeries();
 
-           
+            SeriesChart.Add(basalSeries);
+            GlucoseSeriesChart.Add(glucoseSeries);
+            GlucoseSeriesChart.Add(InsulinSeries);
+
+            LastGlucoseLevel = _chartService.LastPointInData.LastGlucose;
+            SecondlastglcoseLevel = _chartService.LastPointInData.SecondLastGlucose;
+            
+            GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration(FromDate, ToDate);
+            ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
+
 
 
 
@@ -152,38 +142,6 @@ namespace MauiApp8.ViewModel
 
 
 
-
-        [RelayCommand]
-        async Task GetHealthData()
-        {
-            DateTimeOffset toDate = DateTimeOffset.UtcNow;
-            DateTimeOffset fromDate = toDate.AddDays(-1);
-            
-
-            var glucose = await _healthService.ReadGlucoses(
-                fromDate,
-                toDate);
-            var insulin = await _healthService.ReadInsulins(fromDate, toDate);
-            foreach (var item in insulin)
-            {
-                Insulins.Add(item);
-                Console.WriteLine(item);
-
-            }
-            foreach (var item in glucose)
-            {
-                Glucoses.Add(item);
-                
-
-            }
-            //LastGlucoseLevel = int.TryParse(Glucoses.LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0;
-            LastGlucoseLevel = int.TryParse(Glucoses.Where(g => g.Timestamp <= toDate)
-            .LastOrDefault()?.Glucose.ToString() ?? "0", out int glucoseLevel) ? glucoseLevel : 0;
-
-            LastInsulinLevel = int.TryParse(Insulins.Where(g => g.Timestamp <= toDate)
-                               .LastOrDefault()?.Insulin.ToString() ?? "0", out int insulinLevel) ? insulinLevel : 0;
-
-        }
         [RelayCommand]
         async Task CallFunction()
         {

@@ -44,12 +44,28 @@ namespace MauiApp8.ViewModel
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            User = await AuthService.AuthenticateAsync(_cancellationTokenSource.Token);
+            try
+            {
+                User = await AuthService.AuthenticateAsync(_cancellationTokenSource.Token);
+            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
             if (User.LoginSuccessful)
             {
                 Application.Current.MainPage = new AppShell();
             }
-            
+            }
+            catch (OperationCanceledException)
+            {
+
+                await Shell.Current.DisplayAlert(
+                         "Error",
+                          $"An error occurred duing authentication, please try again",
+                          "Close");
+
+
+            }
+
+
         }
 
         

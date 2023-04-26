@@ -77,9 +77,14 @@ namespace MauiApp8.Model
         DateTimeOffset timestamp;
     }
 
-    public class HealthData : ObservableObject
+    public partial class HealthData : ObservableObject
     {
-        public int Insulin { get; set; }
-        public int Glucose { get; set; }
+
+        [ObservableProperty]
+
+        float lastGlucose;
+        [ObservableProperty]
+
+        float secondLastGlucose;
     }
 }
