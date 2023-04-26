@@ -37,67 +37,58 @@ namespace MauiApp8.Platforms.Android.AndroidServices
             // Create the notification channel
             CreateNotificationChannel();
 
-            // Create a notification using NotificationCompat.Builder
-            var notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .SetContentTitle("My Foreground Service")
-                .SetContentText("Fetching data...")
-                .SetSmallIcon(Resource.Drawable.notification_icon_background)
-                .Build();
-
-            // Start the foreground service with the notification
-            StartForeground(ServiceId, notification);
+           
             
             // Execute the background fetch logic every 15 minutes (900000 milliseconds)
             Task.Run(async () =>
             {
-                int check = 0;
-                //SendNotificationForVariable();
-                while (true)
-                {
-                    if (check < 1)
-                    {
-                        // Define your fetch action
-                        Action fetchAction = () =>
-                        {
-                            // Your background fetch logic here
-                            // Logic in Background reciver in android directory
-                        };
-
-                        // Call the ScheduleFetchTask method to schedule the background fetch every 1 minute
-                        BGF.BackgroundFetchServiceAndroid bgf = new BGF.BackgroundFetchServiceAndroid();
-                        bgf.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction);
-                        
-                        check += 1;
-                    }
-                    // Check if the app is in the background or not running
-                    //var isAppOff = IsAppOff();
-                    await CheckAlarm();
-
-                    
-                    //if (isAppOff)
-                    //{
-                    //    // If the app is off, send a notification
-                    //    SendAppOffNotification();
-                    //}
-
-                    await Task.Delay(TimeSpan.FromMinutes(1));
-                }
+                await CheckAlarm();
+                await AuthAlarm();
+                
             });
 
             return StartCommandResult.Sticky;
         }
         public async Task CheckAlarm()
         {
-            WeakReferenceMessenger.Default.Register<MauiApp8.Services.PublishSubscribeService.Publish.Alarm>(this, async (sender, message) =>
+            WeakReferenceMessenger.Default.Register<MauiApp8.Model.Alarms.Alarm>(this, async (sender, message) =>
             {
                 if(message.On == true) { ;
 
                     var notificationHelper = new NotificationHelper(this);
 
-                    notificationHelper.CreateNotification("My Notification", "This is my notification message!");
-                    notificationHelper.ShowNotification();
+                    //notificationHelper.CreateNotification("My Notification", "This is my notification message!");
+                    notificationHelper.ShowNotification(message.Response, message.Message + " : " + message.Response + " BG ");
                 }
                 
+            });
+        }
+        public async Task AuthAlarm()
+        {
+            WeakReferenceMessenger.Default.Register<MauiApp8.Model.Alarms.Authenticate>(this, async (sender, message) =>
+            {
+                if (message.isAuth == true)
+                {
+                    Action fetchAction = () =>
+                    {
+                        // Your background fetch logic here
+                        // Logic in Background reciver in android directory
+                    };
+                    CreateNotificationChannel();
+
+                    // Create a notification using NotificationCompat.Builder
+                    var notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .SetContentTitle("Starting background service...")
+                        .SetContentText("Fetching data...")
+                        .SetSmallIcon(Resource.Drawable.notification_icon_background)
+                        .Build();
+
+                    // Start the foreground service with the notification
+                    StartForeground(ServiceId, notification);
+                    BGF.BackgroundFetchServiceAndroid bgf = new BGF.BackgroundFetchServiceAndroid();
+                    bgf.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction);
+                }
+
             });
         }
         public override IBinder OnBind(Intent intent)

@@ -54,9 +54,9 @@ namespace MauiApp8.Model
     }
     public class ExercicesInfo
     {
-        public int ID { get; set; }
-        public float CaloriesBurned { get; set; }
-        public DateTimeOffset Timestamp { get; set; }
+        public float Steps { get; set; }
+        public DateTimeOffset Start { get; set; }
+        public DateTimeOffset End { get; set; }
     }
     public class GlucoseInfo : ObservableObject
     {

@@ -13,5 +13,7 @@ namespace MauiApp8.Services.ThirdPartyHealthService
         long DateTimeToUnixTimestampMillis(DateTime dateTime);
         Task FetchCalorieDataAsync(DateTime now, DateTime startTime);
         Task FetchActivityDataAsync(DateTime now, DateTime startTime);
+
+        Task UpdateGoogleFitSteps();
     }
 }

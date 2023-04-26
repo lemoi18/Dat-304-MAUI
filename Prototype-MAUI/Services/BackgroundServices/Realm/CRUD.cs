@@ -168,6 +168,24 @@ namespace MauiApp8.Services.BackgroundServices.Realm
 
         }
 
+        public float? ReadLatestGlucoseValue(Realms.Realm realm)
+        {
+            var objects = realm.All<GlucoseInfo>();
+            float? Value = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Glucose;
+            if (Value == null)
+            {
+                Console.WriteLine("The glucose List is empty");
+
+                return 0;
+            }
+            else
+            {
+                
+                return Value;
+            }
+
+        }
+
         public DateTimeOffset? ReadLatestInsulinTimestamp(Realms.Realm realm)
         {
             var objects = realm.All<InsulinInfo>();
@@ -550,6 +568,88 @@ namespace MauiApp8.Services.BackgroundServices.Realm
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        public async Task<List<GlucoseInfo>> ReadAllGlucose(Realms.Realm realm)
+        {
+            List<GlucoseInfo> glucoselist = realm.All<GlucoseInfo>().ToList();
+            return glucoselist;
+        }
+        public async Task<List<ExercicesInfo>> ReadAllExercice(Realms.Realm realm)
+        {
+            List<ExercicesInfo> exercicelist = realm.All<ExercicesInfo>().ToList();
+            return exercicelist;
+        }
+
+        public async void ConsoleAllExercice(Realms.Realm realm)
+        {
+            List<ExercicesInfo> exercicelist = realm.All<ExercicesInfo>().ToList();
+            Console.WriteLine("Starting looking at exercice...");
+            foreach (var exercice in exercicelist)
+            {
+                Console.WriteLine($"Steps: {exercice.Steps}, Start Time: {exercice.Start}, End Time: {exercice.End}");
+            }
+
+        }
+
+        public async Task AddExerciceEntry(Realms.Realm realm, float steps, DateTimeOffset start, DateTimeOffset end) 
+        {
+            using (var trans = realm.BeginWrite())
+            {
+                var newObj = new ExercicesInfo
+                {
+                    Steps = steps,
+                    Start = start,
+                    End = end
+                };
+                realm.Add(newObj);
+                trans.Commit();
+            }
+            await Task.CompletedTask;
+        }
+
+        public async Task DeleteExerciceEntriesAfterDate(Realms.Realm realm, DateTimeOffset date) 
+        {
+            var objectsToDelete = realm.All<ExercicesInfo>().Where(obj => obj.Start > date);
+            int count = objectsToDelete.Count();
+            Console.WriteLine($"Number of objects to delete: {count}");
+
+            // begin a write transaction to delete the objects
+            if (count > 0)
+            {
+                await realm.WriteAsync(() =>
+                {
+                    realm.RemoveRange(objectsToDelete);
+                });
+                realm.Refresh();
+            }
+            else
+            {
+                Console.WriteLine($"No objects to delete");
+            }
+
+           // await Task.CompletedTask;
+        }
+
+
+        public async Task DeleteAllExercice(Realms.Realm realm) {
+            var allObjects = realm.All<ExercicesInfo>();
+            int count = allObjects.Count();
+            Console.WriteLine($"Number of objects to delete: {count}");
+
+            // begin a write transaction to delete all objects
+            if (count > 0)
+            {
+                await realm.WriteAsync(() =>
+                {
+                    realm.RemoveRange(allObjects);
+                });
+                realm.Refresh();
+            }
+            else
+            {
+                Console.WriteLine($"No objects to delete");
             }
         }
     }

@@ -3,7 +3,7 @@ using System.Security.Authentication;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Model;
 using System.Text.Json;
-
+using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace MauiApp8.Services.Authentication
 {
@@ -40,12 +40,46 @@ namespace MauiApp8.Services.Authentication
                 $"&client_id={client_id}" +
                 $"&scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/fitness.activity.read%20https://www.googleapis.com/auth/fitness.activity.write" +
                 $"&include_granted_scopes=true" +
+                 $"&access_type=offline" +
                 $"&state=state_parameter_passthrough_value";
-
+            
             callback_url = "com.companyname.mauiapp8://";
             Token = null;
 
             User = new Account();
+        }
+        public async Task<Account> RefreshAuthenticateAsync()
+        {
+          
+
+            // If we have a refresh token, use it to obtain a new access token.
+            if (!string.IsNullOrEmpty(User.RefreshToken))
+            {
+                var parameters = new FormUrlEncodedContent(new[]
+                {
+            new KeyValuePair<string,string>("grant_type","refresh_token"),
+            new KeyValuePair<string,string>("client_id", client_id),
+            new KeyValuePair<string,string>("refresh_token", User.RefreshToken),
+            });
+
+                using var client = new HttpClient();
+                var accessTokenResponse = await client.PostAsync(token_uri, parameters);
+
+                if (!accessTokenResponse.IsSuccessStatusCode)
+                {
+                    throw new AuthenticationException("Failed to get access token");
+                }
+
+                var data = await accessTokenResponse.Content.ReadAsStringAsync();
+                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(data);
+
+                Console.WriteLine(tokenResponse.access_token);
+
+                // Validate and return the user account.
+                return ValidateAccessToken(tokenResponse.id_token, tokenResponse.access_token, tokenResponse.refresh_token, tokenResponse.expires_in);
+            }
+
+            return User;
         }
 
         public async Task<Account> AuthenticateAsync()
@@ -82,13 +116,13 @@ namespace MauiApp8.Services.Authentication
 
             var data = await accessTokenResponse.Content.ReadAsStringAsync();
             var loginResponse = JsonSerializer.Deserialize<LoginRespons>(data);
-
+            Console.WriteLine(loginResponse.access_token);
 
             try
             {
 
-
-                return ValidateAccessToken(loginResponse.id_token, loginResponse.access_token);
+                WeakReferenceMessenger.Default.Send(new Model.Alarms.Authenticate { isAuth = true });
+                return ValidateAccessToken(loginResponse.id_token, loginResponse.access_token, loginResponse.refresh_token, loginResponse.expires_in);
 
 
 
@@ -103,10 +137,11 @@ namespace MauiApp8.Services.Authentication
         {
             User = null;
             Token = null;
+
             await Task.CompletedTask;
         }
 
-        private Account ValidateAccessToken(string id_token, string access_token)
+        private Account ValidateAccessToken(string id_token, string access_token, string refresh_token, int expires_in)
         {
             var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(id_token);
@@ -115,6 +150,7 @@ namespace MauiApp8.Services.Authentication
             var givenName = GetTokenClaim(token, "given_name");
             var picture = GetTokenClaim(token, "picture");
             var familyName = GetTokenClaim(token, "family_name");
+
 
 
             return new Account
@@ -126,7 +162,9 @@ namespace MauiApp8.Services.Authentication
                 FamilyName = familyName,
                 LoginSuccessful = true,
                 Token = token,
-                AccessToken= access_token
+                AccessToken = access_token,
+                RefreshToken = refresh_token,
+                ExpiresIn = expires_in,
             };
         }
 
@@ -134,6 +172,8 @@ namespace MauiApp8.Services.Authentication
         {
             return token.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
         }
+
+
 
     }
 }

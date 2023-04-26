@@ -25,5 +25,14 @@
         Task DeleteMeal(Realms.Realm realm, int mealId);
         List<GlucoseInfo> ReadGlucoses(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate);
         List<InsulinInfo> ReadInsulins(Realms.Realm realm, DateTimeOffset fromDate, DateTimeOffset toDate);
+        Task AddExerciceEntry(Realms.Realm realm, float steps, DateTimeOffset start, DateTimeOffset end);
+        Task DeleteExerciceEntriesAfterDate(Realms.Realm realm, DateTimeOffset date); 
+        Task<List<GlucoseInfo>> ReadAllGlucose(Realms.Realm realm);
+        Task<List<ExercicesInfo>> ReadAllExercice(Realms.Realm realm);
+        void ConsoleAllExercice(Realms.Realm realm);
+
+        Task DeleteAllExercice(Realms.Realm realm);
+
+        float? ReadLatestGlucoseValue(Realms.Realm realm);
     }
 }

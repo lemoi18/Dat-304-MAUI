@@ -9,8 +9,7 @@ namespace MauiApp8.Services.Authentication
         Account User { get; set; }
 
         Task<Account> AuthenticateAsync();
-
-
+        Task<Account> RefreshAuthenticateAsync();
 
         Task SignOutAsync();
 
