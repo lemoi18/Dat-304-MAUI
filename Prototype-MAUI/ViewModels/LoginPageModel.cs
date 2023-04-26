@@ -39,11 +39,16 @@ namespace MauiApp8.ViewModel
 
             if (User.LoginSuccessful)
             {
-                    WeakReferenceMessenger.Default.Send(new Model.Alarms.Authenticate { isAuth = User.LoginSuccessful });
 
                     Application.Current.MainPage = new AppShell();
-            }
-            else
+                    Console.WriteLine("before Send ");
+                    Console.WriteLine(User.LoginSuccessful);
+
+
+                    WeakReferenceMessenger.Default.Send(new Model.Alarms.Authenticate { isAuth = User.LoginSuccessful });
+
+                }
+                else
                 {
                     await Shell.Current.DisplayAlert(
                         "Error",

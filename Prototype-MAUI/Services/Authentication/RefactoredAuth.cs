@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Model;
 using System.Text.Json;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using System.Linq.Expressions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MauiApp8.Services.Authentication
 {
@@ -121,7 +123,7 @@ namespace MauiApp8.Services.Authentication
             try
             {
 
-                WeakReferenceMessenger.Default.Send(new Model.Alarms.Authenticate { isAuth = true });
+
                 return ValidateAccessToken(loginResponse.id_token, loginResponse.access_token, loginResponse.refresh_token, loginResponse.expires_in);
 
 
@@ -144,29 +146,66 @@ namespace MauiApp8.Services.Authentication
         private Account ValidateAccessToken(string id_token, string access_token, string refresh_token, int expires_in)
         {
             var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(id_token);
-            var email = GetTokenClaim(token, "email");
-            var name = GetTokenClaim(token, "name");
-            var givenName = GetTokenClaim(token, "given_name");
-            var picture = GetTokenClaim(token, "picture");
-            var familyName = GetTokenClaim(token, "family_name");
-
-
-
-            return new Account
+            try
             {
-                Email = email,
-                Name = name,
-                GivenName = givenName,
-                PictureUrl = picture,
-                FamilyName = familyName,
-                LoginSuccessful = true,
-                Token = token,
-                AccessToken = access_token,
-                RefreshToken = refresh_token,
-                ExpiresIn = expires_in,
-            };
+                var token = handler.ReadJwtToken(id_token);
+                var email = GetTokenClaim(token, "email");
+                var name = GetTokenClaim(token, "name");
+                var givenName = GetTokenClaim(token, "given_name");
+                var picture = GetTokenClaim(token, "picture");
+                var familyName = GetTokenClaim(token, "family_name");
+
+
+
+                return new Account
+                {
+                    Email = email,
+                    Name = name,
+                    GivenName = givenName,
+                    PictureUrl = picture,
+                    FamilyName = familyName,
+                    LoginSuccessful = true,
+                    Token = token,
+                    AccessToken = access_token,
+                    RefreshToken = refresh_token,
+                    ExpiresIn = expires_in,
+                };
+            }
+            catch (SecurityTokenException ex)
+            {
+                // Log the error message
+
+                // Return an error response with a specific message based on the exception type
+                if (ex is SecurityTokenExpiredException)
+                {
+                    return new Account
+                    {
+                        LoginSuccessful = false,
+                        ErrorMessage = "The access token has expired. Please log in again."
+                    };
+                }
+                else if (ex is SecurityTokenSignatureKeyNotFoundException)
+                {
+                    return new Account
+                    {
+                        LoginSuccessful = false,
+                        ErrorMessage = "The access token signature could not be verified. Please log in again."
+                    };
+                }
+                else
+                {
+                    return new Account
+                    {
+                        LoginSuccessful = false,
+                        ErrorMessage = "An error occurred while validating the access token. Please try again later."
+                    };
+                }
+            }
+
+
         }
+
+
 
         private string GetTokenClaim(JwtSecurityToken token, string claimType)
         {

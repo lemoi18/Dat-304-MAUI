@@ -74,7 +74,7 @@ namespace MauiApp8.Services.BackgroundServices
                 {
                     localRealm.Add(GlucoseEntry);
                 });
-                Console.WriteLine($"Adding Glucose Entry :  Insulin: {GlucoseEntry.Glucose}, Timestamp: {GlucoseEntry.Timestamp} ");
+                Console.WriteLine($"Adding Glucose Entry :  Glucose: {GlucoseEntry.Glucose}, Timestamp: {GlucoseEntry.Timestamp} ");
 
             }
             catch (Exception ex)
@@ -122,7 +122,7 @@ namespace MauiApp8.Services.BackgroundServices
                 Console.WriteLine("The Glucose List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
                 localRealm.Dispose();
-                return utcOffset.AddMonths(-1);
+                return utcOffset.AddDays(-7);
             }
             else
             {
@@ -149,7 +149,7 @@ namespace MauiApp8.Services.BackgroundServices
                 Console.WriteLine("The insulin List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
                 localRealm.Dispose();
-                return utcOffset.AddMonths(-1);
+                return utcOffset.AddDays(-7);
             }
             else
             {

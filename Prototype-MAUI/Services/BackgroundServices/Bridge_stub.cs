@@ -50,6 +50,21 @@ namespace MauiApp8.Services.BackgroundServices
         public DateTimeOffset Get_NewestTimestamp(DateTimeOffset first_datetime, DateTimeOffset second_datetime) { DateTimeOffset r = new DateTimeOffset(); return r; }
 
         public async Task<double?> GetBasalInsulin(string DomainName, DateTimeOffset time) { return 22; }
+
+        Task IBackgroundService.AddGlucoseEntry(float sgv, DateTimeOffset date)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddInsulinEntry(double? insulin, double? basal, DateTimeOffset date)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<float?> ReadLatestGlucoseValue()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

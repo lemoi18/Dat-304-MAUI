@@ -19,13 +19,13 @@
         </VerticalStackLayout.Background>
         <controls:NoInternetWarning />
 
-        <Frame BackgroundColor="{StaticResource Primary}" CornerRadius="10" Margin="{StaticResource PrimaryPaddingMedium}">
+        <Frame BackgroundColor="{StaticResource Secondary}" CornerRadius="10" Margin="{StaticResource PrimaryPaddingMedium}">
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnFrameTapped" />
             </Frame.GestureRecognizers>
 
             <lvc:CartesianChart 
-              Series="{Binding GlucoseSeriesChart}" 
+              Series="{Binding GlucoseSeriesChartHome}" 
                 Title="{Binding ChartConfigurations.Title}"
                 HeightRequest="400"
                 TooltipTextSize="50"

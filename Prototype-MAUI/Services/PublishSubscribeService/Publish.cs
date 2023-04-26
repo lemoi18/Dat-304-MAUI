@@ -12,6 +12,7 @@ using MauiApp8.Model;
 using System.Globalization;
 using MauiApp8.Services.Health;
 using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MauiApp8.Services.PublishSubscribeService
 {
@@ -110,7 +111,7 @@ namespace MauiApp8.Services.PublishSubscribeService
 
         public class GlucoseInfoEventArgs : EventArgs
         {
-            public List<GlucoseInfo> GlucoseData { get; set; }
+            public List<Model.GlucoseInfo> GlucoseData { get; set; }
         }
 
         public class InsulinInfoEventArgs : EventArgs
@@ -156,6 +157,10 @@ namespace MauiApp8.Services.PublishSubscribeService
                 //}
 
                 Console.WriteLine("-------------------------------------------Invoke Glucose Event-----------------------------------------------------------");
+
+                WeakReferenceMessenger.Default.Send(new GlucoseDataMessage(glucose));
+                WeakReferenceMessenger.Default.Send(new InsulinDataMessage(insulin));
+
 
                 GlucoseDataAvailable?.Invoke(this, new GlucoseInfoEventArgs { GlucoseData = glucose });
             

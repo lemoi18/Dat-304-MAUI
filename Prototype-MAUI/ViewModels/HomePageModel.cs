@@ -18,7 +18,7 @@ using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using MauiApp8.Services.Health;
 using CommunityToolkit.Mvvm.Input;
 using MauiApp8.Services.BackgroundServices.Realm;
-
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MauiApp8.ViewModel
 {
@@ -37,25 +37,19 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
          float lastGlucoseLevel;
         [ObservableProperty]
-
         float secondlastglcoseLevel;
-
 
         [ObservableProperty]
         ChartConfiguration chartConfigurations;
        
         [ObservableProperty]
-        ChartConfiguration getBolosChartConfiguration;
-
-        [ObservableProperty]
         DateTimeOffset fromDate;
         [ObservableProperty]
         DateTimeOffset toDate;
 
+        
         [ObservableProperty]
-        ObservableCollection<ISeries> seriesChart;
-        [ObservableProperty]
-        ObservableCollection<ISeries> glucoseSeriesChart;
+        ObservableCollection<ISeries> glucoseSeriesChartHome;
 
 
         public HomePageModel(
@@ -74,11 +68,9 @@ namespace MauiApp8.ViewModel
             _backgroundService = backgroundService;
             _backgroundFetchService = backgroundFetchService;
             _chartService = chartService;
-           
 
-            GlucoseSeriesChart = new ObservableCollection<ISeries>();
-            SeriesChart = new ObservableCollection<ISeries>();
-            getBolosChartConfiguration = new ChartConfiguration();
+
+            GlucoseSeriesChartHome = new ObservableCollection<ISeries>();
             chartConfigurations = new ChartConfiguration();
 
             Task.Run(()=> TestFunction());
@@ -100,11 +92,9 @@ namespace MauiApp8.ViewModel
                 if (!_chartService.IsDataChanged)
                 {
 
-                    SeriesChart.Clear();
-                    GlucoseSeriesChart.Clear();
+                    GlucoseSeriesChartHome.Clear();
                     var BolosSeries = await _chartService.AddBasalSeries();
                     var GlucoseSeries = await _chartService.AddGlucosesSeries();
-                    GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration(FromDate, ToDate);
                     ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
                     //SeriesChart.Add(BolosSeries);
                     //GlucoseSeriesChart.Add(GlucoseSeries);
@@ -112,18 +102,15 @@ namespace MauiApp8.ViewModel
             };
 
             _chartService.IsDataChanged = false;
-            var basalSeries = await _chartService.AddBasalSeries();
             var glucoseSeries = await _chartService.AddGlucosesSeries();
             var InsulinSeries = await _chartService.AddInsulinSeries();
 
-            SeriesChart.Add(basalSeries);
-            GlucoseSeriesChart.Add(glucoseSeries);
-            GlucoseSeriesChart.Add(InsulinSeries);
+            GlucoseSeriesChartHome.Add(glucoseSeries);
+            GlucoseSeriesChartHome.Add(InsulinSeries);
 
             LastGlucoseLevel = _chartService.LastPointInData.LastGlucose;
             SecondlastglcoseLevel = _chartService.LastPointInData.SecondLastGlucose;
-            
-            GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration(FromDate, ToDate);
+           
             ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
 
 
@@ -148,6 +135,15 @@ namespace MauiApp8.ViewModel
             await _publish.Turn_On();
         }
 
+        public void Receive(GlucoseDataMessage message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Receive(InsulinDataMessage message)
+        {
+            throw new NotImplementedException();
+        }
     }
 
             

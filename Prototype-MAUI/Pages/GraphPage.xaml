@@ -26,6 +26,8 @@
                 YAxes="{Binding GetBolosChartConfiguration.YAxes}"
                 XAxes="{Binding GetBolosChartConfiguration.XAxes}"
             >
+            
+
         </lvc:CartesianChart>
 
         <lvc:CartesianChart 

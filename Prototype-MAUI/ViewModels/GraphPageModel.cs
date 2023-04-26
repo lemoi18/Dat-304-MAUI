@@ -44,9 +44,9 @@ namespace MauiApp8.ViewModel
         private int _dataChangedCounter = 0;
 
         [ObservableProperty]
-        ObservableCollection<Model.GlucoseInfo> glucosesData;
+        ObservableCollection<GlucoseInfo> glucosesData;
         [ObservableProperty]
-        ObservableCollection<Model.InsulinInfo> insulinsData;
+        ObservableCollection<Model.InsulinInfo> insulinsData;   
 
         public GraphPageModel(IChartService<HealthData> chartService, IChartConfigurationProvider chartConfiguration)
         {

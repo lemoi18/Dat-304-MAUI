@@ -42,6 +42,11 @@ namespace MauiApp8.Services.Authentication
 
         }
 
+        public Task<Account> AuthenticateAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Account> RefreshAuthenticateAsync()
         {
             string email = "uia@test.no";

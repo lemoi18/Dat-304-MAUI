@@ -17,10 +17,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Model;
 using CommunityToolkit.Mvvm.Input;
 using System.IO;
+using CommunityToolkit.Mvvm.Messaging;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MauiApp8.Services.GraphService
 {
-    internal partial class LineChartService<T> : ObservableObject, IChartService<T>
+    internal partial class LineChartService<T> : ObservableObject, IChartService<T>, IRecipient<GlucoseDataMessage>, IRecipient<InsulinDataMessage>
     {
         Publish _publish;
         IHealthService _healthService;
@@ -50,6 +52,12 @@ namespace MauiApp8.Services.GraphService
             _healthService = healthService;
             FromDate = DateTimeOffset.UtcNow.AddDays(-1);
             ToDate = DateTimeOffset.UtcNow;
+
+            WeakReferenceMessenger.Default.Register<GlucoseDataMessage>(this);
+            WeakReferenceMessenger.Default.Register<InsulinDataMessage>(this);
+
+
+
 
             Task.Run(async () =>
             {
@@ -233,7 +241,7 @@ namespace MauiApp8.Services.GraphService
 
             double threshold = 10; // Set threshold value
 
-            var glucoseseries = new LineSeries<Model.GlucoseInfo>
+            var glucoseseries = new LineSeries<GlucoseInfo>
             {
                 Values = GlucosesChart,
                 GeometrySize = 12,
@@ -342,9 +350,47 @@ namespace MauiApp8.Services.GraphService
 
 
 
+        [RelayCommand]
+        void AddInsulin(List<InsulinInfo> insulin)
+        {
+            foreach (var item in insulin)
+            {
+                InsulinsChart.Add(item);
+
+            }
+        }
 
 
+        [RelayCommand]
+        void AddGlucose(List<GlucoseInfo> glucose)
+        {
+            foreach (var item in glucose)
+            {
+                GlucosesChart.Add(item);
 
+            }
+        }
+        public void Receive(InsulinDataMessage message)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                AddInsulin(message.Value);
+
+            });
+        }
+
+        public void Receive(GlucoseDataMessage message)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    AddGlucose(message.Value);
+
+                });
+
+            });
+        }
     }
 }
 
