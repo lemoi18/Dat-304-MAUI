@@ -37,7 +37,24 @@ namespace MauiApp8.Services.BackgroundServices
                 return null;
             }
         }
+        public async Task<float?> ReadLatestGlucoseValue()
+        {
+            Realms.Realm realm = CreateDB.RealmCreate();
+            var objects = realm.All<Realm.GlucoseInfo>();
+            float? Value = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Glucose;
+            if (Value == null)
+            {
+                Console.WriteLine("The glucose List is empty");
 
+                return 0;
+            }
+            else
+            {
+
+                return Value;
+            }
+
+        }
         public DateTimeOffset ReadCurrentTime()
         {
             DateTimeOffset utcOffset = DateTimeOffset.UtcNow;

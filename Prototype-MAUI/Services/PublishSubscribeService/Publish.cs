@@ -75,12 +75,14 @@ namespace MauiApp8.Services.PublishSubscribeService
         {
             WeakReferenceMessenger.Default.Register<Fetch.Update_Google>(this, async (sender, message) =>
             {
-                    
-                DateTime now = DateTime.UtcNow;
-                DateTime startTime = now.AddDays(-1);
 
-                await _thirdPartyHealthService.FetchActivityDataAsync(now, startTime);
-                await _thirdPartyHealthService.FetchCalorieDataAsync(now, startTime);
+                
+                await _thirdPartyHealthService.UpdateGoogleFitSteps();
+                //DateTime now = DateTime.UtcNow;
+                //DateTime startTime = now.AddDays(-1);
+
+                //await _thirdPartyHealthService.FetchActivityDataAsync(now, startTime);
+                //await _thirdPartyHealthService.FetchCalorieDataAsync(now, startTime);
 
                 //foreach (var stepData in _thirdPartyHealthService.CommonHealthData.StepDataList)
                 //{

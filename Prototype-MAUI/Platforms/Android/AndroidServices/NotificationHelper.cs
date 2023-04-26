@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.OS;
 using AndroidX.Core.App;
+using MauiApp8.Model;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using System;
@@ -48,16 +49,16 @@ namespace MauiApp8.Platforms.Android.AndroidServices
         }
         
 
-        public void ShowNotification()
+        public void ShowNotification(int glucose, string message)
         {
             CreateNotificationChannel();
 
             var notification = new NotificationRequest
             {
                 NotificationId = 666,
-                Title = "NOTIFICATION",
-                Subtitle = "WAR",
-                Description = "IHOPE",
+                Title = "Alarm!!",
+                Subtitle = "Value: " + glucose.ToString(),
+                Description = message,
                 BadgeNumber = 10,
                 CategoryType = NotificationCategoryType.Alarm,
                 Schedule = new NotificationRequestSchedule

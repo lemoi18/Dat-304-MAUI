@@ -32,6 +32,7 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
         public async Task UpdateBackgroundData(string DomainName)
         {
             int response = 0;
+           
             IBF.IBackgroundService ibf = new IBF.DataBase();
             await ibf.UpdateGlucose(DomainName);
             try
@@ -53,8 +54,19 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
             {
                 Console.WriteLine("Glucose Uptdate Issue:  " + ex);
             }
-
-            WeakReferenceMessenger.Default.Send(new Fetch.UpdateResponse { Response = 200 });
+            if(response == 0) { WeakReferenceMessenger.Default.Send(new Alarms.Alarm { Response = response, Message = "No fetching of Data...", On = true }); }
+            if (response == 1) { WeakReferenceMessenger.Default.Send(new Alarms.Alarm { Response = response, Message = "No fetching Insulin Data...", On = true }); }
+            if (response == 2) { WeakReferenceMessenger.Default.Send(new Alarms.Alarm { Response = response, Message = "No fetching Glucose Data...", On = true }); }
+            float? latestGlucose = await ibf.ReadLatestGlucoseValue();
+            if (Int32.TryParse(latestGlucose.ToString(), out int last))
+            {
+                if (latestGlucose != 0) { if (latestGlucose > 180 || latestGlucose < 55) { WeakReferenceMessenger.Default.Send(new Alarms.Alarm { Response = last, Message = "Glucose Value is not within acceptable range...", On = true }); } }
+            }
+            else
+            {
+                Console.WriteLine($"Int32.TryParse could not parse '{latestGlucose.ToString()}' to an int.");
+            }
+           
         }
     }
 }

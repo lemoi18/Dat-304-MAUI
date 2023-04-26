@@ -42,6 +42,28 @@ namespace MauiApp8.Services.Authentication
 
         }
 
+        public Task<Account> RefreshAuthenticateAsync()
+        {
+            string email = "uia@test.no";
+            string name = "Test stub";
+            string givenName = "Test";
+            string familyName = "stub";
+            string picture = "test";
+
+
+
+            return Task.FromResult(new Account
+            {
+                Email = email,
+                Name = name,
+                GivenName = givenName,
+                PictureUrl = picture,
+                FamilyName = familyName,
+                LoginSuccessful = true
+            });
+
+        }
+
         public Task SignOutAsync()
         {
             return Task.FromResult(User = null);

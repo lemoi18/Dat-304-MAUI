@@ -7,7 +7,9 @@ namespace MauiApp8.Services.Authentication
 
 
         Account User { get; set; }
-        Task<Account> AuthenticateAsync(CancellationToken cancellationToken);
+
+        Task<Account> AuthenticateAsync();
+        Task<Account> RefreshAuthenticateAsync();
 
 
 

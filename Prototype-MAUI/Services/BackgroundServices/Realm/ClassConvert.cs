@@ -67,9 +67,10 @@
         {
             return new Model.ExercicesInfo
             {
-                ID = realmExercicesInfo.ID,
-                CaloriesBurned = realmExercicesInfo.CaloriesBurned,
-                Timestamp = realmExercicesInfo.Timestamp
+                
+                Steps = realmExercicesInfo.Steps,
+                Start = realmExercicesInfo.Start,
+                End = realmExercicesInfo.End
             };
         }
 
