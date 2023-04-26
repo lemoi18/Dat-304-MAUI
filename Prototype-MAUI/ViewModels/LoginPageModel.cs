@@ -6,6 +6,7 @@ using MauiApp8.Views;
 using MauiApp8.Helpers;
 using Microsoft.Maui.Networking;
 using MauiApp8.Services.Authentication;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MauiApp8.ViewModel
 {
@@ -15,29 +16,16 @@ namespace MauiApp8.ViewModel
 
 
         [ObservableProperty]
-
         IAuthenticationService _authService;
+
         private CancellationTokenSource _cancellationTokenSource;
 
         [ObservableProperty]
         Account user;
         public LoginPageModel(IAuthenticationService authService)
         {
-
             AuthService = authService;
-
-
         }
-
-
-
-        [RelayCommand]
-        Task NavigateToHome() => Shell.Current.GoToAsync(nameof(HomePage));
-
-
-
-      
-
         [RelayCommand]
         async Task NavigateToGoogle()
         {
@@ -51,8 +39,17 @@ namespace MauiApp8.ViewModel
 
             if (User.LoginSuccessful)
             {
-                Application.Current.MainPage = new AppShell();
+                    WeakReferenceMessenger.Default.Send(new Model.Alarms.Authenticate { isAuth = User.LoginSuccessful });
+
+                    Application.Current.MainPage = new AppShell();
             }
+            else
+                {
+                    await Shell.Current.DisplayAlert(
+                        "Error",
+                         $"{User.ErrorMessage}",
+                         "Close");
+                }
             }
             catch (OperationCanceledException)
             {
