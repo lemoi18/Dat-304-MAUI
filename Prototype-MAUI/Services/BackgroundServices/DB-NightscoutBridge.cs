@@ -171,9 +171,7 @@ namespace MauiApp8.Services.BackgroundServices
         public async Task<int> UpdateGlucose(string DomainName)
         {
             DataBase DB = new DataBase();
-            int initialCount = 0;
-            int maxCount = 5; // Maximum 5 concurrent tasks allowed.
-            SemaphoreSlim semaphore = new SemaphoreSlim(initialCount, maxCount);
+            
 
             DateTimeOffset? utcStart = DB.ReadLatestGlucose();
             if (utcStart.HasValue == false)
@@ -213,9 +211,7 @@ namespace MauiApp8.Services.BackgroundServices
         public async Task<int> UpdateInsulin(string DomainName)
         {
             DataBase DB = new DataBase();
-            int initialCount = 0;
-            int maxCount = 5; // Maximum 5 concurrent tasks allowed.
-            SemaphoreSlim semaphore = new SemaphoreSlim(initialCount, maxCount);
+           
 
             DateTimeOffset? utcStart = DB.ReadLatestInsulin();
 
