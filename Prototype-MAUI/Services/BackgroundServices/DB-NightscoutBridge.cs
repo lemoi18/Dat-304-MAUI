@@ -2,6 +2,7 @@
 using MauiApp8.Services.DBService;
 using Realms;
 using Realms.Exceptions;
+using System.Threading.Tasks;
 //using Xamarin.Google.Crypto.Tink.Shaded.Protobuf;
 
 
@@ -122,7 +123,7 @@ namespace MauiApp8.Services.BackgroundServices
                 Console.WriteLine("The Glucose List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
                 localRealm.Dispose();
-                return utcOffset.AddDays(-7);
+                return utcOffset.AddDays(-1);
             }
             else
             {
@@ -141,7 +142,8 @@ namespace MauiApp8.Services.BackgroundServices
         public DateTimeOffset? ReadLatestInsulin()
         {
             Realms.Realm localRealm = RealmCreate();
-            var objects = localRealm.All<Realm.InsulinInfo>();
+            var objects_With = localRealm.All<Realm.InsulinInfo>();
+            var objects = objects_With.Where(g => g.Insulin != 0);
 
             DateTimeOffset? maxDateTime = objects.OrderByDescending(item => item.Timestamp).FirstOrDefault()?.Timestamp;
             if (maxDateTime ==  null)
@@ -149,7 +151,7 @@ namespace MauiApp8.Services.BackgroundServices
                 Console.WriteLine("The insulin List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
                 localRealm.Dispose();
-                return utcOffset.AddDays(-7);
+                return utcOffset.AddDays(-1);
             }
             else
             {
@@ -169,6 +171,9 @@ namespace MauiApp8.Services.BackgroundServices
         public async Task<int> UpdateGlucose(string DomainName)
         {
             DataBase DB = new DataBase();
+            int initialCount = 0;
+            int maxCount = 5; // Maximum 5 concurrent tasks allowed.
+            SemaphoreSlim semaphore = new SemaphoreSlim(initialCount, maxCount);
 
             DateTimeOffset? utcStart = DB.ReadLatestGlucose();
             if (utcStart.HasValue == false)
@@ -189,7 +194,15 @@ namespace MauiApp8.Services.BackgroundServices
             {
                 if (obj.sgv != 0)
                 {
-                    tasks.Add(DB.AddGlucoseEntry(obj.sgv, obj.dateString));
+
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        
+                            tasks.Add(DB.AddGlucoseEntry(obj.sgv, obj.dateString));
+                        
+                       
+                    }));
+
                 }
             }
             await Task.WhenAll(tasks);
@@ -200,6 +213,9 @@ namespace MauiApp8.Services.BackgroundServices
         public async Task<int> UpdateInsulin(string DomainName)
         {
             DataBase DB = new DataBase();
+            int initialCount = 0;
+            int maxCount = 5; // Maximum 5 concurrent tasks allowed.
+            SemaphoreSlim semaphore = new SemaphoreSlim(initialCount, maxCount);
 
             DateTimeOffset? utcStart = DB.ReadLatestInsulin();
 
@@ -225,12 +241,27 @@ namespace MauiApp8.Services.BackgroundServices
                     DateTimeOffset utcBasalTime = TimeZoneInfo.ConvertTimeFromUtc(obj.created_at, norwegianTime);
                     basal = await GetBasalInsulin(DomainName, obj.created_at);
 
-                    tasks.Add(DB.AddInsulinEntry((double)obj.insulin, (double)basal, obj.created_at));
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        
+                             await DB.AddInsulinEntry((double)obj.insulin, (double)basal, obj.created_at);
+                        
+                      
+                    }));
+
                 }
             }
 
             basal = await GetBasalInsulin(DomainName, utcEnd);
-            tasks.Add(DB.AddInsulinEntry((double)0, (double)basal, utcEnd));
+            tasks.Add(Task.Run(async () =>
+            {
+                
+                    await DB.AddInsulinEntry((double)0, (double)basal, utcEnd);
+                
+                
+            }));
+
+
 
             await Task.WhenAll(tasks);
 

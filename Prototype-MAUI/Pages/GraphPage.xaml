@@ -25,6 +25,7 @@
                 LegendTextSize="20"
                 YAxes="{Binding GetBolosChartConfiguration.YAxes}"
                 XAxes="{Binding GetBolosChartConfiguration.XAxes}"
+                AutoUpdateEnabled="True"
             >
             
 
@@ -38,7 +39,10 @@
                 LegendPosition="Bottom"
                 LegendTextSize="20"
                 YAxes="{Binding ChartConfigurations.YAxes}"
-                XAxes="{Binding ChartConfigurations.XAxes}"   
+                XAxes="{Binding ChartConfigurations.XAxes}"
+                AutoUpdateEnabled="True"
+                ZoomMode="X"
+
 
             >
         </lvc:CartesianChart>

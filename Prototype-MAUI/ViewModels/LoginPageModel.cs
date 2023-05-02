@@ -25,11 +25,12 @@ namespace MauiApp8.ViewModel
         public LoginPageModel(IAuthenticationService authService)
         {
             AuthService = authService;
+            
         }
         [RelayCommand]
         async Task NavigateToGoogle()
         {
-
+            
             _cancellationTokenSource = new CancellationTokenSource();
 
             try
@@ -46,6 +47,7 @@ namespace MauiApp8.ViewModel
 
 
                     WeakReferenceMessenger.Default.Send(new Model.Alarms.Authenticate { isAuth = User.LoginSuccessful });
+                   // WeakReferenceMessenger.Default.Send(new Fetch.Update_Health { Response = 101 });
 
                 }
                 else

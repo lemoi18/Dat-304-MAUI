@@ -14,10 +14,11 @@ using System.Collections.ObjectModel;
 using LiveChartsCore.Defaults;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
+using MauiApp8.Services.PublishSubscribeService;
 
 namespace MauiApp8.ViewModel
 {
-    public partial class GraphPageModel : ObservableObject
+    public partial class GraphPageModel : ObservableObject, IRecipient<GlucoseChartMessage>, IRecipient<InsulinChartMessage>
     {
         IChartService<HealthData> _chartService;
         IChartConfigurationProvider _chartConfigurationProvider;
@@ -40,6 +41,7 @@ namespace MauiApp8.ViewModel
         [ObservableProperty]
         DateTimeOffset toDate;
 
+
         private bool _isDataChanged = false;
         private int _dataChangedCounter = 0;
 
@@ -51,14 +53,16 @@ namespace MauiApp8.ViewModel
         public GraphPageModel(IChartService<HealthData> chartService, IChartConfigurationProvider chartConfiguration)
         {
             _chartService = chartService;
+            WeakReferenceMessenger.Default.Send(new Fetch.Update_Health { Response = 101 });
+
             _chartConfigurationProvider = chartConfiguration;
             GlucoseSeriesChart = new ObservableCollection<ISeries>();
             SeriesChart = new ObservableCollection<ISeries>();
             getBolosChartConfiguration = new ChartConfiguration();
             chartConfigurations = new ChartConfiguration();
 
-
-
+            WeakReferenceMessenger.Default.Register<GlucoseChartMessage>(this);
+            WeakReferenceMessenger.Default.Register<InsulinChartMessage>(this);
 
 
             Task.Run(() => InitializeAsync());
@@ -72,28 +76,7 @@ namespace MauiApp8.ViewModel
             Console.WriteLine("In init");
              FromDate = DateTimeOffset.UtcNow.AddDays(-1);
              ToDate = DateTimeOffset.UtcNow;
-            _chartService.IsDataChanged = false;
-            _chartService.DataChanged += async (sender, e) =>
-            {
-                if (!_chartService.IsDataChanged)
-                {
-
-                    _dataChangedCounter++;
-                    SeriesChart.Clear();
-                    GlucoseSeriesChart.Clear();
-                    Console.WriteLine("Data changed");
-                    var BolosSeries = await _chartService.AddBasalSeries();
-                    var GlucoseSeries = await _chartService.AddGlucosesSeries();
-                    GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration(FromDate, ToDate);
-                    ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
-                    //SeriesChart.Add(BolosSeries);
-                    //GlucoseSeriesChart.Add(GlucoseSeries);
-                }
-                Console.WriteLine(_dataChangedCounter);
-            };
-
-
-            _chartService.IsDataChanged = false;
+            
             var basalSeries = await _chartService.AddBasalSeries();
             var glucoseSeries = await _chartService.AddGlucosesSeries();
             var InsulinSeries = await _chartService.AddInsulinSeries();
@@ -106,10 +89,55 @@ namespace MauiApp8.ViewModel
             this.InsulinsData = _chartService.InsulinsChart;
            
 
-            GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration(FromDate, ToDate);
-            ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
+            GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration();
+            ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration();
 
         }
 
+        [RelayCommand]
+        void AddInsulin(ISeries insulin)
+        {
+
+            SeriesChart.Clear();
+            SeriesChart.Add(insulin);
+            //GetBolosChartConfiguration = _chartConfigurationProvider.GetBolosChartConfiguration();
+
+
+        }
+
+
+        [RelayCommand]
+        void AddGlucose(ISeries glucose)
+        {
+
+            GlucoseSeriesChart.Clear();
+            GlucoseSeriesChart.Add(glucose);
+            //ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration();
+
+
+        }
+        public void Receive(InsulinChartMessage message)
+        {
+            Console.WriteLine("Received InsulinChartMessage");
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                AddInsulin(message.Value);
+
+            });
+        }
+
+        public void Receive(GlucoseChartMessage message)
+        {
+            Console.WriteLine("Received GlucoseChartMessage");
+
+            MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    AddGlucose(message.Value);
+
+                });
+
+         
+        }
     }
 }

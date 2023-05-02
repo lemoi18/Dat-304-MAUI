@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Android.Content;
-using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Threading.Tasks;
 using AndroidX.Core.App; // Add this for NotificationCompat
 
@@ -16,7 +15,8 @@ using System;
 using System.Threading.Tasks;
 using BGF =  MauiApp8.Platforms.Android.AndroidServices;
 using Android.Media;
-
+using MauiApp8.Platforms.Android.AndroidReceiver;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MauiApp8.Platforms.Android.AndroidServices
 {
@@ -87,6 +87,8 @@ namespace MauiApp8.Platforms.Android.AndroidServices
                     StartForeground(ServiceId, notification);
                     BGF.BackgroundFetchServiceAndroid bgf = new BGF.BackgroundFetchServiceAndroid();
                     bgf.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction);
+                    BackgroundFetchReceiver backgroundFetchReceiver = new BackgroundFetchReceiver();
+                    await backgroundFetchReceiver.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
                 }
 
             });

@@ -3,9 +3,9 @@ using System.Security.Authentication;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Model;
 using System.Text.Json;
-using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Linq.Expressions;
 using Microsoft.IdentityModel.Tokens;
+using System.Net.Http.Json;
 
 namespace MauiApp8.Services.Authentication
 {
@@ -72,13 +72,13 @@ namespace MauiApp8.Services.Authentication
                     throw new AuthenticationException("Failed to get access token");
                 }
 
-                var data = await accessTokenResponse.Content.ReadAsStringAsync();
-                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(data);
+                var data = await accessTokenResponse.Content.ReadFromJsonAsync<TokenResponse>();
+                //var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(data);
 
-                Console.WriteLine(tokenResponse.access_token);
+                Console.WriteLine(data.access_token);
 
                 // Validate and return the user account.
-                return ValidateAccessToken(tokenResponse.id_token, tokenResponse.access_token, tokenResponse.refresh_token, tokenResponse.expires_in);
+                return ValidateAccessToken(data.id_token, data.access_token, data.refresh_token, data.expires_in);
             }
 
             return User;

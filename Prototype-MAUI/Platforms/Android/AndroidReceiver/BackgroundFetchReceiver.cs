@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Android.Content;
-using PS = MauiApp8.Services.PublishSubscribeService;
-using Microsoft.Toolkit.Mvvm.Messaging;
-using MauiApp8.Services.BackgroundServices;
+﻿using Android.Content;
 using IBF = MauiApp8.Services.BackgroundServices;
 using MauiApp8.Model;
+using CommunityToolkit.Mvvm.Messaging;
+
 namespace MauiApp8.Platforms.Android.AndroidReceiver
 {
     [BroadcastReceiver(Enabled = true)]

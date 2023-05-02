@@ -62,13 +62,13 @@ namespace MauiApp8.ViewModel
             IHealthService healthService
 )
         {
+
             _chartConfigurationProvider = chartConfigurationProvider;
             _healthService = healthService;
             _publish = publish;
             _backgroundService = backgroundService;
             _backgroundFetchService = backgroundFetchService;
             _chartService = chartService;
-
 
             GlucoseSeriesChartHome = new ObservableCollection<ISeries>();
             chartConfigurations = new ChartConfiguration();
@@ -86,32 +86,11 @@ namespace MauiApp8.ViewModel
 
             FromDate = DateTimeOffset.UtcNow.AddDays(-1);
             ToDate = DateTimeOffset.UtcNow;
-            _chartService.IsDataChanged = false;
-            _chartService.DataChanged += async (sender, e) =>
-            {
-                if (!_chartService.IsDataChanged)
-                {
-
-                    GlucoseSeriesChartHome.Clear();
-                    var BolosSeries = await _chartService.AddBasalSeries();
-                    var GlucoseSeries = await _chartService.AddGlucosesSeries();
-                    ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
-                    //SeriesChart.Add(BolosSeries);
-                    //GlucoseSeriesChart.Add(GlucoseSeries);
-                }
-            };
-
-            _chartService.IsDataChanged = false;
-            var glucoseSeries = await _chartService.AddGlucosesSeries();
-            var InsulinSeries = await _chartService.AddInsulinSeries();
-
-            GlucoseSeriesChartHome.Add(glucoseSeries);
-            GlucoseSeriesChartHome.Add(InsulinSeries);
-
+           
             LastGlucoseLevel = _chartService.LastPointInData.LastGlucose;
             SecondlastglcoseLevel = _chartService.LastPointInData.SecondLastGlucose;
            
-            ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration(FromDate, ToDate);
+            ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration();
 
 
 
@@ -124,6 +103,8 @@ namespace MauiApp8.ViewModel
             //await _publish.CheckTimeDiffrence();
             //await _publish.GoogleFetchSub();
             await _publish.HealthSub();
+            WeakReferenceMessenger.Default.Send(new Fetch.Update_Health { Response = 101 });
+
 
         }
 
@@ -135,14 +116,46 @@ namespace MauiApp8.ViewModel
             await _publish.Turn_On();
         }
 
-        public void Receive(GlucoseDataMessage message)
+
+        [RelayCommand]
+        void AddInsulin(ISeries insulin)
         {
-            throw new NotImplementedException();
+
+            GlucoseSeriesChartHome.Clear();
+            GlucoseSeriesChartHome.Add(insulin);
+
         }
 
-        public void Receive(InsulinDataMessage message)
+
+        [RelayCommand]
+        void AddGlucose(ISeries glucose)
         {
-            throw new NotImplementedException();
+
+            GlucoseSeriesChartHome.Clear();
+            GlucoseSeriesChartHome.Add(glucose);
+            ChartConfigurations = _chartConfigurationProvider.GetChartConfiguration();
+
+
+        }
+        public void Receive(InsulinChartMessage message)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                AddInsulin(message.Value);
+
+            });
+        }
+
+        public void Receive(GlucoseChartMessage message)
+        {
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                AddGlucose(message.Value);
+
+            });
+
+
         }
     }
 

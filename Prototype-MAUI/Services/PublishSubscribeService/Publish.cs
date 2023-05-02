@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 using Google.Apis.Oauth2.v2;
 using MauiApp8.Services.BackgroundServices;
-using Microsoft.Toolkit.Mvvm.Messaging; 
 using CommunityToolkit.Mvvm;
 using MauiApp8.Model;
 using System.Globalization;
 using MauiApp8.Services.Health;
 using System.Diagnostics;
 using static System.Net.Mime.MediaTypeNames;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MauiApp8.Services.PublishSubscribeService
 {
@@ -22,15 +22,21 @@ namespace MauiApp8.Services.PublishSubscribeService
         internal readonly ThirdPartyHealthService.IThirdPartyHealthService _thirdPartyHealthService;
         IHealthService _healthService;
 
+        private Dictionary<DateTimeOffset, List<GlucoseInfo>> _glucoseCache;
+        private Dictionary<DateTimeOffset, List<InsulinInfo>> _insulinCache;
         public Publish(IBackgroundService backgroundService, ThirdPartyHealthService.IThirdPartyHealthService thirdPartyHealthService, IHealthService healthService
 )
         {
             _backgroundService = backgroundService;
             _thirdPartyHealthService = thirdPartyHealthService;
             _healthService = healthService;
+            _glucoseCache = new Dictionary<DateTimeOffset, List<GlucoseInfo>>();
+            _insulinCache = new Dictionary<DateTimeOffset, List<InsulinInfo>>();
         }
+
+
         
-       
+
 
         public class Alarm
         {
@@ -105,67 +111,66 @@ namespace MauiApp8.Services.PublishSubscribeService
 
         }
 
-
-        public event EventHandler<GlucoseInfoEventArgs> GlucoseDataAvailable;
-        public event EventHandler<InsulinInfoEventArgs> InsulinDataAvailable;
-
-        public class GlucoseInfoEventArgs : EventArgs
+        private DateTimeOffset GetLatestDate<T>(Dictionary<DateTimeOffset, List<T>> cache)
         {
-            public List<Model.GlucoseInfo> GlucoseData { get; set; }
+            return cache.Keys.Any() ? cache.Keys.Max() : DateTimeOffset.MinValue;
         }
 
-        public class InsulinInfoEventArgs : EventArgs
-        {
-            public List<InsulinInfo> InsulinData { get; set; }
-        }
+
+
         public async Task HealthSub()
         {
+            Console.WriteLine("Registering event handler");
+
             WeakReferenceMessenger.Default.Register<Fetch.Update_Health>(this, async (sender, message) =>
             {
-
                 DateTimeOffset now = DateTime.UtcNow;
-                DateTimeOffset startTime = now.AddDays(-1);
+                DateTimeOffset glucoseStartTime = now.AddDays(-1);
+                DateTimeOffset insulinStartTime = now.AddDays(-1);
 
-                var glucose = await _healthService.ReadGlucoses(startTime,now);
+                DateTimeOffset latestGlucoseDate = GetLatestDate(_glucoseCache);
+                DateTimeOffset latestInsulinDate = GetLatestDate(_insulinCache);
 
-                var insulin = await _healthService.ReadInsulins(startTime, now);
+                if (latestGlucoseDate > glucoseStartTime)
+                {
+                    glucoseStartTime = latestGlucoseDate;
+                }
 
+                List<GlucoseInfo> glucose;
 
-                //glucose.Add(new GlucoseInfo
-                //{
-                //    Glucose = 99,
-                //    Timestamp = now,
-                //});
-                //insulin.Add(new InsulinInfo
-                //{
-                //    Insulin = 99,
-                //    Basal = 10,
-                //    Timestamp = now,
-                //});
+                // Check if glucose data is in cache and fetch it if not
+                if (!_glucoseCache.TryGetValue(glucoseStartTime, out glucose))
+                {
+                    glucose = await _healthService.ReadGlucoses(glucoseStartTime, now);
+                    _glucoseCache[now] = glucose;
+                }
 
-                //Console.WriteLine("Pub");
-                //foreach (var item in insulin)
-                //{
+                if (latestInsulinDate > insulinStartTime)
+                {
+                    insulinStartTime = latestInsulinDate;
+                }
 
-                //    Console.WriteLine($"Insulin: {item.Insulin} Timestamp : {item.Timestamp} Basal : {item.Basal}");
-                //}
+                List<InsulinInfo> insulin;
 
-                //foreach (var item in glucose)
-                //{
-                //    Console.WriteLine($"Glucose: {item.Glucose} Timestamp : {item.Timestamp}");
-
-                //}
+                // Check if insulin data is in cache and fetch it if not
+                if (!_insulinCache.TryGetValue(insulinStartTime, out insulin))
+                {
+                    insulin = await _healthService.ReadInsulins(insulinStartTime, now);
+                    _insulinCache[now] = insulin;
+                }
 
                 Console.WriteLine("-------------------------------------------Invoke Glucose Event-----------------------------------------------------------");
 
+                
+                // Log the sending of GlucoseDataMessage
+                Console.WriteLine("Sending GlucoseDataMessage");
                 WeakReferenceMessenger.Default.Send(new GlucoseDataMessage(glucose));
+
+                // Log the sending of InsulinDataMessage
+                Console.WriteLine("Sending InsulinDataMessage");
                 WeakReferenceMessenger.Default.Send(new InsulinDataMessage(insulin));
-
-
-                GlucoseDataAvailable?.Invoke(this, new GlucoseInfoEventArgs { GlucoseData = glucose });
-            
-                InsulinDataAvailable?.Invoke(this, new InsulinInfoEventArgs { InsulinData = insulin });
             });
+            Console.WriteLine("Event handler registered");
 
         }
 

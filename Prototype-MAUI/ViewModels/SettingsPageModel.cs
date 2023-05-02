@@ -33,7 +33,7 @@ namespace MauiApp8.ViewModel
         {
 
             DateTime now = DateTime.UtcNow;
-            DateTime startTime = now.AddDays(-30);
+            DateTime startTime = now.AddDays(-1);
             await _healthService.DeleteGlucoseData(startTime, now);
             await _healthService.DeleteInsulinData(startTime, now);
 

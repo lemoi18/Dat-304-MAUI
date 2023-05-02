@@ -64,14 +64,14 @@ namespace MauiApp8.Services.GraphService
             return labels.ToArray();
         }
 
-        public List<string> GenerateTimeLabels(DateTimeOffset fromDate, DateTimeOffset toDate)
+        public List<string> GenerateTimeLabels()
         {
             List<string> timeLabels = new List<string>();
 
             // Convert to local time
             TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
-            DateTimeOffset fromDateLocal = TimeZoneInfo.ConvertTime(fromDate, localTimeZone);
-            DateTimeOffset toDateLocal = TimeZoneInfo.ConvertTime(toDate, localTimeZone);
+            DateTimeOffset fromDateLocal = TimeZoneInfo.ConvertTime(_chartService.FromDate, localTimeZone);
+            DateTimeOffset toDateLocal = TimeZoneInfo.ConvertTime(_chartService.ToDate, localTimeZone);
             
 
             // Start at the most recent whole hour
@@ -87,7 +87,7 @@ namespace MauiApp8.Services.GraphService
         }
 
 
-        public ChartConfiguration GetChartConfiguration(DateTimeOffset fromDate, DateTimeOffset toDate)
+        public ChartConfiguration GetChartConfiguration()
         {
             
             var title = new LabelVisual
@@ -100,22 +100,18 @@ namespace MauiApp8.Services.GraphService
             
 
 
-            float xMax = _chartService.GlucosesChart.Count(insulin => insulin.Timestamp >= fromDate && insulin.Timestamp <= toDate);
+            float xMax = _chartService.GlucosesChart.Count(insulin => insulin.Timestamp >= _chartService.FromDate && insulin.Timestamp <= _chartService.ToDate);
 
             // Initialize XMax, legendBackgroundPaint, and other properties that depend on data
             var legendBackgroundPaint = new SolidColorPaint(new SKColor(240, 240, 240));
-            var timeLabels = GenerateTimeLabels(fromDate, toDate);
-            foreach (var label in timeLabels)
-            {
-                Console.WriteLine(label);
-            }
-
+            var timeLabels = GenerateTimeLabels();
+           
             var XAxes = new Axis[]
           {
                 new Axis
                 {
                     Name = "Time",
-                    Labels = GenerateTimeLabels(fromDate,toDate),
+                    Labels = timeLabels,
                     NameTextSize = 36,
                     MinLimit = 0, // Set the MinLimit to 0, which corresponds to the first label's index
                     MaxLimit = timeLabels.Count - 1,
@@ -172,7 +168,7 @@ namespace MauiApp8.Services.GraphService
 
 
 
-        public ChartConfiguration GetBolosChartConfiguration(DateTimeOffset fromDate, DateTimeOffset toDate)
+        public ChartConfiguration GetBolosChartConfiguration()
         {
 
             var title = new LabelVisual
@@ -194,10 +190,10 @@ namespace MauiApp8.Services.GraphService
             // Get the Y-Axis min basal data
             double yMinBasal = _chartService.InsulinsChart.Min(e => e.Basal);
 
-            Console.WriteLine(GenerateTimeLabels(fromDate, toDate).ToString());
+           
 
 
-            double xMax =  _chartService.InsulinsChart.Count(insulin => insulin.Timestamp >= fromDate && insulin.Timestamp <= toDate);
+            double xMax =  _chartService.InsulinsChart.Count(insulin => insulin.Timestamp >= _chartService.FromDate && insulin.Timestamp <= _chartService.ToDate);
 
 
 
@@ -208,7 +204,7 @@ namespace MauiApp8.Services.GraphService
                 new Axis
                 {
                     Name = "Time",
-                    Labels = GenerateTimeLabels(fromDate,toDate),
+                    Labels = GenerateTimeLabels(),
                     NameTextSize = 36,
                     MinLimit = 0,
                     MaxLimit = xMax,

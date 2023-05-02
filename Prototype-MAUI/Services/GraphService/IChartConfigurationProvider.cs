@@ -10,8 +10,8 @@ namespace MauiApp8.Services.GraphService
 {
     public interface IChartConfigurationProvider
     {
-        ChartConfiguration GetChartConfiguration(DateTimeOffset fromDate, DateTimeOffset toDate);
-        ChartConfiguration GetBolosChartConfiguration(DateTimeOffset fromDate, DateTimeOffset toDate);
+        ChartConfiguration GetChartConfiguration();
+        ChartConfiguration GetBolosChartConfiguration();
 
     }
 }
