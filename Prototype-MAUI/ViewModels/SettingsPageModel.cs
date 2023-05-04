@@ -4,6 +4,7 @@ using MauiApp8.Model;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.Health;
+using MauiApp8.Services.BackgroundServices;
 
 namespace MauiApp8.ViewModel
 {
@@ -31,11 +32,15 @@ namespace MauiApp8.ViewModel
         [RelayCommand]
         async Task<string> DeleteData()
         {
-
+            DataBase DB = new DataBase();
+            //DB.TestDBContentInput();
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
+            //DB.TestDBAmountInput();
+            DB.TestDBAmountDEL();
             DateTime now = DateTime.UtcNow;
             DateTime startTime = now.AddDays(-1);
-            await _healthService.DeleteGlucoseData(startTime, now);
-            await _healthService.DeleteInsulinData(startTime, now);
+            //await _healthService.DeleteGlucoseDataALL();
+            //await _healthService.DeleteInsulinDataALL();
 
             return "Data deleted successfully";
 

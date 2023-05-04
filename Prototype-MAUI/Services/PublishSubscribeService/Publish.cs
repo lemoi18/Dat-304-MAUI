@@ -120,7 +120,6 @@ namespace MauiApp8.Services.PublishSubscribeService
 
         public async Task HealthSub()
         {
-            Console.WriteLine("Registering event handler");
 
             WeakReferenceMessenger.Default.Register<Fetch.Update_Health>(this, async (sender, message) =>
             {
@@ -159,18 +158,14 @@ namespace MauiApp8.Services.PublishSubscribeService
                     _insulinCache[now] = insulin;
                 }
 
-                Console.WriteLine("-------------------------------------------Invoke Glucose Event-----------------------------------------------------------");
 
                 
                 // Log the sending of GlucoseDataMessage
-                Console.WriteLine("Sending GlucoseDataMessage");
                 WeakReferenceMessenger.Default.Send(new GlucoseDataMessage(glucose));
 
                 // Log the sending of InsulinDataMessage
-                Console.WriteLine("Sending InsulinDataMessage");
                 WeakReferenceMessenger.Default.Send(new InsulinDataMessage(insulin));
             });
-            Console.WriteLine("Event handler registered");
 
         }
 

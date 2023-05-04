@@ -2,7 +2,10 @@
 using MauiApp8.Services.DBService;
 using Realms;
 using Realms.Exceptions;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using R = MauiApp8.Services.BackgroundServices.Realm;
+using System.Linq;
 //using Xamarin.Google.Crypto.Tink.Shaded.Protobuf;
 
 
@@ -69,13 +72,13 @@ namespace MauiApp8.Services.BackgroundServices
             
             try
             {
-                string dbFullPath = localRealm.Config.DatabasePath;
+                //string dbFullPath = localRealm.Config.DatabasePath;
                 var GlucoseEntry = new Realm.GlucoseInfo { Glucose = sgv, Timestamp = date };
                 await localRealm.WriteAsync(() =>
                 {
                     localRealm.Add(GlucoseEntry);
                 });
-                Console.WriteLine($"Adding Glucose Entry :  Glucose: {GlucoseEntry.Glucose}, Timestamp: {GlucoseEntry.Timestamp} ");
+               // Console.WriteLine($"Adding Glucose Entry :  Glucose: {GlucoseEntry.Glucose}, Timestamp: {GlucoseEntry.Timestamp} ");
 
             }
             catch (Exception ex)
@@ -100,7 +103,7 @@ namespace MauiApp8.Services.BackgroundServices
                 {
                     localRealm.Add(InsulinEntry);
                 });
-                Console.WriteLine($"Adding Insulin Entry :  Insulin: {InsulinEntry.Insulin}, Basal: {InsulinEntry.Basal}, Timestamp: {InsulinEntry.Timestamp} ");
+               // Console.WriteLine($"Adding Insulin Entry :  Insulin: {InsulinEntry.Insulin}, Basal: {InsulinEntry.Basal}, Timestamp: {InsulinEntry.Timestamp} ");
             }
             catch (Exception ex)
             {
@@ -123,7 +126,7 @@ namespace MauiApp8.Services.BackgroundServices
                 Console.WriteLine("The Glucose List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
                 localRealm.Dispose();
-                return utcOffset.AddDays(-1);
+                return utcOffset.AddDays(-60);
             }
             else
             {
@@ -151,7 +154,7 @@ namespace MauiApp8.Services.BackgroundServices
                 Console.WriteLine("The insulin List is empty");
                 DateTimeOffset utcOffset = DateTimeOffset.UtcNow;
                 localRealm.Dispose();
-                return utcOffset.AddDays(-1);
+                return utcOffset.AddDays(-7);
             }
             else
             {
@@ -186,8 +189,13 @@ namespace MauiApp8.Services.BackgroundServices
 
             List<GlucoseAPI> Items;
             Items = await Nightscout.GetGlucose(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
-
+            Console.WriteLine("Glucose entries added: " + Items.Count.ToString());
+            Realms.Realm localRealm = CreateDB.RealmCreate();
             List<Task> tasks = new List<Task>();
+    
+
+          
+            
             foreach (GlucoseAPI obj in Items)
             {
                 if (obj.sgv != 0)
@@ -195,14 +203,17 @@ namespace MauiApp8.Services.BackgroundServices
 
                     tasks.Add(Task.Run(async () =>
                     {
-                        
-                            tasks.Add(DB.AddGlucoseEntry(obj.sgv, obj.dateString));
-                        
+
+                        tasks.Add(DB.AddGlucoseEntry(obj.sgv, obj.dateString));
                        
+
+
                     }));
 
                 }
             }
+           
+            
             await Task.WhenAll(tasks);
 
             return 200;
@@ -227,16 +238,26 @@ namespace MauiApp8.Services.BackgroundServices
             List<TreatmentAPI> Items;
             double? basal;
             Items = await Nightscout.GetInsulin(DomainName, utcStartPlus.ToString("yyyy-MM-ddTHH:mm:ss"), utcEnd.ToString("yyyy-MM-ddTHH:mm:ss"));
+            Console.WriteLine("Insulin entries added: " + Items.Count.ToString());
+
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+           
+           
+
+
 
             List<Task> tasks = new List<Task>();
+            float start = GC.GetTotalMemory(true);
             foreach (TreatmentAPI obj in Items)
             {
                 if (obj.insulin != null)
                 {
                     TimeZoneInfo norwegianTime = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
                     DateTimeOffset utcBasalTime = TimeZoneInfo.ConvertTimeFromUtc(obj.created_at, norwegianTime);
-                    basal = await GetBasalInsulin(DomainName, obj.created_at);
-
+                    //basal = await GetBasalInsulin(DomainName, obj.created_at);
+                    basal = 0;
                     tasks.Add(Task.Run(async () =>
                     {
                         
@@ -248,7 +269,9 @@ namespace MauiApp8.Services.BackgroundServices
                 }
             }
 
-            basal = await GetBasalInsulin(DomainName, utcEnd);
+            //basal = await GetBasalInsulin(DomainName, utcEnd);
+            basal = 0;
+            Console.WriteLine("remember");
             tasks.Add(Task.Run(async () =>
             {
                 
@@ -257,9 +280,7 @@ namespace MauiApp8.Services.BackgroundServices
                 
             }));
 
-
-
-            await Task.WhenAll(tasks);
+           
 
 
             return 200;
@@ -268,16 +289,15 @@ namespace MauiApp8.Services.BackgroundServices
         public DateTimeOffset Get_NewestTimestamp(DateTimeOffset first_datetime, DateTimeOffset second_datetime)
         {       
            
-            Console.WriteLine(first_datetime);
-            Console.WriteLine(second_datetime);
+           
             if (DateTimeOffset.Compare(first_datetime, second_datetime) < 0)
             {
-                Console.WriteLine("Newest: " + second_datetime);
+                //Console.WriteLine("Newest: " + second_datetime);
                 return second_datetime;
             }
             else
             {
-                Console.WriteLine("Newest: " + first_datetime);
+                //Console.WriteLine("Newest: " + first_datetime);
                 return first_datetime;
             }
         }
@@ -295,7 +315,7 @@ namespace MauiApp8.Services.BackgroundServices
                 //Console.WriteLine("Created at: " + obj.CreatedAt);
                 ClosestTime = Get_NewestTimestamp(time, obj.CreatedAt);
                 if ( ClosestTime.ToString() == time.ToString()) { 
-                    Console.WriteLine(obj.CreatedAt.ToString());
+                    //Console.WriteLine(obj.CreatedAt.ToString());
                     foreach (var storeEntry in obj.Store)
                     {
                         var storeName = storeEntry.Key;
@@ -340,6 +360,129 @@ namespace MauiApp8.Services.BackgroundServices
 
             return 0;
         }
+
+
+        public async void TestDBContentInput() //Configuration
+        {
+
+            Realms.Realm localRealm = RealmCreate();
+
+            var numberOfIterations = 10;
+            var i = 0;
+            List<string> myList = new List<string>();
+            myList.Add(","); myList.Add(".");  myList.Add("-"); myList.Add("_"); myList.Add("*"); myList.Add("`"); myList.Add("'"); myList.Add("^");
+            myList.Add("¨"); myList.Add("\\"); myList.Add("+"); myList.Add("|"); myList.Add("<"); myList.Add(">"); myList.Add("1"); myList.Add("k");
+            myList.Add("!"); myList.Add("\""); myList.Add("#"); myList.Add("¤"); myList.Add("&"); myList.Add("/"); myList.Add("("); myList.Add(")"); myList.Add("="); myList.Add("?");
+            myList.Add("@"); myList.Add("£"); myList.Add("$"); myList.Add("€"); myList.Add("{"); myList.Add("["); myList.Add("]"); myList.Add("}"); myList.Add("æ"); myList.Add("ø");
+            myList.Add("å"); myList.Add("Æ"); myList.Add("Ø"); myList.Add("Å");
+
+            while (i < numberOfIterations)
+            {
+                Console.WriteLine(myList[i] + myList[i + 10] + myList[i + 20] + myList[i + 30]);
+                using (var trans = localRealm.BeginWrite())
+                {
+                    var newObj = new R.Configuration
+                    {
+                        NightscoutAPI = myList[i],
+                        NightscoutSecret = myList[i + 10],
+                        HealthKitAPI = myList[i + 20],
+                        HealthKitSecret = myList[i + 30],
+                        GPU = true
+                    };
+                    localRealm.Add(newObj);
+                    trans.Commit();
+                }
+
+                i++;
+            }
+            await Task.CompletedTask;
+
+        }
+
+        public async void TestDBAmountInput() //Configuration
+        {
+            Realms.Realm localRealm = RealmCreate();
+            var numberOfIterations = 40000;
+            var i = 0;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            float start = GC.GetTotalMemory(true);
+
+
+
+            while (i < numberOfIterations)
+            {
+                using (var trans = localRealm.BeginWrite())
+                {
+                    var newObj = new R.Configuration
+                    {
+                        NightscoutAPI = "oskar",
+                        NightscoutSecret = "oskar",
+                        HealthKitAPI = "oskar",
+                        HealthKitSecret = "oskar",
+                        GPU = true
+                    };
+                    localRealm.Add(newObj);
+                    trans.Commit();
+                }
+                //Console.WriteLine(i);
+                i++;
+            }
+            float end = GC.GetTotalMemory(true);
+
+            Console.WriteLine( end - start);
+            stopwatch.Stop();
+
+            var elapsed = stopwatch.ElapsedMilliseconds;
+            Console.WriteLine(elapsed);
+            await Task.CompletedTask;
+        }
+
+        public async void TestDBAmountDEL() //Configuration
+        {
+            Console.WriteLine("AA");
+            Realms.Realm realm = RealmCreate();
+            // Select the entries to be deleted
+            //var entriesToDelete = realm.All<R.Configuration>().Take(10);
+            //realm.All<R.Configuration>().Where(o => o.NightscoutAPI == "oskar").Limit(10);
+            //var entriesToDelete = realm.All<R.Configuration>().Take(323);
+
+            // Delete the selected entries using a transaction
+            //var entriesToDelete = realm.All<R.Configuration>().Where((r, index) => index < 323).ToList();
+            var entriesToDelete = realm.All<R.Configuration>();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+
+
+            float start = GC.GetTotalMemory(true);
+
+            int i = 0;
+            Console.WriteLine(entriesToDelete.Count());
+            realm.Write(() =>
+            {
+                foreach (var entry in entriesToDelete)
+                {
+                    realm.Remove(entry);
+                    i++;
+                    if (i == 16452) { Console.WriteLine("BREAK"); break; } ;
+                }
+            });
+
+
+
+            float end = GC.GetTotalMemory(true);
+            Console.WriteLine(end - start);
+            stopwatch.Stop();
+
+            var elapsed = stopwatch.ElapsedMilliseconds;
+            Console.WriteLine(elapsed);
+            await Task.CompletedTask;
+
+        }
+        
 
     }
 }

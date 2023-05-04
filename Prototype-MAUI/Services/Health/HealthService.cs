@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Google.Apis.PeopleService.v1.Data;
 using MauiApp8.Services.BackgroundServices.Realm;
 using Realms;
 
@@ -32,6 +33,34 @@ namespace MauiApp8.Services.Health
                 }
                 await transaction.CommitAsync();
             }
+
+            return "Deleted glucose data";
+        }
+
+        public async Task<string> DeleteGlucoseDataALL()
+        {
+            var realm = Utilss.RealmCreate();
+
+
+            realm.Write(() =>
+            {
+                var allDel = realm.All<GlucoseInfo>();
+                realm.RemoveRange(allDel);
+            });
+
+            return "Deleted glucose data";
+        }
+
+        public async Task<string> DeleteInsulinDataALL()
+        {
+            var realm = Utilss.RealmCreate();
+
+
+            realm.Write(() =>
+            {
+                var allDel = realm.All<InsulinInfo>();
+                realm.RemoveRange(allDel);
+            });
 
             return "Deleted glucose data";
         }

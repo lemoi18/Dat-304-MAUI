@@ -12,6 +12,8 @@ namespace MauiApp8.Services.Health
         Task<string> DeleteGlucoseData(DateTimeOffset fromDate, DateTimeOffset toDate);
         Task<string> DeleteInsulinData(DateTimeOffset fromDate, DateTimeOffset toDate);
 
+        Task<string> DeleteGlucoseDataALL();
+        Task<string> DeleteInsulinDataALL();
 
     }
 }

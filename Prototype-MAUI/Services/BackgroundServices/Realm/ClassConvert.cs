@@ -76,7 +76,7 @@
 
         public static Model.GlucoseInfo ToModel(Realm.GlucoseInfo realmGlucoseInfo)
         {
-            Console.WriteLine($" Glucose : {realmGlucoseInfo.Glucose} Realm Timestamp: {realmGlucoseInfo.Timestamp}");
+            //Console.WriteLine($" Glucose : {realmGlucoseInfo.Glucose} Realm Timestamp: {realmGlucoseInfo.Timestamp}");
             return new Model.GlucoseInfo
             {
                 Glucose = realmGlucoseInfo.Glucose,
@@ -88,7 +88,7 @@
 
         public static Model.InsulinInfo ToModel(Realm.InsulinInfo realmInsulinInfo)
         {
-            Console.WriteLine($" Insulin : {realmInsulinInfo.Insulin} Realm Timestamp: {realmInsulinInfo.Timestamp} Realm Basal : {realmInsulinInfo.Basal}");
+            //Console.WriteLine($" Insulin : {realmInsulinInfo.Insulin} Realm Timestamp: {realmInsulinInfo.Timestamp} Realm Basal : {realmInsulinInfo.Basal}");
 
             return new Model.InsulinInfo
             {

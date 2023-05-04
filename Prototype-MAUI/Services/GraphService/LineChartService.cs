@@ -285,7 +285,6 @@ namespace MauiApp8.Services.GraphService
             InsulinsChart.Clear();
             foreach (var item in insulin)
             {
-                Console.WriteLine($" insulin : {item.Insulin} {item.Basal} {item.Timestamp}");
                 InsulinsChart.Add(item);
 
             }
@@ -300,7 +299,6 @@ namespace MauiApp8.Services.GraphService
             {
 
                 
-                Console.WriteLine($"{item.Glucose} {item.Timestamp}");
 
                 GlucosesChart.Add(item);
 
