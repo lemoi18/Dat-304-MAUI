@@ -10,7 +10,7 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
     {
         public override async void OnReceive(Context context, Intent intent)
         {
-            await UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
+            await Task.Run(async () => await UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/"));
             Console.WriteLine("Testing Background fetch...");
 
 

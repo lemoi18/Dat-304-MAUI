@@ -10,6 +10,7 @@ namespace MauiApp8.ViewModel
 {
     public partial class SettingsPageModel : ObservableObject
     {
+
         IAuthenticationService authService;
         IHealthService _healthService;
         private Account _user;
@@ -18,6 +19,7 @@ namespace MauiApp8.ViewModel
             get => _user;
             set => SetProperty(ref _user, value);
         }
+
 
         public SettingsPageModel(IAuthenticationService _authService, IHealthService healthService) 
         {
@@ -29,23 +31,36 @@ namespace MauiApp8.ViewModel
         Task NavigateBack() => Shell.Current.GoToAsync("..");
 
 
+        private int _numberToAdd;
+
+        public int NumberToAdd
+        {
+            get => _numberToAdd;
+            set => SetProperty(ref _numberToAdd, value);
+        }
+
         [RelayCommand]
-        async Task<string> DeleteData()
+        async Task<string> TestDBInput()
         {
             DataBase DB = new DataBase();
-            //DB.TestDBContentInput();
             Console.WriteLine("-----------------------------------------------------------------------------------------------------");
-            //DB.TestDBAmountInput();
+            DB.TestDBAmountInput(NumberToAdd);
+            Console.WriteLine($"Amount of data added: {NumberToAdd}");
+            return "Data deleted successfully";
+        }
+
+        [RelayCommand]
+        async Task<string> TestDBDelete()
+        {
+            DataBase DB = new DataBase();
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
             DB.TestDBAmountDEL();
-            DateTime now = DateTime.UtcNow;
-            DateTime startTime = now.AddDays(-1);
-            //await _healthService.DeleteGlucoseDataALL();
-            //await _healthService.DeleteInsulinDataALL();
 
             return "Data deleted successfully";
-
-
         }
+
+
+
         [RelayCommand]
         async Task<Page> SignOut()
         {

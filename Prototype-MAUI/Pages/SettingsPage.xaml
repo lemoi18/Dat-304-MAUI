@@ -16,18 +16,23 @@
             Text="{Binding User.Name}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+        <Entry Text="{Binding NumberToAdd}" />
 
         <Button 
                 Text="Logout"
                 FontAttributes="Bold"
                 Command="{Binding SignOutCommand}"
                 HorizontalOptions="Center" />
-
-
         <Button 
                 Text="Delete Glucose and Insulin data"
                 FontAttributes="Bold"
-                Command="{Binding DeleteDataCommand}"
+                Command="{Binding TestDBDeleteCommand}"
+                HorizontalOptions="Center" />
+        <Button 
+                Text="Add data to database"
+                FontAttributes="Bold"
+                Command="{Binding TestDBInputCommand}"
                 HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>
+    

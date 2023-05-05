@@ -399,20 +399,21 @@ namespace MauiApp8.Services.BackgroundServices
 
         }
 
-        public async void TestDBAmountInput() //Configuration
+        public async void TestDBAmountInput(int NumberToAdd) //Configuration
         {
+            Console.WriteLine("Adding...");
             Realms.Realm localRealm = RealmCreate();
-            var numberOfIterations = 40000;
+            var numberOfIterations = 200;
             var i = 0;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            float start = GC.GetTotalMemory(true);
+            //float start = GC.GetTotalMemory(true);
 
 
-
-            while (i < numberOfIterations)
+            Console.WriteLine("Iterating...");
+            while (i < NumberToAdd)
             {
                 using (var trans = localRealm.BeginWrite())
                 {
@@ -430,28 +431,28 @@ namespace MauiApp8.Services.BackgroundServices
                 //Console.WriteLine(i);
                 i++;
             }
+            Console.WriteLine($"Finished Adding {NumberToAdd} entries!!");
             float end = GC.GetTotalMemory(true);
-
-            Console.WriteLine( end - start);
+            //Console.WriteLine($"Total memory used: {end - start}");
             stopwatch.Stop();
 
             var elapsed = stopwatch.ElapsedMilliseconds;
-            Console.WriteLine(elapsed);
+            Console.WriteLine($"Stopwatch time elapsed: {elapsed}");
             await Task.CompletedTask;
         }
 
         public async void TestDBAmountDEL() //Configuration
         {
-            Console.WriteLine("AA");
+            Console.WriteLine("Deleting...");
             Realms.Realm realm = RealmCreate();
             // Select the entries to be deleted
-            //var entriesToDelete = realm.All<R.Configuration>().Take(10);
+            var entriesToDelete = realm.All<R.Configuration>().Take(10);
             //realm.All<R.Configuration>().Where(o => o.NightscoutAPI == "oskar").Limit(10);
             //var entriesToDelete = realm.All<R.Configuration>().Take(323);
 
             // Delete the selected entries using a transaction
             //var entriesToDelete = realm.All<R.Configuration>().Where((r, index) => index < 323).ToList();
-            var entriesToDelete = realm.All<R.Configuration>();
+            //var entriesToDelete = realm.All<R.Configuration>();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -460,7 +461,7 @@ namespace MauiApp8.Services.BackgroundServices
             float start = GC.GetTotalMemory(true);
 
             int i = 0;
-            Console.WriteLine(entriesToDelete.Count());
+            Console.WriteLine($"Amount of entries that is going to be deleted: {entriesToDelete.Count()}");
             realm.Write(() =>
             {
                 foreach (var entry in entriesToDelete)
@@ -474,11 +475,11 @@ namespace MauiApp8.Services.BackgroundServices
 
 
             float end = GC.GetTotalMemory(true);
-            Console.WriteLine(end - start);
+            Console.WriteLine($"Total memory used: {end - start}");
             stopwatch.Stop();
 
             var elapsed = stopwatch.ElapsedMilliseconds;
-            Console.WriteLine(elapsed);
+            Console.WriteLine($"Stopwatch time elapsed: {elapsed}");
             await Task.CompletedTask;
 
         }
