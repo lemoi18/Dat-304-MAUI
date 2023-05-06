@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Services.Authentication;
 using MauiApp8.Services.Health;
 using MauiApp8.Services.BackgroundServices;
+using System.Diagnostics;
 
 namespace MauiApp8.ViewModel
 {
@@ -13,15 +14,8 @@ namespace MauiApp8.ViewModel
 
         IAuthenticationService authService;
         IHealthService _healthService;
-        private Account _user;
-        public Account User
-        {
-            get => _user;
-            set => SetProperty(ref _user, value);
-        }
 
-
-        public SettingsPageModel(IAuthenticationService _authService, IHealthService healthService) 
+        public SettingsPageModel(IAuthenticationService _authService, IHealthService healthService)
         {
             this.authService = _authService;
             _healthService = healthService;
@@ -37,16 +31,34 @@ namespace MauiApp8.ViewModel
         {
             get => _numberToAdd;
             set => SetProperty(ref _numberToAdd, value);
+
+        }
+        private long _elapsedTime;
+        public long ElapsedTime
+        {
+            get { return _elapsedTime; }
+            set { SetProperty(ref _elapsedTime, value); }
         }
 
         [RelayCommand]
-        async Task<string> TestDBInput()
+        async Task TestDBInput()
         {
             DataBase DB = new DataBase();
             Console.WriteLine("-----------------------------------------------------------------------------------------------------");
-            DB.TestDBAmountInput(NumberToAdd);
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            await DB.TestDBAmountInput(NumberToAdd);
+            stopwatch.Stop();
             Console.WriteLine($"Amount of data added: {NumberToAdd}");
-            return "Data deleted successfully";
+            Console.WriteLine($"Stopwatch time elapsed: {stopwatch.ElapsedMilliseconds} ms");
+            ElapsedTime = stopwatch.ElapsedMilliseconds;
+        }
+
+        [RelayCommand]
+        async Task<string> ConsoleLog()
+        {
+            Console.WriteLine("Button press registered!");
+            return "Data added successfully";
         }
 
         [RelayCommand]

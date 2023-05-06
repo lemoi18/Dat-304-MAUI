@@ -16,6 +16,7 @@ namespace MauiApp8.Platforms.Android.AndroidServices
         {
             // Get the AlarmManager instance
             AndroidApp.AlarmManager alarmManager = (AndroidApp.AlarmManager)AndroidApp.Application.Context.GetSystemService(Context.AlarmService);
+            Console.WriteLine("Got Alarm Manager Instance");
 
             // Create an Intent for the BackgroundFetchReceiver
             Intent alarmIntent = new Intent(AndroidApp.Application.Context, typeof(BackgroundFetchReceiver));
@@ -23,10 +24,10 @@ namespace MauiApp8.Platforms.Android.AndroidServices
 
             // Create a PendingIntent to be fired by the AlarmManager
             AndroidApp.PendingIntent pendingIntent = AndroidApp.PendingIntent.GetBroadcast(AndroidApp.Application.Context, 0, alarmIntent, AndroidApp.PendingIntentFlags.UpdateCurrent | AndroidApp.PendingIntentFlags.Immutable);
-
+            Console.WriteLine("Created PendingIntent");
             // Schedule the repeating task
             alarmManager.SetRepeating(AndroidApp.AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + 60000, 60000, pendingIntent);
-
+            Console.WriteLine("Scheduled Repeating Task");
         }
     }
 }

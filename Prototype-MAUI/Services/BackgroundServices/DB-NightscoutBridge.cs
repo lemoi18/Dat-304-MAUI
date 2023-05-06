@@ -399,60 +399,47 @@ namespace MauiApp8.Services.BackgroundServices
 
         }
 
-        public async void TestDBAmountInput(int NumberToAdd) //Configuration
+        public async Task TestDBAmountInput(int NumberToAdd)
         {
             Console.WriteLine("Adding...");
             Realms.Realm localRealm = RealmCreate();
-            var numberOfIterations = 200;
-            var i = 0;
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            //float start = GC.GetTotalMemory(true);
-
-
-            Console.WriteLine("Iterating...");
-            while (i < NumberToAdd)
+            var configList = new List<R.Configuration>();
+            for (int i = 0; i < NumberToAdd; i++)
             {
-                using (var trans = localRealm.BeginWrite())
+                var newObj = new R.Configuration
                 {
-                    var newObj = new R.Configuration
-                    {
-                        NightscoutAPI = "oskar",
-                        NightscoutSecret = "oskar",
-                        HealthKitAPI = "oskar",
-                        HealthKitSecret = "oskar",
-                        GPU = true
-                    };
-                    localRealm.Add(newObj);
-                    trans.Commit();
-                }
-                //Console.WriteLine(i);
-                i++;
+                    NightscoutAPI = "oskar",
+                    NightscoutSecret = "oskar",
+                    HealthKitAPI = "oskar",
+                    HealthKitSecret = "oskar",
+                    GPU = true
+                };
+                configList.Add(newObj);
             }
-            Console.WriteLine($"Finished Adding {NumberToAdd} entries!!");
-            float end = GC.GetTotalMemory(true);
-            //Console.WriteLine($"Total memory used: {end - start}");
-            stopwatch.Stop();
 
+            var stopwatch = Stopwatch.StartNew();
+            using (var trans = localRealm.BeginWrite())
+            {
+                foreach (var config in configList)
+                {
+                    localRealm.Add(config);
+                }
+                trans.Commit();
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"Finished Adding {NumberToAdd} entries!!");
             var elapsed = stopwatch.ElapsedMilliseconds;
-            Console.WriteLine($"Stopwatch time elapsed: {elapsed}");
+            Console.WriteLine($"Stopwatch time elapsed: {elapsed} ms");
             await Task.CompletedTask;
         }
+
 
         public async void TestDBAmountDEL() //Configuration
         {
             Console.WriteLine("Deleting...");
             Realms.Realm realm = RealmCreate();
-            // Select the entries to be deleted
             var entriesToDelete = realm.All<R.Configuration>().Take(10);
-            //realm.All<R.Configuration>().Where(o => o.NightscoutAPI == "oskar").Limit(10);
-            //var entriesToDelete = realm.All<R.Configuration>().Take(323);
-
-            // Delete the selected entries using a transaction
-            //var entriesToDelete = realm.All<R.Configuration>().Where((r, index) => index < 323).ToList();
-            //var entriesToDelete = realm.All<R.Configuration>();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 

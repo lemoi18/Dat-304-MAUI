@@ -12,11 +12,13 @@
              
     <VerticalStackLayout>
         <controls:NoInternetWarning />
+
+        <Entry Text="{Binding NumberToAdd}" />
+
         <Label 
-            Text="{Binding User.Name}"
+            Text="{Binding ElapsedTime, StringFormat='Elapsed time: {0} ms'}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-        <Entry Text="{Binding NumberToAdd}" />
 
         <Button 
                 Text="Logout"
@@ -32,6 +34,12 @@
                 Text="Add data to database"
                 FontAttributes="Bold"
                 Command="{Binding TestDBInputCommand}"
+                HorizontalOptions="Center" />
+
+        <Button 
+                Text="Console Log"
+                FontAttributes="Bold"
+                Command="{Binding ConsoleLogCommand}"
                 HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

@@ -2,6 +2,8 @@
 using IBF = MauiApp8.Services.BackgroundServices;
 using MauiApp8.Model;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Diagnostics;
+
 
 namespace MauiApp8.Platforms.Android.AndroidReceiver
 {
@@ -25,6 +27,7 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
 
         public async Task UpdateBackgroundData(string DomainName)
         {
+            var stopwatch = Stopwatch.StartNew();
             int response = 0;
            
             IBF.IBackgroundService ibf = new IBF.DataBase();
@@ -60,7 +63,11 @@ namespace MauiApp8.Platforms.Android.AndroidReceiver
             {
                 Console.WriteLine($"Int32.TryParse could not parse '{latestGlucose.ToString()}' to an int.");
             }
-           
+            stopwatch.Stop();
+            var elapsed = stopwatch.ElapsedMilliseconds;
+            DateTime currentTime = DateTime.Now;
+            Console.WriteLine(currentTime);
+            Console.WriteLine($"Background Fetch time elapsed: {elapsed} ms");
         }
     }
 }
