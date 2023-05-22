@@ -62,7 +62,7 @@ namespace MauiApp8.ViewModel
             IHealthService healthService
 )
         {
-
+            Console.WriteLine("Open");
             _chartConfigurationProvider = chartConfigurationProvider;
             _healthService = healthService;
             _publish = publish;
@@ -72,6 +72,7 @@ namespace MauiApp8.ViewModel
 
             GlucoseSeriesChartHome = new ObservableCollection<ISeries>();
             chartConfigurations = new ChartConfiguration();
+            
 
             Task.Run(()=> TestFunction());
             Task.Run(() => InitializeAsync());

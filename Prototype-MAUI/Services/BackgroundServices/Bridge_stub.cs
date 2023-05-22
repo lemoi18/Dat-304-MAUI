@@ -15,17 +15,8 @@ namespace MauiApp8.Services.BackgroundServices
         private readonly List<GlucoseInfo> _glucoseEntries = new List<GlucoseInfo>();
         private readonly List<InsulinInfo> _insulinEntries = new List<InsulinInfo>();
 
-        public void AddGlucoseEntry(float sgv, DateTimeOffset date)
-        {
-
-            _glucoseEntries.Add(new GlucoseInfo { Glucose = sgv, Timestamp = date });
-            Console.WriteLine("Added entry");
-        }
-
-        public void AddInsulinEntry(double? insulin, DateTimeOffset date)
-        {
-            _insulinEntries.Add(new InsulinInfo { Insulin = (double)insulin, Timestamp = date });
-        }
+     
+        
 
         public DateTimeOffset? ReadLatestGlucose()
         {
@@ -51,10 +42,7 @@ namespace MauiApp8.Services.BackgroundServices
 
         public async Task<double?> GetBasalInsulin(string DomainName, DateTimeOffset time) { return 22; }
 
-        Task IBackgroundService.AddGlucoseEntry(float sgv, DateTimeOffset date)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public Task AddInsulinEntry(double? insulin, double? basal, DateTimeOffset date)
         {
@@ -62,6 +50,16 @@ namespace MauiApp8.Services.BackgroundServices
         }
 
         public Task<float?> ReadLatestGlucoseValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddGlucoseEntries(List<Realm.GlucoseInfo> entries)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddInsulinEntries(List<Realm.InsulinInfo> entries)
         {
             throw new NotImplementedException();
         }

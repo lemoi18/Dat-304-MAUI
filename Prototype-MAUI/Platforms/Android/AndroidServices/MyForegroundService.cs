@@ -87,9 +87,6 @@ namespace MauiApp8.Platforms.Android.AndroidServices
                     StartForeground(ServiceId, notification);
                     BGF.BackgroundFetchServiceAndroid bgf = new BGF.BackgroundFetchServiceAndroid();
                     bgf.ScheduleFetchTask(TimeSpan.FromMinutes(1), fetchAction); // calling
-                    DateTime currentTime = DateTime.Now;
-                    Console.WriteLine(currentTime);
-                    Console.WriteLine("STARTED TIME!");
                     BackgroundFetchReceiver backgroundFetchReceiver = new BackgroundFetchReceiver();
                     await backgroundFetchReceiver.UpdateBackgroundData("https://oskarnightscoutweb1.azurewebsites.net/");
                 }

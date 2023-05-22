@@ -25,52 +25,6 @@ namespace MauiApp8.ViewModel
         Task NavigateBack() => Shell.Current.GoToAsync("..");
 
 
-        private int _numberToAdd;
-
-        public int NumberToAdd
-        {
-            get => _numberToAdd;
-            set => SetProperty(ref _numberToAdd, value);
-
-        }
-        private long _elapsedTime;
-        public long ElapsedTime
-        {
-            get { return _elapsedTime; }
-            set { SetProperty(ref _elapsedTime, value); }
-        }
-
-        [RelayCommand]
-        async Task TestDBInput()
-        {
-            DataBase DB = new DataBase();
-            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            await DB.TestDBAmountInput(NumberToAdd);
-            stopwatch.Stop();
-            Console.WriteLine($"Amount of data added: {NumberToAdd}");
-            Console.WriteLine($"Stopwatch time elapsed: {stopwatch.ElapsedMilliseconds} ms");
-            ElapsedTime = stopwatch.ElapsedMilliseconds;
-        }
-
-        [RelayCommand]
-        async Task<string> ConsoleLog()
-        {
-            Console.WriteLine("Button press registered!");
-            return "Data added successfully";
-        }
-
-        [RelayCommand]
-        async Task<string> TestDBDelete()
-        {
-            DataBase DB = new DataBase();
-            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
-            DB.TestDBAmountDEL();
-
-            return "Data deleted successfully";
-        }
-
 
 
         [RelayCommand]

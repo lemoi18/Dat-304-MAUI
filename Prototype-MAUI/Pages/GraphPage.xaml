@@ -16,21 +16,7 @@
         <controls:NoInternetWarning />
 
 
-        <lvc:CartesianChart 
-              Series="{Binding SeriesChart}" 
-                Title="{Binding GetBolosChartConfiguration.Title}"
-                HeightRequest="200"
-                TooltipTextSize="50"
-                LegendPosition="Bottom"
-                LegendTextSize="20"
-                YAxes="{Binding GetBolosChartConfiguration.YAxes}"
-                XAxes="{Binding GetBolosChartConfiguration.XAxes}"
-                AutoUpdateEnabled="True"
-            >
-            
-
-        </lvc:CartesianChart>
-
+           
         <lvc:CartesianChart 
               Series="{Binding GlucoseSeriesChart}" 
                 Title="{Binding ChartConfigurations.Title}"
@@ -41,9 +27,6 @@
                 YAxes="{Binding ChartConfigurations.YAxes}"
                 XAxes="{Binding ChartConfigurations.XAxes}"
                 AutoUpdateEnabled="True"
-                ZoomMode="X"
-
-
             >
         </lvc:CartesianChart>
 

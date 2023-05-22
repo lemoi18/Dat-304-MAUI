@@ -9,8 +9,9 @@ namespace MauiApp8.Services.BackgroundServices
 {
     public interface IBackgroundService
     {
-        Task AddGlucoseEntry(float sgv, DateTimeOffset date);
-        Task AddInsulinEntry(double? insulin,double? basal ,DateTimeOffset date);
+
+        Task AddGlucoseEntries(List<Realm.GlucoseInfo> entries);
+        Task AddInsulinEntries(List<Realm.InsulinInfo> entries);
         DateTimeOffset? ReadLatestGlucose();
         DateTimeOffset? ReadLatestInsulin();
         Task<int> UpdateGlucose(string domainName);

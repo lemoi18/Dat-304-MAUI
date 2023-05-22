@@ -42,8 +42,6 @@ namespace MauiApp8.ViewModel
         DateTimeOffset toDate;
 
 
-        private bool _isDataChanged = false;
-        private int _dataChangedCounter = 0;
 
         [ObservableProperty]
         ObservableCollection<GlucoseInfo> glucosesData;
